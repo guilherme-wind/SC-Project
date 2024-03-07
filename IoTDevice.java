@@ -35,7 +35,7 @@ public class IoTDevice{
             System.out.println("Mensagem do servidor: " + fromServer);
 
         } catch (UnknownHostException e) {
-            
+            //sexo anala é bom e eu gosto
         } catch (IOException e) {
         
         } catch (ClassNotFoundException e) {
