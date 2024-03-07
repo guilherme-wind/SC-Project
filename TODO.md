@@ -23,5 +23,5 @@ Caso alguem queira tomar a posse do desenvolvimento de tarefas, simplesmente esc
 - IoTServer.java: classe principal do servidor
     - ServerNetwork.java: aceitacao ligacoes de clientes e lanca threads
     - ClientHandler.java: aceita pedidos de clientes e comunica 
-    - UsersManager.java: gere os utilizadores e os grupos, faz autenticacao e verificacao de permissoes antes de executar pedidos
+    - UsersManager.java: gere os utilizadores e os grupos, faz autenticacao e verificacao de permissoes antes de executar pedidos. Obs.: pode haver um outro modulo apenas para a autenticacao inicial, i.e., verificar <user-id, password>, <device-id>, <program-name> e <program-size>
     - DataSaver.java: armazenamento persistente, corresponde a camada de base de dados
