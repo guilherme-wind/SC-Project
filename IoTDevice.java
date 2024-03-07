@@ -1,12 +1,11 @@
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.nio.file.Files;
 import java.util.Scanner;
 
 public class IoTDevice{
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException {
 
         String[] auxAddress = args[0].split(":");
         String serverIp = auxAddress[0];
@@ -22,8 +21,8 @@ public class IoTDevice{
             serverPort = Integer.parseInt(auxAddress[1]);
         }
 
-        Socket clientSocket = new Socket(serverIp, serverPort);
         try {
+            Socket clientSocket = new Socket(serverIp, serverPort);
             ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
             
@@ -37,7 +36,7 @@ public class IoTDevice{
         } catch (UnknownHostException e) {
             //sexo anala é bom e eu gosto
         } catch (IOException e) {
-        
+         //hahahahaa
         } catch (ClassNotFoundException e) {
 
         }
