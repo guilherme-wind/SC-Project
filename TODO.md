@@ -19,7 +19,7 @@ Caso alguem queira tomar a posse do desenvolvimento de tarefas, simplesmente esc
     - [Opcional] UI.java: CLI
     - ClientStub/ClientNetwork.java: comunicacao com o servidor, pedido e respostas.
     - FileHandler.java: gestao de ficheiros
-- IoTMessage.java: classe que define a mensagem entre cliente e servidor
+- IoTMessage.java: classe que define a mensagem entre cliente e servidor. Pode ser depois substituido por protobuf
 - IoTServer.java: classe principal do servidor
     - ServerNetwork.java: aceitacao ligacoes de clientes e lanca threads
     - ClientHandler.java: aceita pedidos de clientes e comunica 
