@@ -37,7 +37,15 @@ public class IoTDevice {
             cli.close();
         }
 
-
+        cli.print("Please introduce password");
+        String pwd = cli.getUserInput();
+        // TODO sanitize user input
+        
+        int auth_user_res = authUser(userId, pwd);
+        if (auth_user_res > 0) {
+            cli.printErr("Error authenticating user!");
+            cli.close();
+        }
         
     }
 
@@ -126,6 +134,23 @@ public class IoTDevice {
             return -2;
         }
 
+        return 0;
+    }
+
+
+    /**
+     * Authenticates user with the server.
+     * @param user
+     *      User name.
+     * @param password
+     *      User password.
+     * @return
+     *      1 if new user is created successfully;
+     *      0 if existing user authenticated successfully;
+     *      -1 if authentication failed;
+     */
+    private static int authUser(String user, String password) {
+        // network
         return 0;
     }
 }
