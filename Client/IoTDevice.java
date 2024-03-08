@@ -33,7 +33,8 @@ public class IoTDevice {
         if (init_res < 0) {
             cli.printErr("Error initializing device!");
             cli.close();
-                    }
+            return;
+        }
 
         cli.print("Please introduce password");
         String pwd = cli.getUserInput();
