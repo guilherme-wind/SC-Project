@@ -21,9 +21,10 @@ public class IoTDevice {
 
         // Command line argument validation
         int args_verify = verifyCmdArgs(args);
-        if (args_verify > 0) {
+        if (args_verify < 0) {
             cli.printErr("Wrong input arguments!");
             cli.close();
+            return;
         }
 
         // Initialize class fields using command line arguments
