@@ -1,7 +1,5 @@
 package Utils;
 
-import Utils.IoTOpcodes;
-
 import java.io.File;
 
 /**

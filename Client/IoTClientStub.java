@@ -12,6 +12,9 @@ public class IoTClientStub {
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
 
+    // Token given by server after successful user authentication
+    private String token;
+
     /**
      * Private constructor, use static method getInstance() instead.
      * @param socket
@@ -51,8 +54,31 @@ public class IoTClientStub {
         return instance;
     }
 
+    /**
+     * Authenticates user with the server.
+     * @param user
+     *      User name.
+     * @param password
+     *      User password.
+     * @return
+     *      1 if new user is created successfully;
+     *      0 if existing user authenticated successfully;
+     *      -1 if authentication failed;
+     */
     protected int authenticateUser(String user, String password) {
         
+        return 0;
+    }
+
+    /**
+     * Authenticates device with the server.
+     * @param devId
+     *      Device id.
+     * @return
+     *      0 if authenticated successfully;
+     *      -1 if authentication failed;
+     */
+    protected int authenticateDevice(int devId) {
         return 0;
     }
 }

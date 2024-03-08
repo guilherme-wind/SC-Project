@@ -38,17 +38,19 @@ public class IoTDevice {
         String pwd = cli.getUserInput();
         // TODO sanitize user input
         
-        int auth_user_res = authUser(userId, pwd);
+        int auth_user_res = stub.authenticateUser(userId, pwd);
         if (auth_user_res < 0) {
             cli.printErr("Error authenticating user!");
             cli.close();
         }
 
-        int auth_dev_res = authDevice(devId);
+        int auth_dev_res = stub.authenticateDevice(devId);
         if (auth_dev_res < 0) {
             cli.printErr("Error authenticating device!");
             cli.close();
         }
+
+        
         
     }
 
@@ -130,39 +132,6 @@ public class IoTDevice {
         if (stub == null)
             return -1;
 
-        return 0;
-    }
-
-
-    /**
-     * Authenticates user with the server.
-     * @param user
-     *      User name.
-     * @param password
-     *      User password.
-     * @return
-     *      1 if new user is created successfully;
-     *      0 if existing user authenticated successfully;
-     *      -1 if authentication failed;
-     */
-    private static int authUser(String user, String password) {
-        // network
-        // TODO
-        return 0;
-    }
-
-    /**
-     * Authenticates device with the server.
-     * @param user
-     *      User name.
-     * @param devId
-     *      Device id.
-     * @return
-     *      0 if authenticated successfully;
-     *      -1 if authentication failed;
-     */
-    private static int authDevice(int devId) {
-        // TODO
         return 0;
     }
 }
