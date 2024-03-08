@@ -11,9 +11,7 @@ public class IoTDevice {
     // Simple UI
     private static IoTCLI cli;
 
-    private static Socket clientSocket;
-    private static ObjectOutputStream outputStream;
-    private static ObjectInputStream inputStream;
+    private static IoTClientStub stub;
 
     private static int devId;
     private static String userId;
@@ -32,7 +30,7 @@ public class IoTDevice {
 
         // Initialize class fields using command line arguments
         int init_res = initialize(args);
-        if (init_res > 0) {
+        if (init_res < 0) {
             cli.printErr("Error initializing device!");
             cli.close();
         }
@@ -42,8 +40,14 @@ public class IoTDevice {
         // TODO sanitize user input
         
         int auth_user_res = authUser(userId, pwd);
-        if (auth_user_res > 0) {
+        if (auth_user_res < 0) {
             cli.printErr("Error authenticating user!");
+            cli.close();
+        }
+
+        int auth_dev_res = authDevice(devId);
+        if (auth_dev_res < 0) {
+            cli.printErr("Error authenticating device!");
             cli.close();
         }
         
@@ -102,9 +106,7 @@ public class IoTDevice {
      *      Command line arguments.
      * @return
      *      0 if initialization finished correctly;
-     *      -1 if host ip is unknown;
-     *      -2 if errors occured while creating a socket or 
-     *         getting input or output streams from socket;
+     *      -1 if error while initializing connection with server;
      */
     private static int initialize(String[] args) {
         // Extract socket
@@ -123,16 +125,11 @@ public class IoTDevice {
         // Extract user id
         userId = args[2];
         
-        // Estabilish connection with server
-        try {
-            clientSocket = new Socket(serverIp, serverPort);
-            outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
-            inputStream = new ObjectInputStream(clientSocket.getInputStream());
-        } catch (UnknownHostException e) {
+        // Initialize stub middleware
+        stub = IoTClientStub.getInstance(serverIp, serverPort);
+
+        if (stub == null)
             return -1;
-        } catch (IOException e) {
-            return -2;
-        }
 
         return 0;
     }
@@ -151,6 +148,22 @@ public class IoTDevice {
      */
     private static int authUser(String user, String password) {
         // network
+        // TODO
+        return 0;
+    }
+
+    /**
+     * Authenticates device with the server.
+     * @param user
+     *      User name.
+     * @param devId
+     *      Device id.
+     * @return
+     *      0 if authenticated successfully;
+     *      -1 if authentication failed;
+     */
+    private static int authDevice(int devId) {
+        // TODO
         return 0;
     }
 }
