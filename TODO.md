@@ -15,9 +15,9 @@ Caso alguem queira tomar a posse do desenvolvimento de tarefas, simplesmente esc
 - Colecionar e partilhar dados dos dispositivos
 
 ### Planificacao
-- IoTDevice.java: classe principal do cliente
-    - [Opcional] UI.java: CLI
-    - ClientStub/ClientNetwork.java: comunicacao com o servidor, pedido e respostas.
+- IoTDevice.java: classe principal do cliente (Wang)
+    - [Opcional] UI.java: CLI (Wang)
+    - ClientStub/ClientNetwork.java: comunicacao com o servidor, pedido e respostas. (Wang)
     - FileHandler.java: gestao de ficheiros
 - IoTMessage.java: classe que define a mensagem entre cliente e servidor. Pode ser depois substituido por protobuf
 - IoTServer.java: classe principal do servidor
