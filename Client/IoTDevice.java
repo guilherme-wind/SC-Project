@@ -3,7 +3,7 @@ package Client;
 import java.io.*;
 
 public class IoTDevice {
-
+    private static final String USAGE = "USAGE: IoTDevice <serverAddress> <dev-id> <user-id>";
     private static final int DEFAULT_SERVERPORT = 12345;
 
     // Simple UI
@@ -23,6 +23,7 @@ public class IoTDevice {
         int args_verify = verifyCmdArgs(args);
         if (args_verify < 0) {
             cli.printErr("Wrong input arguments!");
+            cli.print(USAGE);
             cli.close();
             return;
         }
@@ -32,6 +33,7 @@ public class IoTDevice {
         if (init_res < 0) {
             cli.printErr("Error initializing device!");
             cli.close();
+            return;
         }
 
         cli.print("Please introduce password");
