@@ -1,11 +1,11 @@
-package src.Utils;
+package src.utils;
 
-import java.io.File;
+import java.io.Serializable;
 
 /**
  * Class that defines the type of message exchanged between server and client
  */
-public class IoTMessage implements IoTMessageType{
+public class IoTMessage implements IoTMessageType, Serializable {
 
     public IoTOpcodes opcode;
     
@@ -100,8 +100,14 @@ public class IoTMessage implements IoTMessageType{
         this.temp = temp;
     }
 
+    @Override
     public float getTemp() {
         return this.temp;
+    }
+
+    @Override
+    public String toString() {
+        return this.opcode.toString();
     }
 
 }
