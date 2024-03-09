@@ -16,10 +16,22 @@ public class IoTServerThread extends Thread {
 
     @Override
     public void run() {
+        IoTServerRequestHandler handler = IoTServerRequestHandler.getInstance();
         while (this.running && this.ioTStream.ready()) {
             IoTMessageType receivedMessage = (IoTMessageType) this.ioTStream.read();
             System.out.println(String.format("Received message %s!", receivedMessage));
-            return;
+            if (receivedMessage == null)
+                return;
+            
+
+            // reponse
+            IoTMessageType responseMessage = handler.process(receivedMessage);
+            System.out.println("Processed message and response will be " + responseMessage);
+            if (responseMessage != null) {
+                System.out.println("Sending!");
+                if (this.ioTStream.write(responseMessage))
+                    System.out.println("Sent!");
+            }            
         }
     }    
 }
