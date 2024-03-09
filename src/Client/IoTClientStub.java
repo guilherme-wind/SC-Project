@@ -1,5 +1,9 @@
 package src.Client;
 
+import src.Utils.IoTMessage;
+import src.Utils.IoTMessageType;
+import src.Utils.IoTOpcodes;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -11,9 +15,6 @@ public class IoTClientStub {
     private Socket clientSocket;
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
-
-    // Token given by server after successful user authentication
-    private String token;
 
     /**
      * Private constructor, use static method getInstance() instead.
@@ -63,11 +64,33 @@ public class IoTClientStub {
      * @return
      *      1 if new user is created successfully;
      *      0 if existing user authenticated successfully;
-     *      -1 if authentication failed;
+     *      -1 if password provided is wrong;
+     *      -2 if socket error occured;
      */
     protected int authenticateUser(String user, String password) {
+        IoTMessageType request = new IoTMessage();
+        request.setOpCode(IoTOpcodes.VALIDADE_USER);
+        request.setUserId(user);
+        request.setUserPwd(password);
+
+        IoTMessageType response = null;
+
+        try {
+            outputStream.writeObject(request);
+            response = (IoTMessageType) inputStream.readObject();
+        } catch (Exception e) {
+            return -2;
+        }
         
-        return 0;
+        IoTOpcodes respcode = response.getOpcode();
+        if (respcode.equals(IoTOpcodes.OK_USER))
+            return 0;
+        else if (respcode.equals(IoTOpcodes.OK_NEW_USER))
+            return 1;
+        else if (respcode.equals(IoTOpcodes.WRONG_PWD))
+            return -1;
+
+        return -2;
     }
 
     /**
