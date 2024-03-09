@@ -2,6 +2,7 @@ package src.server;
 
 import java.net.Socket;
 
+import src.server.model.Session;
 import src.utils.IoTMessageType;
 import src.utils.IoTStream;
 
@@ -17,15 +18,17 @@ public class IoTServerThread extends Thread {
     @Override
     public void run() {
         IoTServerRequestHandler handler = IoTServerRequestHandler.getInstance();
+        IoTServerDatabase dbContext = IoTServerDatabase.getInstance();
+        Session session = new Session();        
         while (this.running && this.ioTStream.ready()) {
+
             IoTMessageType receivedMessage = (IoTMessageType) this.ioTStream.read();
             System.out.println(String.format("Received message %s!", receivedMessage));
             if (receivedMessage == null)
                 return;
             
-
-            // reponse
-            IoTMessageType responseMessage = handler.process(receivedMessage);
+            // response
+            IoTMessageType responseMessage = handler.process(receivedMessage, session, dbContext);
             System.out.println("Processed message and response will be " + responseMessage);
             if (responseMessage != null) {
                 System.out.println("Sending!");
