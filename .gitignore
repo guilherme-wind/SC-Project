@@ -88,3 +88,8 @@ nb-configuration.xml
 ## Miscellaneous
 ##############################
 *.log
+src/Client/IoTClientStub.java
+src/Client/IoTClientStub.java
+src/Utils/IoTMessage.java
+src/Utils/IoTMessageType.java
+src/Utils/IoTOpcodes.java
