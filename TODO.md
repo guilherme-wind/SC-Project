@@ -37,3 +37,62 @@ Caso alguem queira tomar a posse do desenvolvimento de tarefas, simplesmente esc
 | registar dispositivo atual no dominio | REGISTER_DEVICE_DOMAIN | devid, domain_name |
 | enviar valor | SEND_TEMP | temp |
 | enviar imagem | SEND_IMAGE | stand by |
+
+### Utilizacao dos Modelos (Server side)
+let executor := User(user, pass) # user of the current session
+let device := Device(name, executorName) # device of the current session
+let domains := HashMap<String, Domain>();
+let users := HashMap<String, User>();
+__
+
+CREATE(<dm>: str):
+
+    if domains.contains(dm):
+        return NOK
+
+    domain = Domain(dm, executor)
+    domains.put(dm, domain)
+    return OK
+__
+
+ADD(<user1>: str <dm>: str):
+
+    if !domains.contains(dm):
+        return NODM
+
+    if !users.contains(user1):
+        return NOUSER
+
+    (Domain) domain = domains.get(dm)
+    if !domain.ownedBy(executor):
+        return NOPERM
+
+    // do we need to check if the user is already added?
+    (User) user = users.get(user1)
+    domain.addUser(user);
+    return OK
+
+___
+
+RD(<dm>: str):
+
+    if !domains.contains(dm):
+        return NODM
+
+    (Domain) domain = domains.get(dm)
+    if !domain.contains(as):
+        return NOPERM
+    
+    domain.registerDevice(device);
+    return OK
+
+__
+
+RT (<dm>: str):
+
+    if !domains.contains(dm):
+        return NODM
+
+    (Domain) domain = domains.get(dm)
+    if !domain.ownedBy(executor):
+        return NOPERM
