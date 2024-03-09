@@ -61,7 +61,7 @@ public class IoTClientStub {
      */
     protected int authenticateUser(String user, String password) {
         IoTMessageType request = new IoTMessage();
-        request.setOpCode(IoTOpcodes.VALIDADE_USER);
+        request.setOpCode(IoTOpcodes.VALIDATE_USER);
         request.setUserId(user);
         request.setUserPwd(password);
 
@@ -94,7 +94,7 @@ public class IoTClientStub {
      */
     protected int authenticateDevice(int devId) {
         IoTMessageType request = new IoTMessage();
-        request.setOpCode(IoTOpcodes.VALIDADE_USER);
+        request.setOpCode(IoTOpcodes.VALIDATE_USER);
         request.setDevId(devId);
 
         if (!iotStream.write(request))
