@@ -23,6 +23,8 @@ public class IoTMessage implements IoTMessageType, Serializable {
 
     public float temp;
 
+    public float[] temps;
+
     public byte[] img;
 
     @Override
@@ -104,10 +106,31 @@ public class IoTMessage implements IoTMessageType, Serializable {
     public float getTemp() {
         return this.temp;
     }
+    
+    @Override
+    public void setImage(byte[] image) {
+        this.img = image;
+    }
+
+    @Override
+    public void setTemps(float[] temps) {
+        this.temps = temps;
+    }
+
+    @Override
+    public float[] getTemps() {
+        return this.temps;
+    }
+
+    @Override
+    public byte[] getImage() {
+        return this.img;
+    }
 
     @Override
     public String toString() {
         return this.opcode.toString();
     }
+
 
 }
