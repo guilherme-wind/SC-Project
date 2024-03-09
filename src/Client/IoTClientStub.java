@@ -1,31 +1,24 @@
-package src.Client;
-
-import src.Utils.IoTMessage;
-import src.Utils.IoTMessageType;
-import src.Utils.IoTOpcodes;
+package src.client;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class IoTClientStub {
+import src.utils.IoTMessage;
+import src.utils.IoTMessageType;
+import src.utils.IoTOpcodes;
+import src.utils.IoTStream;
 
-    private Socket clientSocket;
-    private ObjectOutputStream outputStream;
-    private ObjectInputStream inputStream;
+public class IoTClientStub {
+    private static IoTClientStub instance = null;
+    private IoTStream iotStream;
 
     /**
      * Private constructor, use static method getInstance() instead.
      * @param socket
-     * @param inStream
-     * @param outStream
      */
-    private IoTClientStub(Socket socket, ObjectInputStream inStream, ObjectOutputStream outStream) {
-        clientSocket = socket;
-        outputStream = outStream;
-        inputStream = inStream;
+    private IoTClientStub(Socket socket) {
+        iotStream = new IoTStream(socket);
     }
 
     /**
@@ -39,12 +32,11 @@ public class IoTClientStub {
      *          intialization.
      */
     protected static IoTClientStub getInstance(String serverIp, int serverPort) {
-        IoTClientStub instance = null;
+        if (instance != null)
+            return instance;
         try {
-            Socket clientSocket = new Socket(serverIp, serverPort);
-            ObjectOutputStream outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
-            ObjectInputStream inputStream = new ObjectInputStream(clientSocket.getInputStream());
-            instance = new IoTClientStub(clientSocket, inputStream, outputStream);
+            Socket socket = new Socket(serverIp, serverPort);
+            instance = new IoTClientStub(socket);
         } catch (UnknownHostException e) {
             return null;
         } catch (IOException e) {
@@ -73,14 +65,12 @@ public class IoTClientStub {
         request.setUserId(user);
         request.setUserPwd(password);
 
-        IoTMessageType response = null;
-
-        try {
-            outputStream.writeObject(request);
-            response = (IoTMessageType) inputStream.readObject();
-        } catch (Exception e) {
+        if (!iotStream.write(request))
             return -2;
-        }
+
+        IoTMessageType response = (IoTMessageType) iotStream.read();
+        if (response == null)
+            return -2;
         
         IoTOpcodes respcode = response.getOpcode();
         if (respcode.equals(IoTOpcodes.OK_USER))
@@ -107,14 +97,12 @@ public class IoTClientStub {
         request.setOpCode(IoTOpcodes.VALIDADE_USER);
         request.setDevId(devId);
 
-        IoTMessageType response = null;
-
-        try {
-            outputStream.writeObject(request);
-            response = (IoTMessageType) inputStream.readObject();
-        } catch (Exception e) {
+        if (!iotStream.write(request))
             return -2;
-        }
+
+        IoTMessageType response = (IoTMessageType) iotStream.read();
+        if (response == null)
+            return -2;
 
         IoTOpcodes respcode = response.getOpcode();
         if (respcode.equals(IoTOpcodes.OK_DEVID))
