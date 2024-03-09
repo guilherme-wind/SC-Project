@@ -100,8 +100,28 @@ public class IoTClientStub {
      * @return
      *      0 if authenticated successfully;
      *      -1 if authentication failed;
+     *      -2 if socket error occured;
      */
     protected int authenticateDevice(int devId) {
-        return 0;
+        IoTMessageType request = new IoTMessage();
+        request.setOpCode(IoTOpcodes.VALIDADE_USER);
+        request.setDevId(devId);
+
+        IoTMessageType response = null;
+
+        try {
+            outputStream.writeObject(request);
+            response = (IoTMessageType) inputStream.readObject();
+        } catch (Exception e) {
+            return -2;
+        }
+
+        IoTOpcodes respcode = response.getOpcode();
+        if (respcode.equals(IoTOpcodes.OK_DEVID))
+            return 0;
+        else if (respcode.equals(IoTOpcodes.NOK_DEVID))
+            return -1;
+
+        return -2;
     }
 }
