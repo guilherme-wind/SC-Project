@@ -26,8 +26,7 @@ public class IoTCLI {
      * @return
      */
     public String getUserInput() {
-        String input = sc.nextLine();
-        return input;
+        return sc.nextLine();
     }
 
     public void print(String msg) {
