@@ -49,7 +49,6 @@ public class IoTStream {
             this.outputStream.flush();
             success = true;
         } catch (IOException e) {
-            e.printStackTrace();
         }
 
         return success;
@@ -60,7 +59,6 @@ public class IoTStream {
         try {
             object = this.inputStream.readObject();
         } catch (Exception e) {
-            e.printStackTrace();
         }
 
         return object;
