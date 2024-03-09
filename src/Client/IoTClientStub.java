@@ -94,7 +94,7 @@ public class IoTClientStub {
      */
     protected int authenticateDevice(int devId) {
         IoTMessageType request = new IoTMessage();
-        request.setOpCode(IoTOpcodes.VALIDATE_USER);
+        request.setOpCode(IoTOpcodes.VALIDATE_DEVICE);
         request.setDevId(devId);
 
         if (!iotStream.write(request))
