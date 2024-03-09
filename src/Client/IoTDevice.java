@@ -39,21 +39,29 @@ public class IoTDevice {
         cli.print("Please introduce password");
         String pwd = cli.getUserInput();
         // TODO sanitize user input
-        
+
+
+        System.out.println(String.format("-> /authUser %s : %s", userId, pwd));
         int auth_user_res = stub.authenticateUser(userId, pwd);
+        System.out.println(String.format("<- %d", auth_user_res));
         if (auth_user_res < 0) {
             cli.printErr("Error authenticating user!");
             cli.close();
+            return;
         }
-
+        
+        System.out.println(String.format("-> /authDev %s : %s", userId, devId));
         int auth_dev_res = stub.authenticateDevice(devId);
+        System.out.println(String.format("<- %d", auth_dev_res));
         if (auth_dev_res < 0) {
             cli.printErr("Error authenticating device!");
             cli.close();
+            return;
         }
 
-        
-        
+
+        System.out.println("Finished!");
+        cli.close();    
     }
 
     /**
