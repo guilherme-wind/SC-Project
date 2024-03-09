@@ -6,7 +6,7 @@ public enum IoTOpcodes {
     // ---------------------------
     // Client request operations
     VALIDATE_DEVICE("VALIDATE_DEVICE"), 
-    VALIDADE_USER("VALIDADE_USER"), 
+    VALIDATE_USER("VALIDATE_USER"), 
     VALIDATE_PROGRAM("VALIDATE_PROGRAM"),
 
     // Server responses
