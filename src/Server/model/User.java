@@ -1,4 +1,4 @@
-package src.Server.model;
+package src.server.model;
 
 public class User {
     private final String name;

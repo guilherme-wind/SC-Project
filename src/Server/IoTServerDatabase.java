@@ -1,12 +1,12 @@
-package src.Server;
+package src.server;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import src.Server.model.Domain;
-import src.Server.model.User;
-import src.Server.model.Device;
-import src.Utils.IoTOpcodes;
+import src.server.model.Device;
+import src.server.model.Domain;
+import src.server.model.User;
+import src.utils.IoTOpcodes;
 
 
 public class IoTServerDatabase {

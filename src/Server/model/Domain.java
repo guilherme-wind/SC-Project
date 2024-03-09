@@ -1,4 +1,4 @@
-package src.Server.model;
+package src.server.model;
 
 import java.util.HashSet;
 import java.util.Set;
