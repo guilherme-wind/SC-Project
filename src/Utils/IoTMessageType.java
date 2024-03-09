@@ -17,7 +17,7 @@ public interface IoTMessageType {
     public IoTOpcodes getOpcode();
 
     /**
-     * Set the userid of the message.
+     * Set the user id of the message.
      * @param userid
      *      User id.
      */
@@ -29,5 +29,27 @@ public interface IoTMessageType {
      */
     public String getUserId();
 
-    
+    public void setUserPwd(String pwd);
+
+    public String getUserPwd();
+
+    public void setProgramName(String prgname);
+
+    public String getProgramName();
+
+    public void setProgramSize(int prgsize);
+
+    public int getProgramSize();
+
+    public void setDevId(int devid);
+
+    public int getDevId();
+
+    public void setDomainName(String domain);
+
+    public String getDomainName();
+
+    public void setTemp(float temp);
+
+    public float getTemp();
 }
