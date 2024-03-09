@@ -33,5 +33,6 @@ public enum IoTOpcodes {
     OK_ACCEPTED,
     NOK_NO_PERMISSIONS,
     NOK_NO_DOMAIN,
+    NOK_NO_USER,
     NOK_ALREADY_EXISTS
 }
