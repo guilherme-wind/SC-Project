@@ -23,7 +23,7 @@ public class IoTMessage implements IoTMessageType{
 
     public float temp;
 
-    public File img;
+    public byte[] img;
 
     @Override
     public void setOpCode(IoTOpcodes opcode) {
