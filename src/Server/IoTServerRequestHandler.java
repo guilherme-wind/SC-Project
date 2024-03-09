@@ -1,11 +1,13 @@
 package src.server;
 
+import src.server.model.Session;
+import src.server.model.User;
+import src.utils.IoTAuth;
 import src.utils.IoTMessage;
 import src.utils.IoTMessageType;
 import src.utils.IoTOpcodes;
 
 import java.util.EnumMap;
-import java.util.function.Function;
 
 public class IoTServerRequestHandler {
     private static IoTServerRequestHandler instance;
@@ -23,7 +25,7 @@ public class IoTServerRequestHandler {
         return instance;
     }
 
-    public IoTMessageType process(IoTMessageType message) {
+    public IoTMessageType process(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
         if (message == null)
             return null;
 
@@ -31,7 +33,7 @@ public class IoTServerRequestHandler {
         IoTMessageHandlerFunction function = functions.get(opcode);
 
         if (function != null) {
-            return function.apply(message);
+            return function.apply(message, session, dbContext);
         } else {
             System.out.println("No handler found for opcode: " + opcode);
             return null;
@@ -43,13 +45,31 @@ public class IoTServerRequestHandler {
         functions.put(IoTOpcodes.VALIDATE_DEVICE, this::handleValidateDevice);
     }
 
-    private IoTMessageType handleValidateUser(IoTMessageType message) {
+    private IoTMessageType handleValidateUser(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
+        String userName = message.getUserId();
+        String password = message.getUserPwd();
+
         IoTMessageType response = new IoTMessage();
-        response.setOpCode(IoTOpcodes.OK_USER);
+        if (dbContext.containsUser(userName)) { // user exists
+            User user = dbContext.getUser(userName);
+            if (password.equals(user.getPassword())) {
+                session.setAuthState(IoTAuth.User);
+                response.setOpCode(IoTOpcodes.OK_USER);
+            } 
+            else {
+                response.setOpCode(IoTOpcodes.WRONG_PWD);
+            }
+                
+        }
+        else { // new user
+            User user = new User(userName, password);
+            dbContext.addUser(user);
+            response.setOpCode(IoTOpcodes.OK_NEW_USER);
+        }
         return response;
     }
 
-    private IoTMessageType handleValidateDevice(IoTMessageType message) {
+    private IoTMessageType handleValidateDevice(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
         IoTMessageType response = new IoTMessage();
         response.setOpCode(IoTOpcodes.OK_DEVID);
         return response;
@@ -58,6 +78,7 @@ public class IoTServerRequestHandler {
     // TODO add more handlers
 
     @FunctionalInterface
-    interface IoTMessageHandlerFunction extends Function<IoTMessageType, IoTMessageType> {
+    interface IoTMessageHandlerFunction {
+        IoTMessageType apply(IoTMessageType message, Session session, IoTServerDatabase dbContext);
     }
 }

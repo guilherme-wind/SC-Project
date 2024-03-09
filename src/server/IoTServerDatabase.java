@@ -10,14 +10,35 @@ import src.utils.IoTOpcodes;
 
 
 public class IoTServerDatabase {
+    private static IoTServerDatabase instance;
+
     private final Map<String, Domain> domains;
     private final Map<String, User> users;
     private final Map<String, Device> devices;
 
-    public IoTServerDatabase() {
+    private IoTServerDatabase() {
         this.domains = new HashMap<>();
         this.users = new HashMap<>();
         this.devices = new HashMap<>();
+    }
+
+    public void addUser(User user) {
+        this.users.put(user.getName(), user);
+    }
+
+    public Boolean containsUser(String userName) {
+        return this.users.containsKey(userName);
+    }
+
+    public User getUser(String userName) {
+        return this.users.get(userName);
+    }
+
+    public static IoTServerDatabase getInstance() {
+        if (instance == null) {
+            instance = new IoTServerDatabase();
+        }
+        return instance;
     }
 
     public IoTOpcodes createDomain(User as, String domainName) {
@@ -25,6 +46,12 @@ public class IoTServerDatabase {
             return IoTOpcodes.NOK_ALREADY_EXISTS;
 
         this.domains.put(domainName, new Domain(domainName, as));
+
+        return IoTOpcodes.OK_ACCEPTED;
+    }
+
+    public IoTOpcodes updateTemperature(Device device, String temperature) {
+        device.writeTemperature(temperature);
         return IoTOpcodes.OK_ACCEPTED;
     }
 
@@ -61,4 +88,5 @@ public class IoTServerDatabase {
         domain.registerDevice(device);
         return IoTOpcodes.OK_ACCEPTED;
     }
+    
 }
