@@ -52,4 +52,12 @@ public interface IoTMessageType {
     public void setTemp(float temp);
 
     public float getTemp();
+
+    public void setTemps(float[] temps);
+
+    public float[] getTemps();
+
+    public void setImage(byte[] image);
+
+    public byte[] getImage();
 }
