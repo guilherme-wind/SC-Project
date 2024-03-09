@@ -27,17 +27,17 @@ Caso alguem queira tomar a posse do desenvolvimento de tarefas, simplesmente esc
     - DataSaver.java: armazenamento persistente, corresponde a camada de base de dados
 
 ### Utilizacao de IoTMessage
-| operacao | opcode | campos usados no pedido |
-| ----- | ----- | ----- |
-| autenticacao utilizador | VALIDATE_USER | userid, userpwd |
-| autenticacao dispositivo | VALIDATE_DEVICE | devid |
-| autenticacao programa | VALIDATE_PROGRAM | program_name, program_size |
-| criacao dominio | CREATE_DOMAIN | domain_name |
-| adicionar utilizador ao dominio | ADD_USER_DOMAIN | userid, domain_name |
-| registar dispositivo atual no dominio | REGISTER_DEVICE_DOMAIN | devid, domain_name |
-| enviar valor | SEND_TEMP | temp |
-| enviar imagem | SEND_IMAGE | stand by |
-
+| operacao | opcode pedido | campos usados no pedido | opcode resposta |
+| ----- | ----- | ----- | ----- |
+| autenticacao utilizador | VALIDATE_USER | userid, userpwd | WRONG_PWD, OK_NEW_USER, OK_USER |
+| autenticacao dispositivo | VALIDATE_DEVICE | devid | NOK_DEVID, OK_DEVID |
+| autenticacao programa | VALIDATE_PROGRAM | program_name, program_size | NOK_TESTED, OK_TESTED |
+| criacao dominio | CREATE_DOMAIN | domain_name | NOK_ALREADY_EXISTS, OK_ACCEPTED |
+| adicionar utilizador ao dominio | ADD_USER_DOMAIN | userid, domain_name | NOK_NO_USER, NOK_NO_DOMAIN, NOK_NO_PERMISSIONS, NOK_ALREADY_EXISTS, OK_ACCEPTED |
+| registar dispositivo atual no dominio | REGISTER_DEVICE_DOMAIN | devid, domain_name | NOK_NO_DOMAIN, NOK_NO_PERMISSIONS, NOK_ALREADY_EXISTS, OK_ACCEPTED |
+| enviar valor | SEND_TEMP | temp | OK_ACCEPTED |
+| enviar imagem | SEND_IMAGE | img | OK_ACCEPTED |
+| receber imagem | GET_DEVICE_IMAGE | userid, devid | NOK_NO_PERMISSIONS, OK_ACCEPTED |
 ### Utilizacao dos Modelos (Server side)
 let executor := User(user, pass) # user of the current session
 let device := Device(name, executorName) # device of the current session
