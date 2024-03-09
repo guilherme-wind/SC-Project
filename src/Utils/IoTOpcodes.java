@@ -32,5 +32,6 @@ public enum IoTOpcodes {
     // Server responses
     OK_ACCEPTED,
     NOK_NO_PERMISSIONS,
+    NOK_NO_DOMAIN,
     NOK_ALREADY_EXISTS
 }
