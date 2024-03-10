@@ -26,9 +26,9 @@ public class IoTDevice {
         String pwd = cli.getUserInput();
         // TODO sanitize user input
 
-        System.out.println(String.format("-> /authUser %s : %s", userId, pwd));
+        cli.print(String.format("-> /authUser %s : %s", userId, pwd));
         int status = stub.authenticateUser(userId, pwd);
-        System.out.println(String.format("<- %d", status));
+        cli.print(String.format("<- %d", status));
         if (status < 0) {
             cli.printErr("Error authenticating user!");
             if (status == -1)
@@ -44,9 +44,9 @@ public class IoTDevice {
             devId = Integer.parseInt(devIdStr);
         }
 
-        System.out.println(String.format("-> /authDev %s : %s", userId, devId));
+        cli.print(String.format("-> /authDev %s : %s", userId, devId));
         int status = stub.authenticateDevice(devId);
-        System.out.println(String.format("<- %d", status));
+        cli.print(String.format("<- %d", status));
         if (status < 0) {
             cli.printErr("Error authenticating device!");
             if (status == -1)
@@ -64,9 +64,9 @@ public class IoTDevice {
      *      -2 if socket error;
      */
     private static int performProgramAuth() {
-        System.out.println(String.format("-> /authProg [%s, %d]", PROGRAM_NAME, PROGRAM_SIZE));
+        cli.print(String.format("-> /authProg [%s, %d]", PROGRAM_NAME, PROGRAM_SIZE));
         int status = stub.authenticateProgram(PROGRAM_NAME, PROGRAM_SIZE);
-        System.out.println(String.format("<- %d", status));
+        cli.print(String.format("<- %d", status));
         if (status < 0) {
             cli.printErr("Error authenticating program!");
         }
@@ -74,15 +74,15 @@ public class IoTDevice {
     }
 
     private static void show_menu() {
-        System.out.println("Menu de Comandos:");
-        System.out.println("  CREATE <dm>");
-        System.out.println("  ADD <user> <dm>");
-        System.out.println("  RD <dm>");
-        System.out.println("  ET <float>");
-        System.out.println("  EI <filename.jpg>");
-        System.out.println("  RT <dm>");
-        System.out.println("  RI <user-id>:<dev_id>");
-        System.out.println("Digite um comando:\n");
+        cli.print("Menu de Comandos:");
+        cli.print("  CREATE <dm>");
+        cli.print("  ADD <user> <dm>");
+        cli.print("  RD <dm>");
+        cli.print("  ET <float>");
+        cli.print("  EI <filename.jpg>");
+        cli.print("  RT <dm>");
+        cli.print("  RI <user-id>:<dev_id>");
+        cli.print("Digite um comando:\n");
     }
 
     private static void createCommand(String[] args) {
@@ -98,9 +98,9 @@ public class IoTDevice {
 
         String domainName = args[1];
 
-        System.out.println(String.format("-> /create %s", domainName));
+        cli.print(String.format("-> /create %s", domainName));
         int status = stub.createDomain(domainName);
-        System.out.println(String.format("<- %d", status));
+        cli.print(String.format("<- %d", status));
         if (status < 0) {
             cli.printErr("Failed to create domain!");
         }
@@ -125,9 +125,9 @@ public class IoTDevice {
         String userName = args[1];
         String domainName = args[2];
 
-        System.out.println(String.format("-> /add [%s, %s]", userName, domainName));
+        cli.print(String.format("-> /add [%s, %s]", userName, domainName));
         int status = stub.addUserDomain(userName, domainName);
-        System.out.println(String.format("<- %d", status));
+        cli.print(String.format("<- %d", status));
         if (status < 0) {
             cli.printErr("Failed to add user to domain!");
         }
