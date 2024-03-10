@@ -1,7 +1,6 @@
 package src.client;
 
 import java.io.*;
-import java.net.URLDecoder;
 
 public class IoTDevice {
     private static final String USAGE = "USAGE: IoTDevice <serverAddress> <dev-id> <user-id>";
@@ -32,8 +31,7 @@ public class IoTDevice {
         if (status < 0) {
             cli.printErr("Error authenticating user!");
             if (status == -1)
-                return performUserAuth(); 
-            cli.close();
+                return performUserAuth();
         }
         return status;
     }
@@ -52,18 +50,21 @@ public class IoTDevice {
             cli.printErr("Error authenticating device!");
             if (status == -1)
                 return performDeviceAuth(true);
-            cli.close();
         }
         return status;
     }
 
+    /**
+     * Authenticates executing program
+     * with the server.
+     * @return
+     */
     private static int performProgramAuth() {
         System.out.println(String.format("-> /authProg [%s, %d]", PROGRAM_NAME, PROGRAM_SIZE));
         int status = stub.authenticateProgram(PROGRAM_NAME, PROGRAM_SIZE);
         System.out.println(String.format("<- %d", status));
         if (status < 0) {
             cli.printErr("Error authenticating program!");
-            cli.close();
         }
         return status;
     }
@@ -81,22 +82,21 @@ public class IoTDevice {
         }
 
         // Initialize class fields using command line arguments
-        if (initialize(args) < 0) {
-            return;
-        }
+        if (initialize(args) < 0)
+            close();
 
         // perform user auth
         if (performUserAuth() < 0)
-            return;
+            close();
         
         // perform device auth
         if (performDeviceAuth(false) < 0)
-            return;
+            close();
 
 
         // perform program auth
         if (performProgramAuth() < 0)
-            return;
+            close();
 
         System.out.println("Finished!");
         close();   
