@@ -53,7 +53,7 @@ public class IoTServerRequestHandler {
         if (dbContext.containsUser(userName)) { // user exists
             User user = dbContext.getUser(userName);
             if (password.equals(user.getPassword())) {
-                session.setAuthState(IoTAuth.User);
+                session.setAuthState(IoTAuth.AUTHEN_USER);
                 response.setOpCode(IoTOpcodes.OK_USER);
             } 
             else {

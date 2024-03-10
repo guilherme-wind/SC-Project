@@ -10,7 +10,7 @@ public class Session {
     public Session() {
         this.device = null;
         this.user = null;
-        this.authState = IoTAuth.None;
+        this.authState = IoTAuth.NONE;
     }
 
     public void setDevice(Device device) {
