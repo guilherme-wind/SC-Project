@@ -69,6 +69,14 @@ public class IoTServerDatabase {
         return this.devices.get(deviceName);
     }
 
+    public Boolean containsDomain(String domainName) {
+        return this.domains.containsKey(domainName);
+    }
+
+    public void addDomain(Domain domain) {
+        this.domains.put(domain.getName(), domain);
+    }
+
     public static IoTServerDatabase getInstance() {
         if (instance == null) {
             instance = new IoTServerDatabase();
