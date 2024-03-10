@@ -12,8 +12,8 @@ public class Device {
     private final File tempLogFile;
     private final File imgLogFile;
 
-    public Device(String name, String ownerName) {
-        this.name = String.format("%s:%s", name, ownerName);
+    public Device(String name) {
+        this.name = name;
         this.tempLogFile = new File(String.format("%s_temp_log.txt", name));
         this.imgLogFile = new File(String.format("%s_img_log.txt", name));
     }

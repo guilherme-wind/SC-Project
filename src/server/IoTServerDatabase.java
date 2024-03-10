@@ -34,6 +34,18 @@ public class IoTServerDatabase {
         return this.users.get(userName);
     }
 
+    public void addDevice(Device device) {
+        this.devices.put(device.getName(), device);
+    }
+
+    public Boolean containsDevice(String deviceName) {
+        return this.devices.containsKey(deviceName);
+    }
+
+    public Device getDevice(String deviceName) {
+        return this.devices.get(deviceName);
+    }
+
     public static IoTServerDatabase getInstance() {
         if (instance == null) {
             instance = new IoTServerDatabase();
@@ -71,8 +83,8 @@ public class IoTServerDatabase {
         return IoTOpcodes.OK_ACCEPTED;
     }
 
-    public IoTOpcodes createDevice(String name, String ownerName) {
-        Device device = new Device(name, ownerName);
+    public IoTOpcodes createDevice(String name) {
+        Device device = new Device(name);
         this.devices.put(device.getName(), device);
         return IoTOpcodes.OK_ACCEPTED;
     }

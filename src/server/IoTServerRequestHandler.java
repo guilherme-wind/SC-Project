@@ -1,5 +1,6 @@
 package src.server;
 
+import src.server.model.Device;
 import src.server.model.Session;
 import src.server.model.User;
 import src.utils.IoTAuth;
@@ -43,6 +44,7 @@ public class IoTServerRequestHandler {
     private void initializeFunctions() {
         functions.put(IoTOpcodes.VALIDATE_USER, this::handleValidateUser);
         functions.put(IoTOpcodes.VALIDATE_DEVICE, this::handleValidateDevice);
+        functions.put(IoTOpcodes.VALIDATE_PROGRAM, this::handleValidateProgram);
     }
 
     private IoTMessageType handleValidateUser(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
@@ -53,7 +55,8 @@ public class IoTServerRequestHandler {
         if (dbContext.containsUser(userName)) { // user exists
             User user = dbContext.getUser(userName);
             if (password.equals(user.getPassword())) {
-                session.setAuthState(IoTAuth.AUTHEN_USER);
+                session.setAuthState(IoTAuth.User);
+                session.setUser(user);
                 response.setOpCode(IoTOpcodes.OK_USER);
             } 
             else {
@@ -64,17 +67,41 @@ public class IoTServerRequestHandler {
         else { // new user
             User user = new User(userName, password);
             dbContext.addUser(user);
+            session.setAuthState(IoTAuth.User);
+            session.setUser(user);
             response.setOpCode(IoTOpcodes.OK_NEW_USER);
         }
         return response;
     }
 
     private IoTMessageType handleValidateDevice(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
+        User user = session.getUser();
+        String iotDeviceId = String.format("%s:%d", user, message.getDevId());
+
         IoTMessageType response = new IoTMessage();
-        response.setOpCode(IoTOpcodes.OK_DEVID);
+
+        if (!dbContext.containsDevice(iotDeviceId)) { // new device!
+            Device device = new Device(iotDeviceId);
+            dbContext.addDevice(device);
+            session.setAuthState(IoTAuth.UserDevice);
+            session.setDevice(device);
+            response.setOpCode(IoTOpcodes.OK_DEVID);
+        } 
+        else {
+            // TODO review NOK policy.... open and auth?
+            response.setOpCode(IoTOpcodes.NOK_DEVID);
+        }
+
         return response;
     }
 
+    private IoTMessageType handleValidateProgram(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
+        // TODO understand which sort of validation we should perform here
+        IoTMessageType response = new IoTMessage();
+        response.setOpCode(IoTOpcodes.OK_TESTED);
+        session.setAuthState(IoTAuth.Complete);
+        return response;
+    }
     // TODO add more handlers
 
     @FunctionalInterface
