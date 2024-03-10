@@ -1,6 +1,7 @@
 package src.client;
 
 import java.io.*;
+import java.util.NoSuchElementException;
 
 public class IoTDevice {
     private static final String USAGE = "USAGE: IoTDevice <serverAddress> <dev-id> <user-id>";
@@ -77,116 +78,135 @@ public class IoTDevice {
      * invokes respective method.
      */
     private static void userInvoke() {
-        while (true) {
-            System.out.println("Menu de Comandos:");
-            System.out.println("  CREATE <dm>");
-            System.out.println("  ADD <user> <dm>");
-            System.out.println("  RD <dm>");
-            System.out.println("  ET <float>");
-            System.out.println("  EI <filename.jpg>");
-            System.out.println("  RT <dm>");
-            System.out.println("  RI <user-id>:<dev_id>");
-            System.out.println("Digite um comando:\n");
+        try {
+            while (true) {
+                System.out.println("Menu de Comandos:");
+                System.out.println("  CREATE <dm>");
+                System.out.println("  ADD <user> <dm>");
+                System.out.println("  RD <dm>");
+                System.out.println("  ET <float>");
+                System.out.println("  EI <filename.jpg>");
+                System.out.println("  RT <dm>");
+                System.out.println("  RI <user-id>:<dev_id>");
+                System.out.println("  Exit");
+                System.out.println("Digite um comando:\n");
 
-            String[] tokens = cli.getUserInput().split(" ");
+                String userInput = cli.getUserInput();
 
-            if (tokens[0].compareToIgnoreCase("CREATE") == 0) {
-                if (tokens.length == 1) {
-                    cli.printErr("missing <domain name>\n");
+                if (userInput.isEmpty()) {
+                    System.out.println("No command provided. Please enter a valid command");
                     continue;
                 }
 
-                if (tokens.length > 2) {
-                    cli.printErr("too many arguments\n");
-                    continue;
+                String[] tokens = userInput.split(" ");
+
+                if (tokens[0].compareToIgnoreCase("CREATE") == 0) {
+                    if (tokens.length == 1) {
+                        cli.printErr("missing <domain name>\n");
+                        continue;
+                    }
+
+                    if (tokens.length > 2) {
+                        cli.printErr("too many arguments\n");
+                        continue;
+                    }
+
+                    // Lógica para o comando CREATE
+
+                } else if (tokens[0].compareToIgnoreCase("ADD") == 0) {
+                    if (tokens.length == 1) {
+                        cli.printErr("missing <user> and <domain name>\n");
+                        continue;
+                    }
+
+                    if (tokens.length == 2) {
+                        cli.printErr("missing arguments, we´re expecting 2 arguments: <user> and <domain name>\n");
+                        continue;
+                    }
+
+                    if (tokens.length > 3) {
+                        cli.printErr("too many arguments\n");
+                        continue;
+                    }
+
+                    // Lógica para o comando ADD
+
+                } else if (tokens[0].compareToIgnoreCase("RD") == 0) {
+                    if (tokens.length == 1) {
+                        cli.printErr("missing <domain name>\n");
+                        continue;
+                    }
+
+                    if (tokens.length > 2) {
+                        cli.printErr("too many arguments\n");
+                        continue;
+                    }
+
+                    // Lógica para o comando RD
+
+                } else if (tokens[0].compareToIgnoreCase("ET") == 0) {
+                    if (tokens.length == 1) {
+                        cli.printErr("missing <temperature> (in float)\n");
+                        continue;
+                    }
+
+                    if (tokens.length > 2) {
+                        cli.printErr("too many arguments\n");
+                        continue;
+                    }
+
+                    // Lógica para o comando ET
+
+                } else if (tokens[0].compareToIgnoreCase("EI") == 0) {
+                    if (tokens.length == 1) {
+                        cli.printErr("missing <file.jpg>\n");
+                        continue;
+                    }
+
+                    if (tokens.length > 2) {
+                        cli.printErr("too many arguments\n");
+                        continue;
+                    }
+
+                    // Lógica para o comando EI
+
+                } else if (tokens[0].compareToIgnoreCase("RT") == 0) {
+                    if (tokens.length == 1) {
+                        cli.printErr("missing <domain name>\n");
+                        continue;
+                    }
+
+                    if (tokens.length > 2) {
+                        cli.printErr("too many arguments\n");
+                        continue;
+                    }
+
+                    // Lógica para o comando RT
+
+                } else if (tokens[0].compareToIgnoreCase("RI") == 0) {
+                    if (tokens.length == 1) {
+                        cli.printErr("missing <user id> and <device id>\n");
+                        continue;
+                    }
+
+                    if (tokens.length == 2) {
+                        cli.printErr("missing arguments, we´re expecting 2 arguments: <user id> and <device id>\n");
+                        continue;
+                    }
+
+                    if (tokens.length > 3) {
+                        cli.printErr("too many arguments\n");
+                        continue;
+                    }
+
+                    // Lógica para o comando RI
                 }
-
-                
-            } else if (tokens[0].compareToIgnoreCase("ADD") == 0){
-                if (tokens.length == 1) {
-                    cli.printErr("missing <user> and <domain name>\n");
-                    continue;
-                }
-
-                if (tokens.length == 2) {
-                    cli.printErr("missing arguments, we´re expecting 2 arguments: <user> and <domain name>\n");
-                    continue;
-                }
-
-                if (tokens.length > 3) {
-                    cli.printErr("too many arguments\n");
-                }
-
-
-            } else if (tokens[0].compareToIgnoreCase("RD") == 0){
-                if (tokens.length == 1) {
-                    cli.printErr("missing <domain name>\n");
-                    continue;
-                }
-
-                if (tokens.length > 2) {
-                    cli.printErr("too many arguments\n");
-                    continue;
-                }
-
-
-            } else if (tokens[0].compareToIgnoreCase("ET") == 0){
-                if (tokens.length == 1) {
-                    cli.printErr("missing <temperature> (in float)\n");
-                    continue;
-                }
-
-                if (tokens.length > 2) {
-                    cli.printErr("too many arguments\n");
-                    continue;
-                }
-
-
-            } else if (tokens[0].compareToIgnoreCase("EI") == 0){
-                if (tokens.length == 1) {
-                    cli.printErr("missing <file.jpg>\n");
-                    continue;
-                }
-
-                if (tokens.length > 2) {
-                    cli.printErr("too many arguments\n");
-                    continue;
-                }
-
-
-            } else if (tokens[0].compareToIgnoreCase("RT") == 0){
-                if (tokens.length == 1) {
-                    cli.printErr("missing <domain name>\n");
-                    continue;
-                }
-
-                if (tokens.length > 2) {
-                    cli.printErr("too many arguments\n");
-                    continue;
-                }
-
-
-            } else if (tokens[0].compareToIgnoreCase("RJ") == 0){
-                if (tokens.length == 1) {
-                    cli.printErr("missing <user id> and <device id>\n");
-                    continue;
-                }
-
-                if (tokens.length == 2) {
-                    cli.printErr("missing arguments, we´re expecting 2 arguments: <user id> and <device id>\n");
-                    continue;
-                }
-
-                if (tokens.length > 3) {
-                    cli.printErr("too many arguments\n");
-                }
-
-
-            } else if (tokens[0].compareToIgnoreCase("Exit") == 0){
-                break;
             }
+        } catch (NoSuchElementException e) {
+            System.out.println("Exit");
         }
     }
+
 
     public static void main(String[] args) throws IOException {
 
