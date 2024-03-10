@@ -55,7 +55,7 @@ public class IoTServerRequestHandler {
         if (dbContext.containsUser(userName)) { // user exists
             User user = dbContext.getUser(userName);
             if (password.equals(user.getPassword())) {
-                session.setAuthState(IoTAuth.User);
+                session.setAuthState(IoTAuth.USER);
                 session.setUser(user);
                 response.setOpCode(IoTOpcodes.OK_USER);
             } 
@@ -67,7 +67,7 @@ public class IoTServerRequestHandler {
         else { // new user
             User user = new User(userName, password);
             dbContext.addUser(user);
-            session.setAuthState(IoTAuth.User);
+            session.setAuthState(IoTAuth.USER);
             session.setUser(user);
             response.setOpCode(IoTOpcodes.OK_NEW_USER);
         }
@@ -83,7 +83,7 @@ public class IoTServerRequestHandler {
         if (!dbContext.containsDevice(iotDeviceId)) { // new device!
             Device device = new Device(iotDeviceId);
             dbContext.addDevice(device);
-            session.setAuthState(IoTAuth.UserDevice);
+            session.setAuthState(IoTAuth.USER_DEVICE);
             session.setDevice(device);
             response.setOpCode(IoTOpcodes.OK_DEVID);
         } 
@@ -99,7 +99,7 @@ public class IoTServerRequestHandler {
         // TODO understand which sort of validation we should perform here
         IoTMessageType response = new IoTMessage();
         response.setOpCode(IoTOpcodes.OK_TESTED);
-        session.setAuthState(IoTAuth.Complete);
+        session.setAuthState(IoTAuth.COMPLETE);
         return response;
     }
     // TODO add more handlers
