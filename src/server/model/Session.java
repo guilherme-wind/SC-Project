@@ -41,6 +41,12 @@ public class Session {
     public void setAuthState(IoTAuth state) {
         this.authState = state;
     }
+
+    public void close() {
+        if (this.device != null) {
+            this.device.turnOff();
+        }
+    }
     
 }
 

@@ -47,6 +47,7 @@ public class IoTServerRequestHandler {
         functions.put(IoTOpcodes.VALIDATE_DEVICE, this::handleValidateDevice);
         functions.put(IoTOpcodes.VALIDATE_PROGRAM, this::handleValidateProgram);
         functions.put(IoTOpcodes.CREATE_DOMAIN, this::handleCreateDomain);
+        functions.put(IoTOpcodes.EXIT, this::handleTerminateProgram);
     }
 
     private IoTMessageType handleValidateUser(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
@@ -133,6 +134,14 @@ public class IoTServerRequestHandler {
 
         return response;
     }
+
+    private IoTMessageType handleTerminateProgram(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
+        session.close();
+        IoTMessageType response = new IoTMessage();
+        response.setOpCode(IoTOpcodes.OK_ACCEPTED);
+        return response;
+    }
+
     // TODO add more handlers
 
     @FunctionalInterface
