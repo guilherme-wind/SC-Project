@@ -17,6 +17,10 @@ public class Domain {
         this.devices = new HashSet<>();
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     public Boolean ownedBy(User user) {
         return this.owner.equals(user);
     }
