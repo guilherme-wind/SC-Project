@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.NoSuchElementException;
 
 public class IoTDevice {
+    // This bozo is going to CLI
     private static final String USAGE = "USAGE: IoTDevice <serverAddress> <dev-id> <user-id>";
     private static final int DEFAULT_SERVERPORT = 12345;
 
@@ -73,6 +74,9 @@ public class IoTDevice {
         return status;
     }
 
+    /**
+     * This bozo is going to CLI fr
+     */
     private static void show_menu() {
         cli.print("Menu de Comandos:");
         cli.print("  CREATE <dm>");
