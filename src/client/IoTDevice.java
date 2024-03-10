@@ -1,6 +1,7 @@
 package src.client;
 
 import java.io.*;
+import java.util.NoSuchElementException;
 
 public class IoTDevice {
     private static final String USAGE = "USAGE: IoTDevice <serverAddress> <dev-id> <user-id>";
@@ -205,7 +206,7 @@ public class IoTDevice {
         while (true) {
             show_menu();
 
-            String[] tokens = cli.getUserInput().split(" ");
+                String userInput = cli.getUserInput();
 
             switch (tokens[0]) {
                 case "CREATE":
@@ -234,8 +235,11 @@ public class IoTDevice {
                 default:
                     break;
             }
+        } catch (NoSuchElementException e) {
+            System.out.println("Exit");
         }
     }
+
 
     public static void main(String[] args) throws IOException {
 
