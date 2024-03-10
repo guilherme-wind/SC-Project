@@ -16,10 +16,24 @@ public class User {
         return this.password;
     }
 
+    /**
+     * Gets a string representation of the User object.
+     * @return
+     *      String representation of User.
+     */
     public String parseToSerial() {
         return String.format("%s:%s", this.name, this.password);
     }
 
+    /**
+     * Creates an User from string with the format
+     * <username>:<password>
+     * @param serial
+     *      String representation of a user.
+     * @return
+     *      User object or null if the string doesn't have
+     *      the correct format.
+     */
     public static User parseFromSerial(String serial) {
         User parsedUser = null;
         String[] tokens = serial.split(":", 2);
