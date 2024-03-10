@@ -206,8 +206,7 @@ public class IoTDevice {
         while (true) {
             show_menu();
 
-                String userInput = cli.getUserInput();
-
+            String[] tokens = cli.getUserInput().split(" ");
             switch (tokens[0]) {
                 case "CREATE":
                     createCommand(tokens);
@@ -233,10 +232,9 @@ public class IoTDevice {
                 case "EXIT":
                     return;
                 default:
+                    cli.printErr("Unable to parse given command.");
                     break;
             }
-        } catch (NoSuchElementException e) {
-            System.out.println("Exit");
         }
     }
 
@@ -269,8 +267,13 @@ public class IoTDevice {
         // perform program auth
         if (performProgramAuth() < 0)
             close();
+
+        try {
+            userInvoke();
+        } catch (NoSuchElementException e) {
+        }
         
-        userInvoke();
+        
 
         System.out.println("Finished!");
         close();   
