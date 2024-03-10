@@ -17,7 +17,7 @@ public class IoTMessage implements IoTMessageType, Serializable {
 
     public String program_name;
 
-    public int program_size;
+    public long program_size;
 
     public String domain_name;
 
@@ -68,12 +68,12 @@ public class IoTMessage implements IoTMessageType, Serializable {
     }
 
     @Override
-    public void setProgramSize(int prgsize) {
+    public void setProgramSize(long prgsize) {
         this.program_size = prgsize;
     }
 
     @Override
-    public int getProgramSize() {
+    public long getProgramSize() {
         return this.program_size;
     }
 

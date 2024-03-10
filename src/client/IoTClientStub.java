@@ -128,7 +128,7 @@ public class IoTClientStub {
      *      -1 if authentication failed;
      *      -2 if socket error occured;
      */
-    protected int authenticateProgram(String programName, int size) {
+    protected int authenticateProgram(String programName, long size) {
         IoTMessageType request = new IoTMessage();
         request.setOpCode(IoTOpcodes.VALIDATE_PROGRAM);
         request.setProgramName(programName);
@@ -373,5 +373,9 @@ public class IoTClientStub {
             image != null)
             return image;
         return null;
+    }
+
+    protected void close() {
+        iotStream.close();
     }
 }

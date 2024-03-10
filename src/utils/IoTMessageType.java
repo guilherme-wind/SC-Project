@@ -37,9 +37,9 @@ public interface IoTMessageType {
 
     public String getProgramName();
 
-    public void setProgramSize(int prgsize);
+    public void setProgramSize(long prgsize);
 
-    public int getProgramSize();
+    public long getProgramSize();
 
     public void setDevId(int devid);
 
