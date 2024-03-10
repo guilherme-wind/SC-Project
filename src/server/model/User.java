@@ -16,6 +16,10 @@ public class User {
         return this.password;
     }
 
+    public String serialize() {
+        return String.format("%s:%s", this.name, this.password);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
