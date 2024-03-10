@@ -15,6 +15,9 @@ public class IoTServerThread extends Thread {
         this.running = true;
     }
 
+    /**
+     * Waits for client requests and forwards them to upper layers.
+     */
     @Override
     public void run() {
         IoTServerRequestHandler handler = IoTServerRequestHandler.getInstance();
@@ -23,9 +26,9 @@ public class IoTServerThread extends Thread {
         while (this.running && this.ioTStream.ready()) {
 
             IoTMessageType receivedMessage = (IoTMessageType) this.ioTStream.read();
-            System.out.println(String.format("Received message %s!", receivedMessage));
             if (receivedMessage == null)
                 return;
+            System.out.println(String.format("Received message %s!", receivedMessage));
             
             // response
             IoTMessageType responseMessage = handler.process(receivedMessage, session, dbContext);
