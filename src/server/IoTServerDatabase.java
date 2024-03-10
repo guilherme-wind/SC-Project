@@ -8,7 +8,10 @@ import src.server.model.Domain;
 import src.server.model.User;
 import src.utils.IoTOpcodes;
 
-
+/**
+ * Represents a database that stores user, domain and devices
+ * information.
+ */
 public class IoTServerDatabase {
     private static IoTServerDatabase instance;
 
@@ -22,18 +25,38 @@ public class IoTServerDatabase {
         this.devices = new HashMap<>();
     }
 
+    /**
+     * Adds a new user to the database.
+     * @param user
+     */
     public void addUser(User user) {
         this.users.put(user.getName(), user);
     }
 
+    /**
+     * Checks if the database contains user with the given username.
+     * @param userName
+     * @return
+     */
     public Boolean containsUser(String userName) {
         return this.users.containsKey(userName);
     }
 
+    /**
+     * Get the user by it's username.
+     * @param userName
+     *      Username.
+     * @return
+     *      User or Null if user isn't in the database.
+     */
     public User getUser(String userName) {
         return this.users.get(userName);
     }
 
+    /**
+     * Adds a new device to the database.
+     * @param device
+     */
     public void addDevice(Device device) {
         this.devices.put(device.getName(), device);
     }

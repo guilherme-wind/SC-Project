@@ -22,10 +22,19 @@ public class IoTStream {
         }
     }
 
+    /**
+     * Checks if the socket is open.
+     * @return
+     *      True if it's open;
+     *      False if it's closed;
+     */
     public Boolean ready() {
         return !this.socket.isClosed();
     }
 
+    /**
+     * Closes the socket and it's streams.
+     */
     public void close() {
         try {
             if (this.outputStream != null) {
@@ -42,6 +51,14 @@ public class IoTStream {
         }
     }
 
+    /**
+     * Writes an object to the socket.
+     * @param message
+     *      Object to be sent through socket.
+     * @return
+     *      True if concluded successfully;
+     *      False if exception occured;
+     */
     public Boolean write(Object message) {
         Boolean success = false;
         try {
@@ -54,6 +71,11 @@ public class IoTStream {
         return success;
     }
 
+    /**
+     * Reads an object from socket.
+     * @return
+     *      Object or Null if exception occured.
+     */
     public Object read() {
         Object object = null;
         try {
