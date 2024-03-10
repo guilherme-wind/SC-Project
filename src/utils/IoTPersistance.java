@@ -10,7 +10,7 @@ import java.io.File;
 
 public class IoTPersistance {
 
-    public static void write(String logMessage, File file, Boolean append) {
+    public static synchronized void write(String logMessage, File file, Boolean append) {
         try (OutputStream outputStream = new FileOutputStream(file, append)) {
             outputStream.write(logMessage.getBytes());
         } catch (IOException e) {
@@ -18,7 +18,7 @@ public class IoTPersistance {
         }
     }
 
-    public static byte[] read(File file) {
+    public static synchronized byte[] read(File file) {
         try (InputStream inputStream = new FileInputStream(file);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[1024];
