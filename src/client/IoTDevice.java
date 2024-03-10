@@ -79,106 +79,106 @@ public class IoTDevice {
     private static void userInvoke() {
         while (true) {
             System.out.println("Menu de Comandos:");
-            System.out.println("• CREATE <dm> # Criar domínio - utilizador é Owner");
-            System.out.println("• ADD <user1> <dm> # Adicionar utilizador <user1> ao domínio <dm>");
-            System.out.println("• RD <dm> # Registar o Dispositivo atual no domínio <dm>");
-            System.out.println("• ET <float> # Enviar valor <float> de Temperatura para o servidor.");
-            System.out.println("• EI <filename.jpg> # Enviar Imagem <filename.jpg> para o servidor.");
-            System.out.println("• RT <dm> # Receber as últimas medições de Temperatura de cada dispositivo do domínio <dm>, desde que o utilizador tenha permissões.");
-            System.out.println("• RI <user-id>:<dev_id> # Receber o ficheiro Imagem do dispositivo <user id>:<dev_id> do servidor, desde que o utilizador tenha permissões.");
-            System.out.println("Digite um comando:");
+            System.out.println("  CREATE <dm>");
+            System.out.println("  ADD <user> <dm>");
+            System.out.println("  RD <dm>");
+            System.out.println("  ET <float>");
+            System.out.println("  EI <filename.jpg>");
+            System.out.println("  RT <dm>");
+            System.out.println("  RI <user-id>:<dev_id>");
+            System.out.println("Digite um comando:\n");
 
             String[] tokens = cli.getUserInput().split(" ");
 
             if (tokens[0].compareToIgnoreCase("CREATE") == 0) {
                 if (tokens.length == 1) {
-                    cli.printErr("missing <domain name>");
+                    cli.printErr("missing <domain name>\n");
                     continue;
                 }
 
                 if (tokens.length > 2) {
-                    cli.printErr("too many arguments");
+                    cli.printErr("too many arguments\n");
                     continue;
                 }
 
                 
             } else if (tokens[0].compareToIgnoreCase("ADD") == 0){
                 if (tokens.length == 1) {
-                    cli.printErr("missing <user> and <domain name>");
+                    cli.printErr("missing <user> and <domain name>\n");
                     continue;
                 }
 
                 if (tokens.length == 2) {
-                    cli.printErr("missing arguments, we´re expecting 2 arguments: <user> and <domain name>");
+                    cli.printErr("missing arguments, we´re expecting 2 arguments: <user> and <domain name>\n");
                     continue;
                 }
 
                 if (tokens.length > 3) {
-                    cli.printErr("too many arguments");
+                    cli.printErr("too many arguments\n");
                 }
 
 
             } else if (tokens[0].compareToIgnoreCase("RD") == 0){
                 if (tokens.length == 1) {
-                    cli.printErr("missing <domain name>");
+                    cli.printErr("missing <domain name>\n");
                     continue;
                 }
 
                 if (tokens.length > 2) {
-                    cli.printErr("too many arguments");
+                    cli.printErr("too many arguments\n");
                     continue;
                 }
 
 
             } else if (tokens[0].compareToIgnoreCase("ET") == 0){
                 if (tokens.length == 1) {
-                    cli.printErr("missing <temperature> (in float)");
+                    cli.printErr("missing <temperature> (in float)\n");
                     continue;
                 }
 
                 if (tokens.length > 2) {
-                    cli.printErr("too many arguments");
+                    cli.printErr("too many arguments\n");
                     continue;
                 }
 
 
             } else if (tokens[0].compareToIgnoreCase("EI") == 0){
                 if (tokens.length == 1) {
-                    cli.printErr("missing <file.jpg>");
+                    cli.printErr("missing <file.jpg>\n");
                     continue;
                 }
 
                 if (tokens.length > 2) {
-                    cli.printErr("too many arguments");
+                    cli.printErr("too many arguments\n");
                     continue;
                 }
 
 
             } else if (tokens[0].compareToIgnoreCase("RT") == 0){
                 if (tokens.length == 1) {
-                    cli.printErr("missing <domain name>");
+                    cli.printErr("missing <domain name>\n");
                     continue;
                 }
 
                 if (tokens.length > 2) {
-                    cli.printErr("too many arguments");
+                    cli.printErr("too many arguments\n");
                     continue;
                 }
 
 
             } else if (tokens[0].compareToIgnoreCase("RJ") == 0){
                 if (tokens.length == 1) {
-                    cli.printErr("missing <user id> and <device id>");
+                    cli.printErr("missing <user id> and <device id>\n");
                     continue;
                 }
 
                 if (tokens.length == 2) {
-                    cli.printErr("missing arguments, we´re expecting 2 arguments: <user id> and <device id>");
+                    cli.printErr("missing arguments, we´re expecting 2 arguments: <user id> and <device id>\n");
                     continue;
                 }
 
                 if (tokens.length > 3) {
-                    cli.printErr("too many arguments");
+                    cli.printErr("too many arguments\n");
                 }
 
 
