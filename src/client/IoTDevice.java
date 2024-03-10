@@ -18,10 +18,11 @@ public class IoTDevice {
 
         // Initialize cli
         cli = IoTCLI.getInstance();
+        int execution_status = 0;
 
         // Command line argument validation
-        int args_verify = verifyCmdArgs(args);
-        if (args_verify < 0) {
+        execution_status = verifyCmdArgs(args);
+        if (execution_status < 0) {
             cli.printErr("Wrong input arguments!");
             cli.print(USAGE);
             cli.close();
@@ -29,36 +30,49 @@ public class IoTDevice {
         }
 
         // Initialize class fields using command line arguments
-        int init_res = initialize(args);
-        if (init_res < 0) {
+        execution_status = initialize(args);
+        if (execution_status < 0) {
             cli.printErr("Error initializing device!");
             cli.close();
             return;
         }
 
+        // retrieve pass
         cli.print("Please introduce password");
         String pwd = cli.getUserInput();
         // TODO sanitize user input
 
-
+        // perform user auth
         System.out.println(String.format("-> /authUser %s : %s", userId, pwd));
-        int auth_user_res = stub.authenticateUser(userId, pwd);
-        System.out.println(String.format("<- %d", auth_user_res));
-        if (auth_user_res < 0) {
+        execution_status = stub.authenticateUser(userId, pwd);
+        System.out.println(String.format("<- %d", execution_status));
+        if (execution_status < 0) {
             cli.printErr("Error authenticating user!");
             cli.close();
             return;
         }
-        
+
+        // perform device auth
         System.out.println(String.format("-> /authDev %s : %s", userId, devId));
-        int auth_dev_res = stub.authenticateDevice(devId);
-        System.out.println(String.format("<- %d", auth_dev_res));
-        if (auth_dev_res < 0) {
+        execution_status = stub.authenticateDevice(devId);
+        System.out.println(String.format("<- %d", execution_status));
+        if (execution_status < 0) {
             cli.printErr("Error authenticating device!");
             cli.close();
             return;
         }
 
+        // perform program auth
+        String programName = IoTDevice.class.getSimpleName();
+        int programSize = (int) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
+        System.out.println(String.format("-> /authProg [%s, %d]", programName, programSize));
+        execution_status = stub.authenticateProgram(programName, programSize);
+        System.out.println(String.format("<- %d", execution_status));
+        if (execution_status < 0) {
+            cli.printErr("Error authenticating program!");
+            cli.close();
+            return;
+        }       
 
         System.out.println("Finished!");
         cli.close();    

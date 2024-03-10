@@ -44,6 +44,7 @@ public class IoTServerRequestHandler {
     private void initializeFunctions() {
         functions.put(IoTOpcodes.VALIDATE_USER, this::handleValidateUser);
         functions.put(IoTOpcodes.VALIDATE_DEVICE, this::handleValidateDevice);
+        functions.put(IoTOpcodes.VALIDATE_PROGRAM, this::handleValidateProgram);
     }
 
     private IoTMessageType handleValidateUser(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
@@ -94,6 +95,13 @@ public class IoTServerRequestHandler {
         return response;
     }
 
+    private IoTMessageType handleValidateProgram(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
+        // TODO understand which sort of validation we should perform here
+        IoTMessageType response = new IoTMessage();
+        response.setOpCode(IoTOpcodes.OK_TESTED);
+        session.setAuthState(IoTAuth.Complete);
+        return response;
+    }
     // TODO add more handlers
 
     @FunctionalInterface
