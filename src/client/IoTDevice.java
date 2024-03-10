@@ -58,6 +58,9 @@ public class IoTDevice {
      * Authenticates executing program
      * with the server.
      * @return
+     *      0 if authenticated successfully;
+     *      -1 if failed;
+     *      -2 if socket error;
      */
     private static int performProgramAuth() {
         System.out.println(String.format("-> /authProg [%s, %d]", PROGRAM_NAME, PROGRAM_SIZE));
@@ -67,6 +70,31 @@ public class IoTDevice {
             cli.printErr("Error authenticating program!");
         }
         return status;
+    }
+
+    /**
+     * Continuesly promps for command and
+     * invokes respective method.
+     */
+    private static void userInvoke() {
+        boolean finished = false;
+        while (!finished) {
+            String[] tokens = cli.getUserInput().split(" ");
+
+            if (tokens[0].compareToIgnoreCase("CREATE") == 0) {
+                if (tokens.length <= 1) {
+                    cli.printErr("missing <domain name>");
+                    continue;
+                }
+
+                if (tokens.length > 2) {
+                    cli.printErr("too many arguments");
+                    continue;
+                }
+
+                
+            }
+        }
     }
 
     public static void main(String[] args) throws IOException {
@@ -97,6 +125,8 @@ public class IoTDevice {
         // perform program auth
         if (performProgramAuth() < 0)
             close();
+        
+        userInvoke();
 
         System.out.println("Finished!");
         close();   
