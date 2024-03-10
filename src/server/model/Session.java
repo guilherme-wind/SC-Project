@@ -2,6 +2,11 @@ package src.server.model;
 
 import src.utils.IoTAuth;
 
+/**
+ * Represents a session between a device and 
+ * server, contains data regarding the 
+ * authentication state.
+ */
 public class Session {
     private Device device;
     private User user;
