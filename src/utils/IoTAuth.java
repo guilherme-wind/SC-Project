@@ -4,9 +4,9 @@ public enum IoTAuth {
     // Nothing has been authenticated
     NONE,
     // User has been authenticated
-    AUTHEN_USER,
+    USER,
     // Device has been authenticated
-    AUTHEN_DEVICE,
+    USER_DEVICE,
     // Program has been authenticated
-    AUTHEN_COMPLETE;
+    COMPLETE;
 }
