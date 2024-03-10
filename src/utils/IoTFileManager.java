@@ -42,12 +42,11 @@ public class IoTFileManager {
         try {
             Scanner fileScanner = new Scanner(file);
             while (fileScanner.hasNextLine()) {
-                String[] tokens = fileScanner.nextLine().split(":", 2);
-                if (tokens.length < 2)
+                String line = fileScanner.nextLine();
+                User user = User.parseFromSerial(line);
+                if (user == null)
                     continue;
-                
-                User user = new User(tokens[0], tokens[1]);
-                users.put(tokens[0], user);
+                users.put(user.getName(), user);
             }
 
             fileScanner.close();

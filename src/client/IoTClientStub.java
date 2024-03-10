@@ -150,6 +150,26 @@ public class IoTClientStub {
         return -2;
     }
 
+    protected int terminateProgram() {
+        IoTMessageType request = new IoTMessage();
+        request.setOpCode(IoTOpcodes.EXIT);
+
+        if (!iotStream.write(request))
+            return -2;
+
+        IoTMessageType response = (IoTMessageType) iotStream.read();
+        if (response == null)
+            return -2;
+        
+        IoTOpcodes respcode = response.getOpcode();
+        if (respcode.equals(IoTOpcodes.OK_ACCEPTED))
+            return 0;
+        else if (respcode.equals(IoTOpcodes.NOK))
+            return -1;
+
+        return -2;
+    }
+
     /**
      * Creates a domain with the given name.
      * @param domainName

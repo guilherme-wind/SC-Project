@@ -16,6 +16,19 @@ public class User {
         return this.password;
     }
 
+    public String parseToSerial() {
+        return String.format("%s:%s", this.name, this.password);
+    }
+
+    public static User parseFromSerial(String serial) {
+        User parsedUser = null;
+        String[] tokens = serial.split(":", 2);
+        if (tokens.length >= 2)
+            parsedUser = new User(tokens[0], tokens[1]); 
+
+        return parsedUser;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

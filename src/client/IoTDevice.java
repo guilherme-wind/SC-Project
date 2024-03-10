@@ -202,6 +202,10 @@ public class IoTDevice {
         }
     }
 
+    private static void exitCommand() {
+        stub.terminateProgram();
+    }
+
     /**
      * Continuesly promps for command and
      * invokes respective method.
@@ -234,6 +238,7 @@ public class IoTDevice {
                     rjCommand(tokens);
                     break;
                 case "EXIT":
+                    exitCommand();
                     return;
                 default:
                     cli.printErr("Unable to parse given command.");
@@ -275,10 +280,10 @@ public class IoTDevice {
         try {
             userInvoke();
         } catch (NoSuchElementException e) {
+            System.out.println("CONTROL-C");
+            exitCommand();
         }
         
-        
-
         System.out.println("Finished!");
         close();   
     }

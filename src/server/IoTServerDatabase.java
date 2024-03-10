@@ -114,12 +114,6 @@ public class IoTServerDatabase {
         return IoTOpcodes.OK_ACCEPTED;
     }
 
-    public IoTOpcodes createDevice(String name) {
-        Device device = new Device(name);
-        this.devices.put(device.getName(), device);
-        return IoTOpcodes.OK_ACCEPTED;
-    }
-
     public IoTOpcodes registerDeviceToDomain(User as, Device device, String domainName) {
         if (!this.domains.containsKey(domainName))
             return IoTOpcodes.NOK_NO_DOMAIN;

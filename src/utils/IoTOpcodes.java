@@ -22,6 +22,7 @@ public enum IoTOpcodes {
     //        Operations
     // ---------------------------
     // Client request operations
+    EXIT("EXIT"),
     CREATE_DOMAIN("CREATE_DOMAIN"),
     ADD_USER_DOMAIN("ADD_USER_DOMAIN"),
     REGISTER_DEVICE_DOMAIN("REGISTER_DEVICE_DOMAIN"),

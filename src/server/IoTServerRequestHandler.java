@@ -47,6 +47,7 @@ public class IoTServerRequestHandler {
         functions.put(IoTOpcodes.VALIDATE_DEVICE, this::handleValidateDevice);
         functions.put(IoTOpcodes.VALIDATE_PROGRAM, this::handleValidateProgram);
         functions.put(IoTOpcodes.CREATE_DOMAIN, this::handleCreateDomain);
+        functions.put(IoTOpcodes.EXIT, this::handleTerminateProgram);
     }
 
     private IoTMessageType handleValidateUser(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
@@ -78,20 +79,31 @@ public class IoTServerRequestHandler {
 
     private IoTMessageType handleValidateDevice(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
         User user = session.getUser();
-        String iotDeviceId = String.format("%s:%d", user, message.getDevId());
+        int devId = message.getDevId();
+
+        String iotDeviceId = String.format("%s:%d", user.getName(), message.getDevId());
 
         IoTMessageType response = new IoTMessage();
 
         if (!dbContext.containsDevice(iotDeviceId)) { // new device!
-            Device device = new Device(iotDeviceId);
+            Device device = new Device(user, devId);
             dbContext.addDevice(device);
             session.setAuthState(IoTAuth.USER_DEVICE);
             session.setDevice(device);
             response.setOpCode(IoTOpcodes.OK_DEVID);
         } 
         else {
-            // TODO review NOK policy.... open and auth?
-            response.setOpCode(IoTOpcodes.NOK_DEVID);
+            Device device = dbContext.getDevice(iotDeviceId);
+            if (!device.isActive()) {
+                device.setActive();
+                session.setAuthState(IoTAuth.USER_DEVICE);
+                session.setDevice(device);
+                response.setOpCode(IoTOpcodes.OK_DEVID);
+            }
+            else {
+                response.setOpCode(IoTOpcodes.NOK_DEVID);
+            }
+            
         }
 
         return response;
@@ -122,6 +134,14 @@ public class IoTServerRequestHandler {
 
         return response;
     }
+
+    private IoTMessageType handleTerminateProgram(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
+        session.close();
+        IoTMessageType response = new IoTMessage();
+        response.setOpCode(IoTOpcodes.OK_ACCEPTED);
+        return response;
+    }
+
     // TODO add more handlers
 
     @FunctionalInterface
