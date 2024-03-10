@@ -1,6 +1,7 @@
 package src.client;
 
 import java.io.*;
+import java.net.URLDecoder;
 
 public class IoTDevice {
     private static final String USAGE = "USAGE: IoTDevice <serverAddress> <dev-id> <user-id>";
@@ -24,44 +25,52 @@ public class IoTDevice {
         if (args_verify < 0) {
             cli.printErr("Wrong input arguments!");
             cli.print(USAGE);
-            cli.close();
-            return;
+            close();
         }
 
         // Initialize class fields using command line arguments
         int init_res = initialize(args);
         if (init_res < 0) {
             cli.printErr("Error initializing device!");
-            cli.close();
-            return;
+            close();
         }
 
-        cli.print("Please introduce password");
-        String pwd = cli.getUserInput();
-        // TODO sanitize user input
-
-
-        System.out.println(String.format("-> /authUser %s : %s", userId, pwd));
-        int auth_user_res = stub.authenticateUser(userId, pwd);
-        System.out.println(String.format("<- %d", auth_user_res));
-        if (auth_user_res < 0) {
-            cli.printErr("Error authenticating user!");
-            cli.close();
-            return;
+        // User authentication
+        int auth_user_res = -1;
+        while (auth_user_res < 0) {
+            cli.print("Please introduce password");
+            String pwd = cli.getUserInput();
+            // TODO sanitize user input
+    
+            System.out.println(String.format("-> /authUser %s : %s", userId, pwd));
+            auth_user_res = stub.authenticateUser(userId, pwd);
+            System.out.println(String.format("<- %d", auth_user_res));
+            if (auth_user_res < 0) {
+                cli.printErr("Error authenticating user!");
+                close();
+            }
         }
-        
+
+        // Device authentication
         System.out.println(String.format("-> /authDev %s : %s", userId, devId));
         int auth_dev_res = stub.authenticateDevice(devId);
         System.out.println(String.format("<- %d", auth_dev_res));
         if (auth_dev_res < 0) {
             cli.printErr("Error authenticating device!");
-            cli.close();
-            return;
+            close();
         }
 
+        // Program authentication
+        int auth_prog_res = authenticateProgram();
+        if (auth_prog_res < 0) {
+            cli.printErr("Error authenticating program!");
+            close();
+        }
+
+        // Accept commands
 
         System.out.println("Finished!");
-        cli.close();    
+        close();   
     }
 
     /**
@@ -143,5 +152,40 @@ public class IoTDevice {
             return -1;
 
         return 0;
+    }
+
+    /**
+     * Gets the name of the class file and it's size
+     * and authenticates with the server.
+     * NOT WORKING YET!
+     * @see
+     *      Untested!
+     * @return
+     *      0 if authenticated successfully;
+     *      -1 if authentication failed;
+     */
+    private static int authenticateProgram() {
+        String path = IoTDevice.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        File file = new File(path);
+        if (!file.exists())
+            return -1;
+        long size = file.length();
+        String name = file.getName();
+        int auth_res = stub.authenticateProgram(name, size);
+        if (auth_res < 0)
+            return -1;
+        return 0;
+    }
+
+    /**
+     * Releases resources, closes connection and 
+     * terminates program.
+     */
+    public static void close() {
+        if (stub != null)
+            stub.close();
+        if (cli != null)
+            cli.close();
+        System.exit(0);
     }
 }
