@@ -8,14 +8,41 @@ import src.utils.IoTPersistance;
 
 
 public class Device {
+    private Boolean isActive;
+    private final User owner;
+    private final int devId;
     private final String name;
     private final File tempLogFile;
     private final File imgLogFile;
 
-    public Device(String name) {
-        this.name = name;
+    public Device(User owner, int devId) {
+        this.isActive = true;
+        this.owner = owner;
+        this.devId = devId;
+        this.name = String.format("%s:%s", owner.getName(), devId);
         this.tempLogFile = new File(String.format("%s_temp_log.txt", name));
         this.imgLogFile = new File(String.format("%s_img_log.txt", name));
+    }
+
+    public void setActive() {
+        this.isActive = true;
+    }
+
+    public void turnOff() {
+        this.isActive = false;
+    }
+
+    public Boolean isActive() {
+        return this.isActive;
+    }
+
+
+    public User getOwner() {
+        return this.owner;
+    }
+
+    public int getDevId() {
+        return this.devId;
     }
 
     public String getName() {
@@ -43,6 +70,7 @@ public class Device {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Device device = (Device) o;
+        System.out.println(String.format("My device name is %s and this device name is %s. are they equal? %b", this.name, device.name, this.name.equals(device.name)));
         return this.name.equals(device.name);
     }
 
