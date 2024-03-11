@@ -253,11 +253,10 @@ public class IoTDevice {
         String tempMeasurements = args[1];
         cli.print(String.format("-> /Latest Temperature Measurements %s", tempMeasurements));
         float[] status = stub.getTemp(tempMeasurements);
-        cli.print(String.format("<- %d", 2)); //Arrumar isto
         if (status == null) {
             cli.printErr("Failed to receive the latest remperature measurements!");
         }
-
+        cli.print(String.format("<- %s", status.toString()));
     }
 
     private static void riCommand(String[] args) {
@@ -281,10 +280,10 @@ public class IoTDevice {
         String user = userId + ":" + args[2];
         cli.print(String.format("-> /receive image %s", user));
         byte[] status = stub.getUserImage(userId, devId);
-        cli.print(String.format("<- %d", 2)); //Arrumar isto
         if (status == null) {
             cli.printErr("Failed to receive the image!");
         }
+        cli.print(String.format("<- %s", status.toString()));
     }
 
     private static void exitCommand() {
