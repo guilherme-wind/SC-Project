@@ -257,9 +257,9 @@ public class IoTDevice {
             return;
         }
 
-        String tempMeasurements = args[1];
-        cli.print(String.format("-> /Latest Temperature Measurements %s", tempMeasurements));
-        float[] status = stub.getTemp(tempMeasurements);
+        String targetDomainName = args[1];
+        cli.print(String.format("-> /retrieveTemp %s", targetDomainName));
+        float[] status = stub.getTemp(targetDomainName);
         if (status == null) {
             cli.printErr("Failed to receive the latest remperature measurements!");
         }
