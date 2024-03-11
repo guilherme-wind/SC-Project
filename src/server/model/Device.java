@@ -49,12 +49,12 @@ public class Device {
         return this.name;
     }
 
-    public void writeTemperature(String temperature) {
-        IoTPersistance.write(temperature, this.tempLogFile, false);
+    public Boolean writeTemperature(String temperature) {
+        return IoTPersistance.write(temperature, this.tempLogFile, false);
     }
 
-    public void writeImage(String image) {
-        IoTPersistance.write(image, this.imgLogFile, false);
+    public Boolean writeImage(String image) {
+        return IoTPersistance.write(image, this.imgLogFile, false);
     }
 
     public byte[] readTemperature() {

@@ -10,12 +10,15 @@ import java.io.File;
 
 public class IoTPersistance {
 
-    public static synchronized void write(String logMessage, File file, Boolean append) {
+    public static synchronized Boolean write(String logMessage, File file, Boolean append) {
+        Boolean success = false;
         try (OutputStream outputStream = new FileOutputStream(file, append)) {
             outputStream.write(logMessage.getBytes());
+            success = true;
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return success;
     }
 
     public static synchronized byte[] read(File file) {
