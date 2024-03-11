@@ -187,6 +187,14 @@ public class IoTDevice {
             cli.printErr("too many arguments\n");
             return;
         }
+
+        String device = args[1];
+        cli.print(String.format("-> /register device %s", domain));
+        int status = stub.registerDevice(device);
+        cli.print(String.format("<- %d", status));
+        if (status < 0) {
+            cli.printErr("Failed to register device!");
+        }
     } 
 
     private static void etCommand(String[] args) {
@@ -199,6 +207,15 @@ public class IoTDevice {
             cli.printErr("too many arguments\n");
             return;
         }
+
+        float temp = Float.parseFloat(args[1]);
+        cli.print(String.format("-> /temperature %s", temp));
+        int status = stub.sendTemp(temp);
+        cli.print(String.format("<- %d", status));
+        if (status < 0) {
+            cli.printErr("Failed to send the temperature!");
+        }
+
     }
 
     private static void eiCommand(String[] args) {
@@ -210,6 +227,15 @@ public class IoTDevice {
         if (args.length > 2) {
             cli.printErr("too many arguments\n");
             return;
+        }
+
+        String filename = args[1];
+        byte[] img = filename.getBytes();
+        cli.print(String.format("-> /image %s", filename));
+        int status = stub.sendImage(img);
+        cli.print(String.format("<- %d", status));
+        if (status < 0) {
+            cli.printErr("Failed to send the image!");
         }
     }
 
@@ -223,6 +249,15 @@ public class IoTDevice {
             cli.printErr("too many arguments\n");
             return;
         }
+
+        String tempMeasurements = args[1];
+        cli.print(String.format("-> /Latest Temperature Measurements %s", tempMeasurements));
+        int status = null ///acabar
+        cli.print(String.format("<- %d", status));
+        if (status < 0) {
+            cli.printErr("Failed to send the image!");
+        }
+
     }
 
     private static void rjCommand(String[] args) {
