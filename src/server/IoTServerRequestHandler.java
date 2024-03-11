@@ -52,6 +52,7 @@ public class IoTServerRequestHandler {
         functions.put(IoTOpcodes.REGISTER_DEVICE_DOMAIN, this::handleRegisterCurrentDeviceToDomain);
         functions.put(IoTOpcodes.SEND_TEMP, this::handleSendTemperature);
         functions.put(IoTOpcodes.SEND_IMAGE, this::handleSendImage);
+        functions.put(IoTOpcodes.GET_TEMP, this::handleReceiveTemperature);
     }
 
     private IoTMessageType handleValidateUser(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
@@ -182,6 +183,31 @@ public class IoTServerRequestHandler {
         response.setOpCode(
             device.writeImage(image) ? IoTOpcodes.OK_ACCEPTED : IoTOpcodes.NOK
         );
+
+        return response;
+    }
+
+    private IoTMessageType handleReceiveTemperature(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
+        String domainName = message.getDomainName();
+        User user = session.getUser();
+
+        IoTMessageType response = new IoTMessage();
+        if (!dbContext.containsDomain(domainName)) {
+            response.setOpCode(IoTOpcodes.NOK_NO_DOMAIN);
+            return response;
+        }
+
+        Domain domain = dbContext.getDomain(domainName);
+        if (!domain.contains(user)) {
+            response.setOpCode(IoTOpcodes.NOK_NO_PERMISSIONS);
+            return response;
+        }
+
+        response.setData(
+            domain.extractTemperatures()
+        );
+
+        response.setOpCode(IoTOpcodes.OK_ACCEPTED);
 
         return response;
     }
