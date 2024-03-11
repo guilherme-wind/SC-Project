@@ -3,6 +3,8 @@ package src.client;
 import java.io.*;
 import java.util.NoSuchElementException;
 
+import src.utils.IoTPersistance;
+
 public class IoTDevice {
     // This bozo is going to CLI
     private static final String USAGE = "USAGE: IoTDevice <serverAddress> <dev-id> <user-id>";
@@ -230,7 +232,12 @@ public class IoTDevice {
         }
 
         String filename = args[1];
-        byte[] img = filename.getBytes();
+        byte[] img = IoTPersistance.read(filename);
+        if (img == null) {
+            cli.printErr("Error: File not found.");
+            return;
+        }
+
         cli.print(String.format("-> /image %s", filename));
         int status = stub.sendImage(img);
         cli.print(String.format("<- %d", status));
