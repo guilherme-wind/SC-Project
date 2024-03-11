@@ -49,6 +49,7 @@ public class IoTServerRequestHandler {
         functions.put(IoTOpcodes.CREATE_DOMAIN, this::handleCreateDomain);
         functions.put(IoTOpcodes.EXIT, this::handleTerminateProgram);
         functions.put(IoTOpcodes.ADD_USER_DOMAIN, this::handleAddToDomain);
+        functions.put(IoTOpcodes.REGISTER_DEVICE_DOMAIN, this::handleRegisterCurrentDeviceToDomain);
     }
 
     private IoTMessageType handleValidateUser(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
@@ -143,6 +144,17 @@ public class IoTServerRequestHandler {
 
         IoTMessageType response = new IoTMessage();
         IoTOpcodes code = dbContext.addUserToDomain(user, userName, domainName);
+        response.setOpCode(code);
+
+        return response;
+    }
+
+    private IoTMessageType handleRegisterCurrentDeviceToDomain(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
+        String domainName = message.getDomainName();
+        User user = session.getUser();
+
+        IoTMessageType response = new IoTMessage();
+        IoTOpcodes code = dbContext.registerDeviceToDomain(user, session.getDevice(), domainName);
         response.setOpCode(code);
 
         return response;
