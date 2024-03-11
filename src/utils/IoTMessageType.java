@@ -60,4 +60,8 @@ public interface IoTMessageType {
     public void setImage(byte[] image);
 
     public byte[] getImage();
+
+    public void setData(byte[] data);
+
+    public byte[] getData();
 }
