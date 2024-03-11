@@ -89,6 +89,46 @@ public class IoTDevice {
         cli.print("Digite um comando:\n");
     }
 
+    //NAO TIREM A MAIN DAQUI, FIQUEI 5min A PROCURA DELA
+    public static void main(String[] args) throws IOException {
+
+        // Initialize cli
+        cli = IoTCLI.getInstance();
+        try{
+            // Command line argument validation
+            if (verifyCmdArgs(args) < 0) {
+                cli.printErr("Wrong input arguments!");
+                cli.print(USAGE);
+                close();
+            }
+
+            // Initialize class fields using command line arguments
+            if (initialize(args) < 0)
+                close();
+
+            // perform user auth
+            if (performUserAuth() < 0)
+                close();
+
+            // perform device auth
+            if (performDeviceAuth(false) < 0)
+                close();
+
+
+            // perform program auth
+            if (performProgramAuth() < 0)
+                close();
+
+            userInvoke();
+        } catch (NoSuchElementException e) {
+            System.out.println("Exit");
+            exitCommand();
+        }
+
+        System.out.println("Finished!");
+        close();
+    }
+
     private static void createCommand(String[] args) {
         if (args.length == 1) {
             cli.printErr("missing <domain name>\n");
@@ -245,46 +285,6 @@ public class IoTDevice {
                     break;
             }
         }
-    }
-
-
-    public static void main(String[] args) throws IOException {
-
-        // Initialize cli
-        cli = IoTCLI.getInstance();
-        try{
-            // Command line argument validation
-            if (verifyCmdArgs(args) < 0) {
-                cli.printErr("Wrong input arguments!");
-                cli.print(USAGE);
-                close();
-            }
-
-            // Initialize class fields using command line arguments
-            if (initialize(args) < 0)
-                close();
-
-            // perform user auth
-            if (performUserAuth() < 0)
-                close();
-
-            // perform device auth
-            if (performDeviceAuth(false) < 0)
-                close();
-
-
-            // perform program auth
-            if (performProgramAuth() < 0)
-                close();
-
-            userInvoke();
-        } catch (NoSuchElementException e) {
-            System.out.println("Exit");
-            exitCommand();
-        }
-        
-        System.out.println("Finished!");
-        close();   
     }
 
     /**
