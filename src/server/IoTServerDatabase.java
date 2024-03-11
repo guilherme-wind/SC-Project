@@ -77,6 +77,10 @@ public class IoTServerDatabase {
         this.domains.put(domain.getName(), domain);
     }
 
+    public Domain getDomain(String domainName) {
+        return this.domains.get(domainName);
+    }
+
     public static IoTServerDatabase getInstance() {
         if (instance == null) {
             instance = new IoTServerDatabase();
