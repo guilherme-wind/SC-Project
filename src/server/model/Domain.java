@@ -1,5 +1,6 @@
 package src.server.model;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,6 +40,24 @@ public class Domain {
 
     public boolean registerDevice(Device device) {
         return this.devices.add(device);
+    }
+
+    public byte[] extractTemperatures() {
+        ByteArrayOutputStream data = new ByteArrayOutputStream();
+        for (Device device : this.devices) {
+            //System.out.println(String.format("Extracting from Device (%s)...", device.getName()));
+            byte[] lastTemperature = device.readTemperature();
+            //String lastTemperatureStr = new String(lastTemperature, StandardCharsets.UTF_8);
+            //System.out.println(String.format("Extracting from Device (%s)...DONE => %s", device.getName(), lastTemperatureStr));
+            
+            
+            if (lastTemperature != null) {
+                data.write(lastTemperature, 0, 0);
+                data.write('\n');
+            }
+        }
+        // return null if the data stream is empty
+        return data.size() != 0 ? data.toByteArray() : null;
     }
 
     @Override
