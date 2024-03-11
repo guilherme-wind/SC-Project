@@ -1,6 +1,8 @@
 package src.server.model;
 
-public class User {
+import src.utils.IoTIParsable;
+
+public class User implements IoTIParsable{
     private final String name;
     private final String password;
     public User(String name, String password) {
@@ -21,6 +23,7 @@ public class User {
      * @return
      *      String representation of User.
      */
+    @Override
     public String parseToSerial() {
         return String.format("%s:%s", this.name, this.password);
     }
