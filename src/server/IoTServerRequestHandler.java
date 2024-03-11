@@ -51,6 +51,7 @@ public class IoTServerRequestHandler {
         functions.put(IoTOpcodes.ADD_USER_DOMAIN, this::handleAddToDomain);
         functions.put(IoTOpcodes.REGISTER_DEVICE_DOMAIN, this::handleRegisterCurrentDeviceToDomain);
         functions.put(IoTOpcodes.SEND_TEMP, this::handleSendTemperature);
+        functions.put(IoTOpcodes.SEND_IMAGE, this::handleSendImage);
     }
 
     private IoTMessageType handleValidateUser(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
@@ -168,6 +169,18 @@ public class IoTServerRequestHandler {
         IoTMessageType response = new IoTMessage();
         response.setOpCode(
             device.writeTemperature(temperature) ? IoTOpcodes.OK_ACCEPTED : IoTOpcodes.NOK
+        );
+
+        return response;
+    }
+
+    private IoTMessageType handleSendImage(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
+        byte[] image = message.getImage();
+        Device device = session.getDevice();
+
+        IoTMessageType response = new IoTMessage();
+        response.setOpCode(
+            device.writeImage(image) ? IoTOpcodes.OK_ACCEPTED : IoTOpcodes.NOK
         );
 
         return response;
