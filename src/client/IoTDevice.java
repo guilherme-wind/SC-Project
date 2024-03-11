@@ -252,35 +252,34 @@ public class IoTDevice {
 
         // Initialize cli
         cli = IoTCLI.getInstance();
+        try{
+            // Command line argument validation
+            if (verifyCmdArgs(args) < 0) {
+                cli.printErr("Wrong input arguments!");
+                cli.print(USAGE);
+                close();
+            }
 
-        // Command line argument validation
-        if (verifyCmdArgs(args) < 0) {
-            cli.printErr("Wrong input arguments!");
-            cli.print(USAGE);
-            close();
-        }
+            // Initialize class fields using command line arguments
+            if (initialize(args) < 0)
+                close();
 
-        // Initialize class fields using command line arguments
-        if (initialize(args) < 0)
-            close();
+            // perform user auth
+            if (performUserAuth() < 0)
+                close();
 
-        // perform user auth
-        if (performUserAuth() < 0)
-            close();
-        
-        // perform device auth
-        if (performDeviceAuth(false) < 0)
-            close();
+            // perform device auth
+            if (performDeviceAuth(false) < 0)
+                close();
 
 
-        // perform program auth
-        if (performProgramAuth() < 0)
-            close();
+            // perform program auth
+            if (performProgramAuth() < 0)
+                close();
 
-        try {
             userInvoke();
         } catch (NoSuchElementException e) {
-            System.out.println("CONTROL-C");
+            System.out.println("Exit");
             exitCommand();
         }
         
@@ -368,7 +367,6 @@ public class IoTDevice {
             cli.close();
             return -1;
         }
-
         return 0;
     }
 
