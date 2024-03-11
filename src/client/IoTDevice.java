@@ -189,7 +189,7 @@ public class IoTDevice {
         }
 
         String device = args[1];
-        cli.print(String.format("-> /register device %s", domain));
+        cli.print(String.format("-> /register device %s", device));
         int status = stub.registerDevice(device);
         cli.print(String.format("<- %d", status));
         if (status < 0) {
@@ -252,7 +252,7 @@ public class IoTDevice {
 
         String tempMeasurements = args[1];
         cli.print(String.format("-> /Latest Temperature Measurements %s", tempMeasurements));
-        int status = null ///acabar
+        int status = 0; ///acabar
         cli.print(String.format("<- %d", status));
         if (status < 0) {
             cli.printErr("Failed to send the image!");
