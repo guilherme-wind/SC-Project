@@ -1,6 +1,7 @@
 package src.client;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.NoSuchElementException;
 
 import src.utils.IoTPersistance;
@@ -259,11 +260,14 @@ public class IoTDevice {
 
         String targetDomainName = args[1];
         cli.print(String.format("-> /retrieveTemp %s", targetDomainName));
-        float[] status = stub.getTemp(targetDomainName);
-        if (status == null) {
+        byte[] data = stub.getTemperaturesInDomain(targetDomainName);
+        System.out.println(data);
+        String dataStr = new String(data, StandardCharsets.UTF_8);
+        if (data == null) {
             cli.printErr("Failed to receive the latest remperature measurements!");
+            return;
         }
-        cli.print(String.format("<- %s", status.toString()));
+        cli.print(String.format("<- %s", dataStr));
     }
 
     private static void riCommand(String[] args) {
