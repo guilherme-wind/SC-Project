@@ -252,15 +252,14 @@ public class IoTDevice {
 
         String tempMeasurements = args[1];
         cli.print(String.format("-> /Latest Temperature Measurements %s", tempMeasurements));
-        int status = 0; ///acabar
-        cli.print(String.format("<- %d", status));
-        if (status < 0) {
-            cli.printErr("Failed to send the image!");
+        float[] status = stub.getTemp(tempMeasurements);
+        if (status == null) {
+            cli.printErr("Failed to receive the latest remperature measurements!");
         }
-
+        cli.print(String.format("<- %s", status.toString()));
     }
 
-    private static void rjCommand(String[] args) {
+    private static void riCommand(String[] args) {
         if (args.length == 1) {
             cli.printErr("missing <user id> and <device id>\n");
             return;
@@ -275,6 +274,16 @@ public class IoTDevice {
             cli.printErr("too many arguments\n");
             return;
         }
+
+        String userId = args[1];
+        int devId = Integer.parseInt(args[2]);
+        String user = userId + ":" + args[2];
+        cli.print(String.format("-> /receive image %s", user));
+        byte[] status = stub.getUserImage(userId, devId);
+        if (status == null) {
+            cli.printErr("Failed to receive the image!");
+        }
+        cli.print(String.format("<- %s", status.toString()));
     }
 
     private static void exitCommand() {
@@ -310,7 +319,7 @@ public class IoTDevice {
                     rtCommand(tokens);
                     break;
                 case "RJ":
-                    rjCommand(tokens);
+                    riCommand(tokens);
                     break;
                 case "EXIT":
                     exitCommand();
