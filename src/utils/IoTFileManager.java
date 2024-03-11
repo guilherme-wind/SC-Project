@@ -1,6 +1,8 @@
 package src.utils;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Scanner;
@@ -61,44 +63,88 @@ public class IoTFileManager {
      * Writes map content to plain text file, in case file doesn't exist,
      * will create one.
      * This method will erase the previous content in the file, to keep
-     * the content use {@link IoTFileManager#addUserToText()}.
+     * the content use {@link IoTFileManager#addObjectToText}.
      * @param filePath
      *      Path to the text file.
-     * @param users
+     * @param objs
+     *      Map of parsable objects.
      * @return
      *      0 if wrote sucessfully;
      *      -1 if a directory with the same name already exists;
      *      -2 if no permissions to write in the path;
      *      -3 if arguments are invalid;
      */
-    public synchronized int writeUsersToText(String filePath, Map<String, User> users) {
-        if (filePath == null || users == null)
+    public synchronized int writeObjsToText(String filePath, Map<String, IoTIParsable> objs) {
+        if (filePath == null || objs == null)
             return -3;
 
         File file = new File(filePath);
         if (file.isDirectory())
             return -1;
         
-        // Create file
-        if (!file.exists()) {
-            try {
-                boolean res = file.createNewFile();
-                if (!res) {
-                    return -1;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        // Always tries to delete the file
+        file.delete();
+        
+        // Creates new file
+        try {
+            if (!file.createNewFile()) {
                 return -1;
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return -1;
         }
 
-        // TODO Not finished!
+        // Writes to file
+        try {
+            FileWriter fw = new FileWriter(file);
+            BufferedWriter bw = new BufferedWriter(fw);
+            for (Map.Entry<String, IoTIParsable> entry : objs.entrySet()) {
+                bw.write(entry.getValue().parseToSerial());
+                bw.newLine();
+            }
+            bw.flush();
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return -1;
+        }
 
         return 0;
     }
 
-    public int addUserToText(String filePath, Map<String, User> users) {
-        // TODO
+    /**
+     * Appends an object representation to plain text file, will keep
+     * the previous content of the file.
+     * @param filePath
+     *      Path to the text file.
+     * @param obj
+     *      Parsable object.
+     * @return
+     *      0 if completed successfully;
+     *      -1 if the given path is a directory;
+     *      -2 if IO error occured;
+     *      -3 if arguments are invalid;
+     */
+    public int addObjectToText(String filePath, IoTIParsable obj) {
+        if (filePath == null || obj == null)
+            return -3;
+
+        File file = new File(filePath);
+        if (file.isDirectory())
+            return -1;
+
+        try {
+            FileWriter fw = new FileWriter(file);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(obj.parseToSerial());
+            bw.newLine();
+            bw.flush();
+            bw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -2;
+        }
         return 0;
     }
 }
