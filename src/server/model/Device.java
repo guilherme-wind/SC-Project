@@ -20,8 +20,8 @@ public class Device {
         this.owner = owner;
         this.devId = devId;
         this.name = String.format("%s:%s", owner.getName(), devId);
-        this.tempLogFile = new File(String.format("%s_temp_log.txt", name));
-        this.imgLogFile = new File(String.format("%s_img_log.txt", name));
+        this.tempLogFile = new File(String.format("%s_dev_%s_temp_log.txt", owner.getName(), devId));
+        this.imgLogFile = new File(String.format("%s_dev_%s_img.jpeg", owner.getName(), devId));
     }
 
     public void setActive() {
@@ -53,7 +53,7 @@ public class Device {
         return IoTPersistance.write(temperature, this.tempLogFile, false);
     }
 
-    public Boolean writeImage(String image) {
+    public Boolean writeImage(byte[] image) {
         return IoTPersistance.write(image, this.imgLogFile, false);
     }
 
