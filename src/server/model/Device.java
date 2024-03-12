@@ -70,7 +70,6 @@ public class Device {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Device device = (Device) o;
-        System.out.println(String.format("My device name is %s and this device name is %s. are they equal? %b", this.name, device.name, this.name.equals(device.name)));
         return this.name.equals(device.name);
     }
 

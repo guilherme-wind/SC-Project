@@ -261,7 +261,6 @@ public class IoTDevice {
         String targetDomainName = args[1];
         cli.print(String.format("-> /retrieveTemp %s", targetDomainName));
         byte[] data = stub.getTemperaturesInDomain(targetDomainName);
-        System.out.println(data);
         String dataStr = new String(data, StandardCharsets.UTF_8);
         if (data == null) {
             cli.printErr("Failed to receive the latest remperature measurements!");

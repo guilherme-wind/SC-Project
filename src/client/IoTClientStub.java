@@ -355,7 +355,6 @@ public class IoTClientStub {
         IoTOpcodes respcode = response.getOpcode();
         byte[] data = response.getData();
 
-        System.out.println(new String(data));
         if (respcode.equals(IoTOpcodes.OK_ACCEPTED) && data != null)
             return data;
 
