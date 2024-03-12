@@ -45,14 +45,9 @@ public class Domain {
     public byte[] extractTemperatures() {
         ByteArrayOutputStream data = new ByteArrayOutputStream();
         for (Device device : this.devices) {
-            //System.out.println(String.format("Extracting from Device (%s)...", device.getName()));
-            byte[] lastTemperature = device.readTemperature();
-            //String lastTemperatureStr = new String(lastTemperature, StandardCharsets.UTF_8);
-            //System.out.println(String.format("Extracting from Device (%s)...DONE => %s", device.getName(), lastTemperatureStr));
-            
-            
+            byte[] lastTemperature = device.readTemperature();                 
             if (lastTemperature != null) {
-                data.write(lastTemperature, 0, 0);
+                data.write(lastTemperature, 0, lastTemperature.length);
                 data.write('\n');
             }
         }
