@@ -328,7 +328,7 @@ public class IoTDevice {
                 case "RT":
                     rtCommand(tokens);
                     break;
-                case "RJ":
+                case "RI":
                     riCommand(tokens);
                     break;
                 case "EXIT":
