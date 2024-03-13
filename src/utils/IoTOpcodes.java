@@ -38,7 +38,8 @@ public enum IoTOpcodes {
     NOK_NO_DOMAIN("NOK_NO_DOMAIN"),
     NOK_NO_USER("NOK_NO_USER"),
     NOK_NO_DEVICE("NOK_NO_DEVICE"),
-    NOK_ALREADY_EXISTS("NOK_ALREADY_EXISTS");
+    NOK_ALREADY_EXISTS("NOK_ALREADY_EXISTS"),
+    NOK_NO_DATA("NOK_NO_DATA");
 
     private final String code;
     private IoTOpcodes(String code) {
