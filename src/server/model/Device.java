@@ -3,11 +3,12 @@ package src.server.model;
 
 import java.io.File;
 
+import src.utils.IoTIParsable;
 import src.utils.IoTPersistance;
 
 
 
-public class Device {
+public class Device implements IoTIParsable{
     private Boolean isActive;
     private final User owner;
     private final int devId;
@@ -77,5 +78,11 @@ public class Device {
     @Override
     public int hashCode() {
         return this.name.hashCode();
+    }
+
+    @Override
+    public String parseToSerial() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'parseToSerial'");
     }
 }
