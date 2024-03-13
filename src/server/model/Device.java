@@ -79,6 +79,11 @@ public class Device implements IoTIParsable{
         return this.name.hashCode();
     }
 
+    public static Device parseFromSerial(String serial) {
+        // TODO
+        return null;
+    }
+
     @Override
     public String parseToSerial() {
         // TODO Auto-generated method stub
