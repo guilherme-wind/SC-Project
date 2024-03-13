@@ -21,7 +21,8 @@ public class User implements IoTIParsable{
     /**
      * Gets a string representation of the User object.
      * @return
-     *      String representation of User.
+     *      String representation of User in format of
+     *      <username>:<password>
      */
     @Override
     public String parseToSerial() {

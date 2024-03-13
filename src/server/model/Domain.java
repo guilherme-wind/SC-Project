@@ -3,7 +3,9 @@ package src.server.model;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Domain {
+import src.utils.IoTIParsable;
+
+public class Domain implements IoTIParsable {
     private final String name;
     private final User owner;
     private final Set<User> namespace;
@@ -52,5 +54,13 @@ public class Domain {
     @Override
     public int hashCode() {
         return this.name.hashCode();
+    }
+
+    @Override
+    public String parseToSerial() {
+        String templateDomain = "Domain{name=%s,owner=%s,namespace=%s,devices=%s}";
+        String templateSpace = "[%s]";
+        String domain = String.format(templateDomain, name, owner.parseToSerial() );
+        return "";
     }
 }
