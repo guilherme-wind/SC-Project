@@ -9,6 +9,10 @@ import src.utils.IoTPersistance;
 
 
 public class Device implements IoTIParsable{
+
+    // String template for parsing
+    private final String DEVICE_TEMP = "%s|%s";
+
     private Boolean isActive;
     private final User owner;
     private final int devId;
@@ -79,14 +83,42 @@ public class Device implements IoTIParsable{
         return this.name.hashCode();
     }
 
+    /**
+     * Creates a Device object from the given string,
+     * which must has the following format:
+     * <user-parsed-descr>|<dev-id>
+     * @param serial
+     *      Device string representation.
+     * @return
+     *      A new Device object or null if the string doesn't
+     *      matches the correct format.
+     */
     public static Device parseFromSerial(String serial) {
-        // TODO
-        return null;
+        if (serial == null)
+            return null;
+
+        String[] tokens = serial.split("|", 2);
+        if (tokens.length < 2)
+            return null;
+        
+        User user = User.parseFromSerial(tokens[0]);
+        if (user == null)
+            return null;
+
+        int devid;
+        try {
+            devid = Integer.parseInt(tokens[1]);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+
+        Device device = new Device(user, devid);
+
+        return device;
     }
 
     @Override
     public String parseToSerial() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseToSerial'");
+        return String.format(DEVICE_TEMP, owner.parseToSerial(), Integer.toString(devId));
     }
 }
