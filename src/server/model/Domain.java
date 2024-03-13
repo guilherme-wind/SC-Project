@@ -11,8 +11,9 @@ import java.util.StringJoiner;
 import src.utils.IoTIParsable;
 
 public class Domain implements IoTIParsable {
-    private static final String LINE = System.getProperty("line.separator");
 
+    private static final String LINE = System.getProperty("line.separator");
+    // String template for parsing
     private final String DOMAIN_TEMP = "{Name=%s,Owner=%s,NameSpace=%s,Devices=%s}";
 
     private final String name;
