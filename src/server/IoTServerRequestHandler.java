@@ -53,6 +53,7 @@ public class IoTServerRequestHandler {
         functions.put(IoTOpcodes.SEND_TEMP, this::handleSendTemperature);
         functions.put(IoTOpcodes.SEND_IMAGE, this::handleSendImage);
         functions.put(IoTOpcodes.GET_TEMP, this::handleReceiveTemperature);
+        functions.put(IoTOpcodes.GET_USER_IMAGE, this::handleReceiveImage);
     }
 
     private IoTMessageType handleValidateUser(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
@@ -206,6 +207,35 @@ public class IoTServerRequestHandler {
         response.setData(
             domain.extractTemperatures()
         );
+
+        response.setOpCode(IoTOpcodes.OK_ACCEPTED);
+
+        return response;
+    }
+
+    private IoTMessageType handleReceiveImage(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
+        String deviceId = String.format("%s:%s", message.getUserId(), message.getDevId());
+        User requestingUser = session.getUser();
+
+        IoTMessageType response = new IoTMessage();
+        if (!dbContext.containsDevice(deviceId)) {
+            response.setOpCode(IoTOpcodes.NOK_NO_DEVICE);
+            return response;
+        }
+
+        Device device = dbContext.getDevice(deviceId);
+        if (!dbContext.canUserReceiveDataFromDevice(requestingUser, device)) {
+            response.setOpCode(IoTOpcodes.NOK_NO_PERMISSIONS);
+            return response;
+        }
+
+        byte[] image = device.readImage();
+        if (image == null || image.length <= 0) {
+            response.setOpCode(IoTOpcodes.NOK_NO_DATA);
+            return response;
+        }
+
+        response.setData(image);
 
         response.setOpCode(IoTOpcodes.OK_ACCEPTED);
 
