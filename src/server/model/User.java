@@ -3,6 +3,10 @@ package src.server.model;
 import src.utils.IoTIParsable;
 
 public class User implements IoTIParsable{
+
+    // String template for parsing
+    private final String USER_TEMP = "%s:%s";
+
     private final String name;
     private final String password;
     public User(String name, String password) {
@@ -26,7 +30,7 @@ public class User implements IoTIParsable{
      */
     @Override
     public String parseToSerial() {
-        return String.format("%s:%s", this.name, this.password);
+        return String.format(USER_TEMP, this.name, this.password);
     }
 
     /**
@@ -35,7 +39,7 @@ public class User implements IoTIParsable{
      * @param serial
      *      String representation of a user.
      * @return
-     *      User object or null if the string doesn't have
+     *      A new User object or null if the string doesn't have
      *      the correct format.
      */
     public static User parseFromSerial(String serial) {
