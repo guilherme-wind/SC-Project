@@ -4,6 +4,16 @@ import java.util.Scanner;
 
 public class IoTCLI {
 
+    private static final String LINE = System.getProperty("line.separator");
+    private static final String MENU =  "Command menu:" + LINE +
+                                        "\tCREAT <domain>" + LINE + 
+                                        "\tADD <user> <domain>" + LINE + 
+                                        "\tRD <domain>" + LINE +
+                                        "\tET <float>" + LINE +
+                                        "\tEI <image-path>" + LINE +
+                                        "\tRT <domain>" + LINE +
+                                        "\tRI <user>:<device>";
+
 
     // Singleton
     private static IoTCLI instance = null;
@@ -14,6 +24,10 @@ public class IoTCLI {
         sc = new Scanner(System.in);
     }
 
+    /**
+     * Get an instance of the CLI
+     * @return
+     */
     public static IoTCLI getInstance() {
         if (instance == null) {
             instance = new IoTCLI();
@@ -27,6 +41,10 @@ public class IoTCLI {
      */
     public String getUserInput() {
         return sc.nextLine();
+    }
+
+    public void printMenu() {
+        System.out.println(MENU);
     }
 
     public void print(String msg) {

@@ -77,20 +77,6 @@ public class IoTDevice {
         return status;
     }
 
-    /**
-     * This bozo is going to CLI fr
-     */
-    private static void show_menu() {
-        cli.print("Menu de Comandos:");
-        cli.print("  CREATE <dm>");
-        cli.print("  ADD <user> <dm>");
-        cli.print("  RD <dm>");
-        cli.print("  ET <float>");
-        cli.print("  EI <filename.jpg>");
-        cli.print("  RT <dm>");
-        cli.print("  RI <user-id>:<dev_id>");
-        cli.print("Digite um comando:\n");
-    }
 
     //NAO TIREM A MAIN DAQUI, FIQUEI 5min A PROCURA DELA
     public static void main(String[] args) throws IOException {
@@ -306,7 +292,7 @@ public class IoTDevice {
      */
     private static void userInvoke() {
         while (true) {
-            show_menu();
+            cli.printMenu();
 
             String[] tokens = cli.getUserInput().split(" ");
             switch (tokens[0]) {
