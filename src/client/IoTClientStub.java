@@ -340,7 +340,7 @@ public class IoTClientStub {
      *          - Domain doesn't exist;
      *          - Socket error;
      */
-    protected float[] getTemp(String domainName) {
+    protected byte[] getTemperaturesInDomain(String domainName) {
         IoTMessageType request = new IoTMessage();
         request.setOpCode(IoTOpcodes.GET_TEMP);
         request.setDomainName(domainName);
@@ -353,10 +353,11 @@ public class IoTClientStub {
             return null;
 
         IoTOpcodes respcode = response.getOpcode();
-        float[] temps = response.getTemps();
-        if (respcode.equals(IoTOpcodes.OK_ACCEPTED) &&
-            temps != null)
-            return temps;
+        byte[] data = response.getData();
+
+        if (respcode.equals(IoTOpcodes.OK_ACCEPTED) && data != null)
+            return data;
+
         return null;
     }
 
@@ -388,7 +389,7 @@ public class IoTClientStub {
             return null;
 
         IoTOpcodes respcode = response.getOpcode();
-        byte[] image = response.getImage();
+        byte[] image = response.getData();
         if (respcode.equals(IoTOpcodes.OK_ACCEPTED) &&
             image != null)
             return image;

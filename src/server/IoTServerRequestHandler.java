@@ -48,6 +48,12 @@ public class IoTServerRequestHandler {
         functions.put(IoTOpcodes.VALIDATE_PROGRAM, this::handleValidateProgram);
         functions.put(IoTOpcodes.CREATE_DOMAIN, this::handleCreateDomain);
         functions.put(IoTOpcodes.EXIT, this::handleTerminateProgram);
+        functions.put(IoTOpcodes.ADD_USER_DOMAIN, this::handleAddToDomain);
+        functions.put(IoTOpcodes.REGISTER_DEVICE_DOMAIN, this::handleRegisterCurrentDeviceToDomain);
+        functions.put(IoTOpcodes.SEND_TEMP, this::handleSendTemperature);
+        functions.put(IoTOpcodes.SEND_IMAGE, this::handleSendImage);
+        functions.put(IoTOpcodes.GET_TEMP, this::handleReceiveTemperature);
+        functions.put(IoTOpcodes.GET_USER_IMAGE, this::handleReceiveImage);
     }
 
     private IoTMessageType handleValidateUser(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
@@ -130,6 +136,107 @@ public class IoTServerRequestHandler {
         // new domain!
         Domain domain = new Domain(domainName, session.getUser());
         dbContext.addDomain(domain);
+        response.setOpCode(IoTOpcodes.OK_ACCEPTED);
+
+        return response;
+    }
+
+    private IoTMessageType handleAddToDomain(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
+        String domainName = message.getDomainName();
+        String userName = message.getUserId();
+        User user = session.getUser();
+
+        IoTMessageType response = new IoTMessage();
+        IoTOpcodes code = dbContext.addUserToDomain(user, userName, domainName);
+        response.setOpCode(code);
+
+        return response;
+    }
+
+    private IoTMessageType handleRegisterCurrentDeviceToDomain(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
+        String domainName = message.getDomainName();
+        User user = session.getUser();
+
+        IoTMessageType response = new IoTMessage();
+        IoTOpcodes code = dbContext.registerDeviceToDomain(user, session.getDevice(), domainName);
+        response.setOpCode(code);
+
+        return response;
+    }
+
+    private IoTMessageType handleSendTemperature(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
+        String temperature = String.valueOf(message.getTemp());
+        Device device = session.getDevice();
+
+        IoTMessageType response = new IoTMessage();
+        response.setOpCode(
+            device.writeTemperature(temperature) ? IoTOpcodes.OK_ACCEPTED : IoTOpcodes.NOK
+        );
+
+        return response;
+    }
+
+    private IoTMessageType handleSendImage(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
+        byte[] image = message.getImage();
+        Device device = session.getDevice();
+
+        IoTMessageType response = new IoTMessage();
+        response.setOpCode(
+            device.writeImage(image) ? IoTOpcodes.OK_ACCEPTED : IoTOpcodes.NOK
+        );
+
+        return response;
+    }
+
+    private IoTMessageType handleReceiveTemperature(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
+        String domainName = message.getDomainName();
+        User user = session.getUser();
+
+        IoTMessageType response = new IoTMessage();
+        if (!dbContext.containsDomain(domainName)) {
+            response.setOpCode(IoTOpcodes.NOK_NO_DOMAIN);
+            return response;
+        }
+
+        Domain domain = dbContext.getDomain(domainName);
+        if (!domain.contains(user)) {
+            response.setOpCode(IoTOpcodes.NOK_NO_PERMISSIONS);
+            return response;
+        }
+
+        response.setData(
+            domain.extractTemperatures()
+        );
+
+        response.setOpCode(IoTOpcodes.OK_ACCEPTED);
+
+        return response;
+    }
+
+    private IoTMessageType handleReceiveImage(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
+        String deviceId = String.format("%s:%s", message.getUserId(), message.getDevId());
+        User requestingUser = session.getUser();
+
+        IoTMessageType response = new IoTMessage();
+        if (!dbContext.containsDevice(deviceId)) {
+            response.setOpCode(IoTOpcodes.NOK_NO_DEVICE);
+            return response;
+        }
+
+        Device device = dbContext.getDevice(deviceId);
+        if (!dbContext.canUserReceiveDataFromDevice(requestingUser, device)) {
+            response.setOpCode(IoTOpcodes.NOK_NO_PERMISSIONS);
+            return response;
+        }
+
+        byte[] image = device.readImage();
+        if (image == null || image.length <= 0) {
+            response.setOpCode(IoTOpcodes.NOK_NO_DATA);
+            return response;
+        }
+
+        response.setData(image);
+
         response.setOpCode(IoTOpcodes.OK_ACCEPTED);
 
         return response;

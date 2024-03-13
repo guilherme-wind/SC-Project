@@ -1,5 +1,6 @@
 package src.server.model;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,6 +42,19 @@ public class Domain implements IoTIParsable {
 
     public boolean registerDevice(Device device) {
         return this.devices.add(device);
+    }
+
+    public byte[] extractTemperatures() {
+        ByteArrayOutputStream data = new ByteArrayOutputStream();
+        for (Device device : this.devices) {
+            byte[] lastTemperature = device.readTemperature();                 
+            if (lastTemperature != null) {
+                data.write(lastTemperature, 0, lastTemperature.length);
+                data.write('\n');
+            }
+        }
+        // return null if the data stream is empty
+        return data.size() != 0 ? data.toByteArray() : null;
     }
 
     @Override

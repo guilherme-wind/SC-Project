@@ -27,6 +27,8 @@ public class IoTMessage implements IoTMessageType, Serializable {
 
     public byte[] img;
 
+    public byte[] data;
+
     @Override
     public void setOpCode(IoTOpcodes opcode) {
         this.opcode = opcode;
@@ -125,6 +127,16 @@ public class IoTMessage implements IoTMessageType, Serializable {
     @Override
     public byte[] getImage() {
         return this.img;
+    }
+
+    @Override
+    public void setData(byte[] data) {
+        this.data = data;
+    }
+
+    @Override
+    public byte[] getData() {
+        return this.data;
     }
 
     @Override

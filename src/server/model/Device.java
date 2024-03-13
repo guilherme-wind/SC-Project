@@ -21,8 +21,8 @@ public class Device implements IoTIParsable{
         this.owner = owner;
         this.devId = devId;
         this.name = String.format("%s:%s", owner.getName(), devId);
-        this.tempLogFile = new File(String.format("%s_temp_log.txt", name));
-        this.imgLogFile = new File(String.format("%s_img_log.txt", name));
+        this.tempLogFile = new File(String.format("%s_dev_%s_temp_log.txt", owner.getName(), devId));
+        this.imgLogFile = new File(String.format("%s_dev_%s_img.jpeg", owner.getName(), devId));
     }
 
     public void setActive() {
@@ -50,12 +50,12 @@ public class Device implements IoTIParsable{
         return this.name;
     }
 
-    public void writeTemperature(String temperature) {
-        IoTPersistance.write(temperature, this.tempLogFile, false);
+    public Boolean writeTemperature(String temperature) {
+        return IoTPersistance.write(temperature, this.tempLogFile, false);
     }
 
-    public void writeImage(String image) {
-        IoTPersistance.write(image, this.imgLogFile, false);
+    public Boolean writeImage(byte[] image) {
+        return IoTPersistance.write(image, this.imgLogFile, false);
     }
 
     public byte[] readTemperature() {
@@ -71,7 +71,6 @@ public class Device implements IoTIParsable{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Device device = (Device) o;
-        System.out.println(String.format("My device name is %s and this device name is %s. are they equal? %b", this.name, device.name, this.name.equals(device.name)));
         return this.name.equals(device.name);
     }
 

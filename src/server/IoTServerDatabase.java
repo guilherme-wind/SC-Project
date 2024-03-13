@@ -77,6 +77,10 @@ public class IoTServerDatabase {
         this.domains.put(domain.getName(), domain);
     }
 
+    public Domain getDomain(String domainName) {
+        return this.domains.get(domainName);
+    }
+
     public static IoTServerDatabase getInstance() {
         if (instance == null) {
             instance = new IoTServerDatabase();
@@ -112,6 +116,14 @@ public class IoTServerDatabase {
         User user = this.users.get(userName);
         domain.addUser(user);
         return IoTOpcodes.OK_ACCEPTED;
+    }
+
+    public Boolean canUserReceiveDataFromDevice(User as, Device device) {
+        for (Domain domain : this.domains.values())
+            if (domain.contains(device) && domain.contains(as))
+                return true;
+
+        return false;
     }
 
     public IoTOpcodes registerDeviceToDomain(User as, Device device, String domainName) {
