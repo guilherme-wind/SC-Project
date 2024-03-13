@@ -118,6 +118,14 @@ public class IoTServerDatabase {
         return IoTOpcodes.OK_ACCEPTED;
     }
 
+    public Boolean canUserReceiveDataFromDevice(User as, Device device) {
+        for (Domain domain : this.domains.values())
+            if (domain.contains(device) && domain.contains(as))
+                return true;
+
+        return false;
+    }
+
     public IoTOpcodes registerDeviceToDomain(User as, Device device, String domainName) {
         if (!this.domains.containsKey(domainName))
             return IoTOpcodes.NOK_NO_DOMAIN;
