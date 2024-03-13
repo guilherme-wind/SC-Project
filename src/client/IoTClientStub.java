@@ -389,7 +389,7 @@ public class IoTClientStub {
             return null;
 
         IoTOpcodes respcode = response.getOpcode();
-        byte[] image = response.getImage();
+        byte[] image = response.getData();
         if (respcode.equals(IoTOpcodes.OK_ACCEPTED) &&
             image != null)
             return image;
