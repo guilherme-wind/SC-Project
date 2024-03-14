@@ -211,7 +211,7 @@ public class Domain implements IoTIParsable {
         
         String content = serial.substring(start_brace_index+1, end_brace_index);
 
-        String[] tokens = content.split(",(?=[^(\\}|\\])]*(?:(\\{|\\[)|$))");
+        String[] tokens = content.split(",");
 
         List<String> strings = new LinkedList<String>();
         for (String string : tokens) {
