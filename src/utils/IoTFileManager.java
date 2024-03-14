@@ -17,9 +17,6 @@ import src.server.model.User;
  */
 public class IoTFileManager {
 
-    // Not used for now
-    private Scanner sc;
-
     public IoTFileManager() {
     }
 
