@@ -23,7 +23,7 @@ public class IoTServerThread extends Thread {
         IoTServerRequestHandler handler = IoTServerRequestHandler.getInstance();
         IoTServerDatabase dbContext = IoTServerDatabase.getInstance();
         Session session = new Session();        
-        while (this.running && this.ioTStream.ready()) {
+        while (this.running && this.ioTStream.ready() && !Thread.currentThread().isInterrupted()) {
 
             IoTMessageType receivedMessage = (IoTMessageType) this.ioTStream.read();
             if (receivedMessage == null)
@@ -39,5 +39,6 @@ public class IoTServerThread extends Thread {
                     System.out.println("Sent!");
             }            
         }
+        System.out.println("Mewing: Bye bye");
     }    
 }
