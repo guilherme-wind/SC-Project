@@ -97,7 +97,7 @@ public class Device implements IoTIParsable{
         if (serial == null)
             return null;
 
-        String[] tokens = serial.split("|", 2);
+        String[] tokens = serial.split("\\|", 2);
         if (tokens.length < 2)
             return null;
         
