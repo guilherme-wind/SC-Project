@@ -7,8 +7,14 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Scanner;
 
+import src.server.model.Device;
+import src.server.model.Domain;
 import src.server.model.User;
 
+/**
+ * Simplify the process to register and load data from
+ * persistent storage.
+ */
 public class IoTFileManager {
 
     // Not used for now
@@ -18,9 +24,31 @@ public class IoTFileManager {
     }
 
     /**
+     * Checks whether if a file exists and has permission
+     * to read and write.
+     * @param filePath
+     *      Path to the file.
+     * @return
+     *      True if the file is available, false otherwise.
+     */
+    public synchronized boolean isFileAvailable(String filePath) {
+        if (filePath == null)
+            return false;
+        
+        File file = new File(filePath);
+        if (!file.exists() || !file.isFile())
+            return false;
+
+        if (!file.canRead() || !file.canWrite())
+            return false;
+        return true;
+    }
+
+    /**
      * Reads content from plain text file and loads users.
      * Text file must have format
      * username:password
+     * Will ignore lines that failed to load.
      * @param filePath
      *      Path to the file.
      * @param users
@@ -49,6 +77,90 @@ public class IoTFileManager {
                 if (user == null)
                     continue;
                 users.put(user.getName(), user);
+            }
+
+            fileScanner.close();
+        } catch (Exception e) {
+            return -1;
+        }
+        
+        return 0;
+    }
+
+    /**
+     * Reads content from plain text file and loads domains and it's associated
+     * data.
+     * Will ignore lines that failed to load.
+     * @param filePath
+     *      Path to the file.
+     * @param domains
+     *      Map to where the data will be loaded.
+     * @return
+     *      0 if loaded successfully;
+     *      -1 if file doesn't exist;
+     *      -2 if no permissions to access file;
+     *      -3 if arguments are invalid;
+     */
+    public synchronized int loadDomainsFromText(String filePath, Map<String, Domain> domains) {
+        if (filePath == null || domains == null)
+            return -3;
+        
+        File file = new File(filePath);
+        if (!file.exists() || file.isDirectory())
+            return -1;
+        if (!file.canRead())
+            return -2;
+        
+        try {
+            Scanner fileScanner = new Scanner(file);
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                Domain user = Domain.parseFromSerial(line);
+                if (user == null)
+                    continue;
+                domains.put(user.getName(), user);
+            }
+
+            fileScanner.close();
+        } catch (Exception e) {
+            return -1;
+        }
+        
+        return 0;
+    }
+
+    /**
+     * Reads content from plain text file and loads devices and it's associated
+     * data.
+     * Will ignore lines that failed to load.
+     * @param filePath
+     *      Path to the file.
+     * @param devices
+     *      Map to where the data will be loaded.
+     * @return
+     *      0 if loaded successfully;
+     *      -1 if file doesn't exist;
+     *      -2 if no permissions to access file;
+     *      -3 if arguments are invalid;
+     */
+    public synchronized int loadDevicesFromText(String filePath, Map<String, Device> devices) {
+        if (filePath == null || devices == null)
+            return -3;
+        
+        File file = new File(filePath);
+        if (!file.exists() || file.isDirectory())
+            return -1;
+        if (!file.canRead())
+            return -2;
+        
+        try {
+            Scanner fileScanner = new Scanner(file);
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                Device user = Device.parseFromSerial(line);
+                if (user == null)
+                    continue;
+                devices.put(user.getName(), user);
             }
 
             fileScanner.close();
@@ -145,6 +257,11 @@ public class IoTFileManager {
             e.printStackTrace();
             return -2;
         }
+        return 0;
+    }
+
+    public int readImage(String filePath) {
+        // TODO
         return 0;
     }
 }
