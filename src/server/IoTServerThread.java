@@ -37,7 +37,7 @@ public class IoTServerThread extends Thread {
                 System.out.println("Sending!");
                 if (this.ioTStream.write(responseMessage))
                     System.out.println("Sent!");
-            }            
+            }
         }
         System.out.println("Mewing: Bye bye");
     }    

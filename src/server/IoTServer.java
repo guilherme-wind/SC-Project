@@ -8,14 +8,17 @@ public class IoTServer{
 
     // Store running threads
     private static List<IoTServerThread> threads;
+    private static ServerSocket socket;
     public static void main(String[] args) {
         System.out.println("Starting server...");
         threads = new LinkedList<IoTServerThread>();
+        Thread main = Thread.currentThread();
 
         // Associates shutdown signal with it's handler
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> { shutdown(); }));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> { shutdown(main); }));
 
-        try (ServerSocket socket = new ServerSocket(12345)) {
+        try {
+            socket = new ServerSocket(12345);
             while (true) {
                 System.out.println("Waiting for new connection...");
                 IoTServerThread thread = new IoTServerThread(socket.accept());
@@ -24,17 +27,25 @@ public class IoTServer{
                 // TODO store running threads in a pool, so we can exit gracefully
             }
         } catch (Exception e) {
+            System.out.println("Fui interrumpido!!!");
+            try {
+                socket.close();
+            } catch (Exception e1){
+
+            }
             e.printStackTrace();
+            System.exit(0);
         }
     }
 
     /**
      * Closes all threads and exit.
      */
-    private static void shutdown() {
+    private static void shutdown(Thread main) {
         for (IoTServerThread ioTServerThread : threads) {
             ioTServerThread.interrupt();
         }
-        System.exit(0);
+        main.interrupt();
+        System.out.println("Went to mewing, byebye!");
     }
 }
