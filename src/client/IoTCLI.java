@@ -6,7 +6,7 @@ public class IoTCLI {
 
     private static final String LINE = System.getProperty("line.separator");
     private static final String MENU =  "Command menu:" + LINE +
-                                        "\tCREAT <domain>" + LINE + 
+                                        "\tCREATE <domain>" + LINE + 
                                         "\tADD <user> <domain>" + LINE + 
                                         "\tRD <domain>" + LINE +
                                         "\tET <float>" + LINE +
