@@ -1,11 +1,16 @@
 package src.server;
 
 import java.util.HashMap;
+import java.util.stream.Collectors;
+import java.util.List;
 import java.util.Map;
+
 
 import src.server.model.Device;
 import src.server.model.Domain;
 import src.server.model.User;
+import src.utils.IoTFileManager;
+import src.utils.IoTIParsable;
 import src.utils.IoTOpcodes;
 
 /**
@@ -18,6 +23,10 @@ public class IoTServerDatabase {
     private final Map<String, Domain> domains;
     private final Map<String, User> users;
     private final Map<String, Device> devices;
+
+    private static final String USER_TXT_DB = "users.txt";
+    private static final String DOMAINS_TXT_DB = "domains.txt";
+
 
     private IoTServerDatabase() {
         this.domains = new HashMap<>();
@@ -88,12 +97,15 @@ public class IoTServerDatabase {
         return instance;
     }
 
+    public static void setInstance(IoTServerDatabase db) {
+        instance = db;
+    }
+
     public IoTOpcodes createDomain(User as, String domainName) {
         if (this.domains.containsKey(domainName))
             return IoTOpcodes.NOK_ALREADY_EXISTS;
 
         this.domains.put(domainName, new Domain(domainName, as));
-
         return IoTOpcodes.OK_ACCEPTED;
     }
 
@@ -136,6 +148,24 @@ public class IoTServerDatabase {
 
         domain.registerDevice(device);
         return IoTOpcodes.OK_ACCEPTED;
+    }
+
+    public void onUserUpdate() {
+        List<IoTIParsable> objs = this.users.values()
+            .stream()
+            .map(user -> (IoTIParsable) user)
+            .collect(Collectors.toList());
+
+        IoTFileManager.writeObjsToText(USER_TXT_DB, objs);
+    }
+
+    public void onDomainUpdate() {
+        List<IoTIParsable> objs = this.domains.values()
+            .stream()
+            .map(domain -> (IoTIParsable) domain)
+            .collect(Collectors.toList());
+
+        IoTFileManager.writeObjsToText(DOMAINS_TXT_DB, objs);
     }
     
 }
