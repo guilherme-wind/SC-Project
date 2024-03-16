@@ -2,7 +2,7 @@ package src.server.model;
 
 import src.utils.IoTIParsable;
 
-public class User implements IoTIParsable{
+public class User implements IoTIParsable {
 
     // String template for parsing
     private final String USER_TEMP = "%s:%s";

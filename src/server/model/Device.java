@@ -8,7 +8,7 @@ import src.utils.IoTPersistance;
 
 
 
-public class Device implements IoTIParsable{
+public class Device implements IoTIParsable {
 
     // String template for parsing
     private final String DEVICE_TEMP = "%s|%s";
