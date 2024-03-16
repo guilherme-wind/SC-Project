@@ -79,6 +79,7 @@ public class IoTServerRequestHandler {
             session.setAuthState(IoTAuth.USER);
             session.setUser(user);
             response.setOpCode(IoTOpcodes.OK_NEW_USER);
+            dbContext.onUserUpdate();
         }
         return response;
     }
@@ -137,6 +138,7 @@ public class IoTServerRequestHandler {
         Domain domain = new Domain(domainName, session.getUser());
         dbContext.addDomain(domain);
         response.setOpCode(IoTOpcodes.OK_ACCEPTED);
+        dbContext.onDomainUpdate();
 
         return response;
     }
@@ -149,6 +151,8 @@ public class IoTServerRequestHandler {
         IoTMessageType response = new IoTMessage();
         IoTOpcodes code = dbContext.addUserToDomain(user, userName, domainName);
         response.setOpCode(code);
+        if (code == IoTOpcodes.OK_ACCEPTED)
+            dbContext.onDomainUpdate();
 
         return response;
     }
@@ -160,7 +164,8 @@ public class IoTServerRequestHandler {
         IoTMessageType response = new IoTMessage();
         IoTOpcodes code = dbContext.registerDeviceToDomain(user, session.getDevice(), domainName);
         response.setOpCode(code);
-
+        if (code == IoTOpcodes.OK_ACCEPTED)
+            dbContext.onDomainUpdate();
         return response;
     }
 
