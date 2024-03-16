@@ -32,6 +32,17 @@ public class IoTServerDatabase {
         this.domains = new HashMap<>();
         this.users = new HashMap<>();
         this.devices = new HashMap<>();
+
+        load();
+    }
+
+    /*
+     * Load persisted database files, if any
+     */
+    private void load() {
+        IoTFileManager.loadUsersFromText(USER_TXT_DB, this.users);
+        IoTFileManager.loadDomainsFromText(DOMAINS_TXT_DB, this.domains);
+        IoTFileManager.loadDevicesFromText(DOMAINS_TXT_DB, this.devices);
     }
 
     /**
