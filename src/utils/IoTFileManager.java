@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.io.ObjectOutputStream;
 import java.util.Map;
 import java.util.Scanner;
@@ -38,7 +39,7 @@ public class IoTFileManager {
      * @return
      *      True if the file is available, false otherwise.
      */
-    public synchronized boolean isFileAvailable(String filePath) {
+    public static synchronized boolean isFileAvailable(String filePath) {
         if (filePath == null)
             return false;
         
@@ -66,7 +67,7 @@ public class IoTFileManager {
      *      -2 if no permissions to access file;
      *      -3 if arguments are invalid;
      */
-    public synchronized int loadUsersFromText(String filePath, Map<String, User> users) {
+    public static synchronized int loadUsersFromText(String filePath, Map<String, User> users) {
         if (filePath == null || users == null)
             return -3;
 
@@ -108,7 +109,7 @@ public class IoTFileManager {
      *      -2 if no permissions to access file;
      *      -3 if arguments are invalid;
      */
-    public synchronized int loadDomainsFromText(String filePath, Map<String, Domain> domains) {
+    public static synchronized int loadDomainsFromText(String filePath, Map<String, Domain> domains) {
         if (filePath == null || domains == null)
             return -3;
         
@@ -150,7 +151,7 @@ public class IoTFileManager {
      *      -2 if no permissions to access file;
      *      -3 if arguments are invalid;
      */
-    public synchronized int loadDevicesFromText(String filePath, Map<String, Device> devices) {
+    public static synchronized int loadDevicesFromText(String filePath, Map<String, Device> devices) {
         if (filePath == null || devices == null)
             return -3;
         
@@ -193,7 +194,7 @@ public class IoTFileManager {
      *      -2 if no permissions to write in the path;
      *      -3 if arguments are invalid;
      */
-    public synchronized int writeObjsToText(String filePath, Map<String, IoTIParsable> objs) {
+    public static synchronized int writeObjsToText(String filePath, List<IoTIParsable> objs) {
         if (filePath == null || objs == null)
             return -3;
 
@@ -218,8 +219,8 @@ public class IoTFileManager {
         try {
             FileWriter fw = new FileWriter(file);
             BufferedWriter bw = new BufferedWriter(fw);
-            for (Map.Entry<String, IoTIParsable> entry : objs.entrySet()) {
-                bw.write(entry.getValue().parseToSerial());
+            for (IoTIParsable entry : objs) {
+                bw.write(entry.parseToSerial());
                 bw.newLine();
             }
             bw.flush();
@@ -245,7 +246,7 @@ public class IoTFileManager {
      *      -2 if IO error occured;
      *      -3 if arguments are invalid;
      */
-    public int addObjectToText(String filePath, IoTIParsable obj) {
+    public static int addObjectToText(String filePath, IoTIParsable obj) {
         if (filePath == null || obj == null)
             return -3;
 

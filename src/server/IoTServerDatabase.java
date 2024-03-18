@@ -3,12 +3,16 @@ package src.server;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.stream.Collectors;
+import java.util.List;
 import java.util.Map;
+
 
 import src.server.model.Device;
 import src.server.model.Domain;
 import src.server.model.User;
 import src.utils.IoTFileManager;
+import src.utils.IoTIParsable;
 import src.utils.IoTOpcodes;
 
 /**
@@ -24,34 +28,25 @@ public class IoTServerDatabase {
     private final Map<String, User> users;
     private final Map<String, Device> devices;
 
-    private IoTFileManager fileManager;
+    private static final String USER_TXT_DB = "users.txt";
+    private static final String DOMAINS_TXT_DB = "domains.txt";
 
-    private final Path DEFAULT_PATH = Paths.get(".", "server_files");
-    private final Path DOMAINS_PATH = Paths.get(DEFAULT_PATH.toString(),"domains.txt");
-    private final Path USERS_PATH = Paths.get(DEFAULT_PATH.toString(),"users.txt");
-    private final Path DEVICES_PATH = Paths.get(DEFAULT_PATH.toString(),"devices.txt");
-    
+
     private IoTServerDatabase() {
         this.domains = new HashMap<>();
         this.users = new HashMap<>();
         this.devices = new HashMap<>();
-        fileManager = IoTFileManager.getInstance();
-    }
-    
-    public static IoTServerDatabase getInstance() {
-        if (instance == null) {
-            instance = new IoTServerDatabase();
-        }
-        return instance;
+
+        load();
     }
 
-    /**
-     * Loads data from text files.
+    /*
+     * Load persisted database files, if any
      */
-    public void loadData() {
-        fileManager.loadDomainsFromText(DOMAINS_PATH.toString(), domains);
-        fileManager.loadDevicesFromText(DEVICES_PATH.toString(), devices);
-        fileManager.loadUsersFromText(USERS_PATH.toString(), users);
+    private void load() {
+        IoTFileManager.loadUsersFromText(USER_TXT_DB, this.users);
+        IoTFileManager.loadDomainsFromText(DOMAINS_TXT_DB, this.domains);
+        IoTFileManager.loadDevicesFromText(DOMAINS_TXT_DB, this.devices);
     }
 
     /**
@@ -110,13 +105,22 @@ public class IoTServerDatabase {
         return this.domains.get(domainName);
     }
 
+    public static IoTServerDatabase getInstance() {
+        if (instance == null) {
+            instance = new IoTServerDatabase();
+        }
+        return instance;
+    }
+
+    public static void setInstance(IoTServerDatabase db) {
+        instance = db;
+    }
 
     public IoTOpcodes createDomain(User as, String domainName) {
         if (this.domains.containsKey(domainName))
             return IoTOpcodes.NOK_ALREADY_EXISTS;
 
         this.domains.put(domainName, new Domain(domainName, as));
-
         return IoTOpcodes.OK_ACCEPTED;
     }
 
@@ -159,6 +163,24 @@ public class IoTServerDatabase {
 
         domain.registerDevice(device);
         return IoTOpcodes.OK_ACCEPTED;
+    }
+
+    public void onUserUpdate() {
+        List<IoTIParsable> objs = this.users.values()
+            .stream()
+            .map(user -> (IoTIParsable) user)
+            .collect(Collectors.toList());
+
+        IoTFileManager.writeObjsToText(USER_TXT_DB, objs);
+    }
+
+    public void onDomainUpdate() {
+        List<IoTIParsable> objs = this.domains.values()
+            .stream()
+            .map(domain -> (IoTIParsable) domain)
+            .collect(Collectors.toList());
+
+        IoTFileManager.writeObjsToText(DOMAINS_TXT_DB, objs);
     }
     
 }
