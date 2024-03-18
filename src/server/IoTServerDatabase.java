@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Optional;
 
 import src.server.model.Device;
 import src.server.model.Domain;
@@ -20,33 +20,59 @@ import src.utils.IoTOpcodes;
  * information.
  */
 public class IoTServerDatabase {
-
+    
     // Singleton
     private static IoTServerDatabase instance;
     
-    private final Map<String, Domain> domains;
-    private final Map<String, User> users;
-    private final Map<String, Device> devices;
-
+    private Map<String, Domain> domains;
+    private Map<String, User> users;
+    private Map<String, Device> devices;
+    
+    // TODO: put all files into a folder
+    private static final Path ROOT = Paths.get(".", "server_files");
+    
     private static final String USER_TXT_DB = "users.txt";
     private static final String DOMAINS_TXT_DB = "domains.txt";
-
-
+    private static final String DEVICES_TXT_DB = "devices.txt";
+    
+    
     private IoTServerDatabase() {
         this.domains = new HashMap<>();
         this.users = new HashMap<>();
         this.devices = new HashMap<>();
-
+        
         load();
     }
-
+    
     /*
-     * Load persisted database files, if any
-     */
+    * Load persisted database files, if any
+    */
+    @SuppressWarnings("unchecked")
     private void load() {
-        IoTFileManager.loadUsersFromText(USER_TXT_DB, this.users);
-        IoTFileManager.loadDomainsFromText(DOMAINS_TXT_DB, this.domains);
-        IoTFileManager.loadDevicesFromText(DOMAINS_TXT_DB, this.devices);
+        // Previous implementation
+        // IoTFileManager.loadUsersFromText(USER_TXT_DB, this.users);
+        // IoTFileManager.loadDomainsFromText(DOMAINS_TXT_DB, this.domains);
+        // IoTFileManager.loadDevicesFromText(DOMAINS_TXT_DB, this.devices);
+
+        Optional<Object> domainsObj = IoTFileManager.readObjectFromFile(DOMAINS_TXT_DB);
+        this.domains = domainsObj.isPresent() ? (Map<String, Domain>) domainsObj.get() : null;
+
+        Optional<Object> usersObj = IoTFileManager.readObjectFromFile(USER_TXT_DB);
+        this.users = usersObj.isPresent() ? (Map<String, User>) usersObj.get() : null;
+
+        Optional<Object> devicesObj = IoTFileManager.readObjectFromFile(DEVICES_TXT_DB);
+        this.devices = devicesObj.isPresent() ? (Map<String, Device>) devicesObj.get() : null;
+    }
+    
+    public static IoTServerDatabase getInstance() {
+        if (instance == null) {
+            instance = new IoTServerDatabase();
+        }
+        return instance;
+    }
+    
+    public static void setInstance(IoTServerDatabase db) {
+        instance = db;
     }
 
     /**
@@ -105,16 +131,6 @@ public class IoTServerDatabase {
         return this.domains.get(domainName);
     }
 
-    public static IoTServerDatabase getInstance() {
-        if (instance == null) {
-            instance = new IoTServerDatabase();
-        }
-        return instance;
-    }
-
-    public static void setInstance(IoTServerDatabase db) {
-        instance = db;
-    }
 
     public IoTOpcodes createDomain(User as, String domainName) {
         if (this.domains.containsKey(domainName))
