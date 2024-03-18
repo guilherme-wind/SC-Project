@@ -47,24 +47,25 @@ public class IoTServerDatabase {
     /*
     * Load persisted database files, if any
     */
-    @SuppressWarnings("unchecked")
     private void load() {
-        // Previous implementation
-        // IoTFileManager.loadUsersFromText(USER_TXT_DB, this.users);
-        // IoTFileManager.loadDomainsFromText(DOMAINS_TXT_DB, this.domains);
-        // IoTFileManager.loadDevicesFromText(DOMAINS_TXT_DB, this.devices);
+        IoTFileManager.loadUsersFromText(USER_TXT_DB, this.users);
+        IoTFileManager.loadDomainsFromText(DOMAINS_TXT_DB, this.domains);
+        IoTFileManager.loadDevicesFromText(DEVICES_TXT_DB, this.devices);
 
-        Optional<Object> domainsObj = IoTFileManager.readObjectFromFile(DOMAINS_TXT_DB);
-        if (domainsObj.isPresent())
-            this.domains = (Map<String, Domain>) domainsObj.get();
+        /*
+            Optional<Object> domainsObj = IoTFileManager.readObjectFromFile(DOMAINS_TXT_DB);
+            if (domainsObj.isPresent())
+                this.domains = (Map<String, Domain>) domainsObj.get();
 
-        Optional<Object> usersObj = IoTFileManager.readObjectFromFile(USER_TXT_DB);
-        if (usersObj.isPresent())
-            this.users = (Map<String, User>) usersObj.get();
+            Optional<Object> usersObj = IoTFileManager.readObjectFromFile(USER_TXT_DB);
+            if (usersObj.isPresent())
+                this.users = (Map<String, User>) usersObj.get();
 
-        Optional<Object> devicesObj = IoTFileManager.readObjectFromFile(DEVICES_TXT_DB);
-        if (devicesObj.isPresent())
-            this.devices = (Map<String, Device>) devicesObj.get();
+            Optional<Object> devicesObj = IoTFileManager.readObjectFromFile(DEVICES_TXT_DB);
+            if (devicesObj.isPresent())
+                this.devices = (Map<String, Device>) devicesObj.get();
+         */
+
     }
     
     public static IoTServerDatabase getInstance() {
