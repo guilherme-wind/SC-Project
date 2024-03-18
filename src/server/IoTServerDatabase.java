@@ -1,11 +1,14 @@
 package src.server;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
 import src.server.model.Device;
 import src.server.model.Domain;
 import src.server.model.User;
+import src.utils.IoTFileManager;
 import src.utils.IoTOpcodes;
 
 /**
@@ -13,16 +16,42 @@ import src.utils.IoTOpcodes;
  * information.
  */
 public class IoTServerDatabase {
-    private static IoTServerDatabase instance;
 
+    // Singleton
+    private static IoTServerDatabase instance;
+    
     private final Map<String, Domain> domains;
     private final Map<String, User> users;
     private final Map<String, Device> devices;
 
+    private IoTFileManager fileManager;
+
+    private final Path DEFAULT_PATH = Paths.get(".", "server_files");
+    private final Path DOMAINS_PATH = Paths.get(DEFAULT_PATH.toString(),"domains.txt");
+    private final Path USERS_PATH = Paths.get(DEFAULT_PATH.toString(),"users.txt");
+    private final Path DEVICES_PATH = Paths.get(DEFAULT_PATH.toString(),"devices.txt");
+    
     private IoTServerDatabase() {
         this.domains = new HashMap<>();
         this.users = new HashMap<>();
         this.devices = new HashMap<>();
+        fileManager = IoTFileManager.getInstance();
+    }
+    
+    public static IoTServerDatabase getInstance() {
+        if (instance == null) {
+            instance = new IoTServerDatabase();
+        }
+        return instance;
+    }
+
+    /**
+     * Loads data from text files.
+     */
+    public void loadData() {
+        fileManager.loadDomainsFromText(DOMAINS_PATH.toString(), domains);
+        fileManager.loadDevicesFromText(DEVICES_PATH.toString(), devices);
+        fileManager.loadUsersFromText(USERS_PATH.toString(), users);
     }
 
     /**
@@ -81,12 +110,6 @@ public class IoTServerDatabase {
         return this.domains.get(domainName);
     }
 
-    public static IoTServerDatabase getInstance() {
-        if (instance == null) {
-            instance = new IoTServerDatabase();
-        }
-        return instance;
-    }
 
     public IoTOpcodes createDomain(User as, String domainName) {
         if (this.domains.containsKey(domainName))
