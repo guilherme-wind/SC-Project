@@ -2,12 +2,15 @@ package src.utils;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.List;
 import java.io.ObjectOutputStream;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 
 import src.server.model.Device;
@@ -281,7 +284,7 @@ public class IoTFileManager {
      *      0 if wrote successfully;
      *      -1 if failed to write to file;
      */
-    public int writeObjectToFile(String filePath, Object object) {
+    public static synchronized int writeObjectToFile(String filePath, Object object) {
         try {
             FileOutputStream file = new FileOutputStream(filePath);
             ObjectOutputStream writer = new ObjectOutputStream(file);
@@ -294,8 +297,24 @@ public class IoTFileManager {
         return 0;
     }
 
-    public Object readObjectFromFile(String filePath) {
-        // TODO
-        return null;
+    /**
+     * Reads an object in binary from a file.
+     * @param filePath
+     *      Path to the file.
+     * @return
+     *      Read object or nothing if error occured.
+     */
+    public static synchronized Optional<Object> readObjectFromFile(String filePath) {
+        Object obj;
+        try {
+            FileInputStream file = new FileInputStream(filePath);
+            ObjectInputStream reader = new ObjectInputStream(file);
+            obj = reader.readObject();
+            reader.close();
+            file.close();
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+        return Optional.of(obj);
     }
 }
