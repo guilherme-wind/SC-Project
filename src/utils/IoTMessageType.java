@@ -57,9 +57,17 @@ public interface IoTMessageType {
 
     public float[] getTemps();
 
+    public void setImageName(String name);
+
+    public String getImageName();
+
     public void setImage(byte[] image);
 
     public byte[] getImage();
+
+    public void setImageSize(long size);
+
+    public long getImageSize();
 
     public void setData(byte[] data);
 

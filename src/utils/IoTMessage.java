@@ -7,27 +7,31 @@ import java.io.Serializable;
  */
 public class IoTMessage implements IoTMessageType, Serializable {
 
-    public IoTOpcodes opcode;
+    private IoTOpcodes opcode;
     
-    public String userid;
+    private String userid;
         
-    public String userpwd;
+    private String userpwd;
 
-    public int devid;
+    private int devid;
 
-    public String program_name;
+    private String program_name;
 
-    public long program_size;
+    private long program_size;
 
-    public String domain_name;
+    private String domain_name;
 
-    public float temp;
+    private float temp;
 
-    public float[] temps;
+    private float[] temps;
 
-    public byte[] img;
+    private String img_name;
 
-    public byte[] data;
+    private long img_size;
+
+    private byte[] img;
+
+    private byte[] data;
 
     @Override
     public void setOpCode(IoTOpcodes opcode) {
@@ -125,6 +129,26 @@ public class IoTMessage implements IoTMessageType, Serializable {
     }
 
     @Override
+    public void setImageName(String name) {
+        this.img_name = name;
+    }
+
+    @Override
+    public String getImageName() {
+        return this.img_name;
+    }
+
+    @Override
+    public void setImageSize(long size) {
+        this.img_size = size;
+    }
+
+    @Override
+    public long getImageSize() {
+        return this.img_size;
+    }
+
+    @Override
     public byte[] getImage() {
         return this.img;
     }
@@ -143,6 +167,7 @@ public class IoTMessage implements IoTMessageType, Serializable {
     public String toString() {
         return this.opcode.toString();
     }
+
 
 
 }
