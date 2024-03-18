@@ -55,13 +55,16 @@ public class IoTServerDatabase {
         // IoTFileManager.loadDevicesFromText(DOMAINS_TXT_DB, this.devices);
 
         Optional<Object> domainsObj = IoTFileManager.readObjectFromFile(DOMAINS_TXT_DB);
-        this.domains = domainsObj.isPresent() ? (Map<String, Domain>) domainsObj.get() : null;
+        if (domainsObj.isPresent())
+            this.domains = (Map<String, Domain>) domainsObj.get();
 
         Optional<Object> usersObj = IoTFileManager.readObjectFromFile(USER_TXT_DB);
-        this.users = usersObj.isPresent() ? (Map<String, User>) usersObj.get() : null;
+        if (usersObj.isPresent())
+            this.users = (Map<String, User>) usersObj.get();
 
         Optional<Object> devicesObj = IoTFileManager.readObjectFromFile(DEVICES_TXT_DB);
-        this.devices = devicesObj.isPresent() ? (Map<String, Device>) devicesObj.get() : null;
+        if (devicesObj.isPresent())
+            this.devices = (Map<String, Device>) devicesObj.get();
     }
     
     public static IoTServerDatabase getInstance() {
