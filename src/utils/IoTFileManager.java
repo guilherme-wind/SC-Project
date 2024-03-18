@@ -2,8 +2,10 @@ package src.utils;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -17,7 +19,15 @@ import src.server.model.User;
  */
 public class IoTFileManager {
 
-    public IoTFileManager() {
+    private static IoTFileManager instance = null;
+
+    private IoTFileManager() {
+    }
+
+    public static IoTFileManager getInstance() {
+        if (instance == null)
+            instance = new IoTFileManager();
+        return instance;
     }
 
     /**
@@ -260,5 +270,31 @@ public class IoTFileManager {
     public int readImage(String filePath) {
         // TODO
         return 0;
+    }
+
+    /**
+     * Writes an object in binary to a file.
+     * @param filePath
+     * @param object
+     * @return
+     *      0 if wrote successfully;
+     *      -1 if failed to write to file;
+     */
+    public int writeObjectToFile(String filePath, Object object) {
+        try {
+            FileOutputStream file = new FileOutputStream(filePath);
+            ObjectOutputStream writer = new ObjectOutputStream(file);
+            writer.writeObject(object);
+            writer.close();
+            file.close();
+        } catch (Exception e) {
+            return -1;
+        }
+        return 0;
+    }
+
+    public Object readObjectFromFile(String filePath) {
+        // TODO
+        return null;
     }
 }
