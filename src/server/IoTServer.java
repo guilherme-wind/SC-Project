@@ -22,9 +22,9 @@ public class IoTServer{
             while (true) {
                 System.out.println("Waiting for new connection...");
                 IoTServerThread thread = new IoTServerThread(socket.accept());
+                System.out.println("New connection!");
                 threads.add(thread);
                 thread.start();
-                // TODO store running threads in a pool, so we can exit gracefully
             }
         } catch (Exception e) {
             System.out.println("Fui interrumpido!!!");
