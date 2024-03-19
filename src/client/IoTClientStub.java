@@ -1,13 +1,13 @@
-package src.client;
+package client;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import src.utils.IoTMessage;
-import src.utils.IoTMessageType;
-import src.utils.IoTOpcodes;
-import src.utils.IoTStream;
+import utils.IoTMessage;
+import utils.IoTMessageType;
+import utils.IoTOpcodes;
+import utils.IoTStream;
 
 public class IoTClientStub {
 

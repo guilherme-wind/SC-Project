@@ -1,13 +1,13 @@
-package src.server;
+package server;
 
-import src.server.model.Device;
-import src.server.model.Domain;
-import src.server.model.Session;
-import src.server.model.User;
-import src.utils.IoTAuth;
-import src.utils.IoTMessage;
-import src.utils.IoTMessageType;
-import src.utils.IoTOpcodes;
+import server.model.Device;
+import server.model.Domain;
+import server.model.Session;
+import server.model.User;
+import utils.IoTAuth;
+import utils.IoTMessage;
+import utils.IoTMessageType;
+import utils.IoTOpcodes;
 
 import java.util.EnumMap;
 

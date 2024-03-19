@@ -1,10 +1,10 @@
-package src.server.model;
+package server.model;
 
 
 import java.io.File;
 
-import src.utils.IoTIParsable;
-import src.utils.IoTPersistance;
+import utils.IoTIParsable;
+import utils.IoTPersistance;
 
 
 

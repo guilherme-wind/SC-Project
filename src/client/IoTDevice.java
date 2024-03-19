@@ -1,10 +1,10 @@
-package src.client;
+package client;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.NoSuchElementException;
 
-import src.utils.IoTPersistance;
+import utils.IoTPersistance;
 
 public class IoTDevice {
     // This bozo is going to CLI

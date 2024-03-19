@@ -1,4 +1,4 @@
-package src.utils;
+package utils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,9 +13,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
-import src.server.model.Device;
-import src.server.model.Domain;
-import src.server.model.User;
+import server.model.Device;
+import server.model.Domain;
+import server.model.User;
 
 /**
  * Simplify the process of register and load data from

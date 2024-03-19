@@ -1,4 +1,4 @@
-package src.server;
+package server;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -7,12 +7,12 @@ import java.util.stream.Collectors;
 import java.util.List;
 import java.util.Map;
 
-import src.server.model.Device;
-import src.server.model.Domain;
-import src.server.model.User;
-import src.utils.IoTFileManager;
-import src.utils.IoTIParsable;
-import src.utils.IoTOpcodes;
+import server.model.Device;
+import server.model.Domain;
+import server.model.User;
+import utils.IoTFileManager;
+import utils.IoTIParsable;
+import utils.IoTOpcodes;
 
 /**
  * Represents a database that stores user, domain and devices

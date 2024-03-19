@@ -1,10 +1,10 @@
-package src.server;
+package server;
 
 import java.net.Socket;
 
-import src.server.model.Session;
-import src.utils.IoTMessageType;
-import src.utils.IoTStream;
+import server.model.Session;
+import utils.IoTMessageType;
+import utils.IoTStream;
 
 public class IoTServerThread extends Thread {
     private Boolean running = false;
@@ -16,7 +16,7 @@ public class IoTServerThread extends Thread {
     }
 
     /**
-     * Waits for client requests and forwards them to upper layers.
+     * Waits for client requests and forwards them the handler.
      */
     @Override
     public void run() {
@@ -39,6 +39,5 @@ public class IoTServerThread extends Thread {
                     System.out.println("Sent!");
             }
         }
-        System.out.println("Mewing: Bye bye");
     }    
 }

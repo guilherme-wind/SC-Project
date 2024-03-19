@@ -1,6 +1,6 @@
-package src.server.model;
+package server.model;
 
-import src.utils.IoTIParsable;
+import utils.IoTIParsable;
 
 public class User implements IoTIParsable {
 

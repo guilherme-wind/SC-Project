@@ -1,4 +1,4 @@
-package src.server.model;
+package server.model;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashSet;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
 
-import src.utils.IoTIParsable;
+import utils.IoTIParsable;
 
 public class Domain implements IoTIParsable {
 

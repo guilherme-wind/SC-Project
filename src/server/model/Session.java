@@ -1,6 +1,6 @@
-package src.server.model;
+package server.model;
 
-import src.utils.IoTAuth;
+import utils.IoTAuth;
 
 /**
  * Represents a session between a device and 
