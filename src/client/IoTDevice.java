@@ -39,30 +39,31 @@ public class IoTDevice {
             }
             
             // Initialize class fields using command line arguments
-            if (initialize(args) < 0)
-            close();
-            
-            
+            if (initialize(args) < 0) {
+                cli.printErr("Error initializing device!");
+                close();
+            }
             
             // perform user auth
-            if (performUserAuth() < 0)
-            close();
+            if (performUserAuth() < 0) {
+                cli.printErr("Error authenticating user!");
+                close();
+            }
             
             // perform device auth
             if (performDeviceAuth(false) < 0)
-            close();
+                close();
             
             
             // perform program auth
             if (performProgramAuth() < 0)
-            close();
+                close();
             
             handler.userInvoke();
-            handler.close();
         } catch (NoSuchElementException e) {
             // Ctrl C handle
             System.out.println("Exit");
-            handler.close();
+            close();
         }
         
         System.out.println("Finished!");
@@ -146,8 +147,6 @@ public class IoTDevice {
         stub = IoTClientStub.getInstance(serverIp, serverPort);
         
         if (stub == null) {
-            cli.printErr("Error initializing device!");
-            cli.close();
             return -1;
         }
         
@@ -155,8 +154,6 @@ public class IoTDevice {
         handler = IoTClientHandler.getInstance(cli, stub);
         
         if (handler == null) {
-            cli.printErr("Error initializing device!");
-            cli.close();
             return -1;
         }
         return 0;
@@ -176,12 +173,12 @@ public class IoTDevice {
         String path = IoTDevice.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         File file = new File(path);
         if (!file.exists())
-        return -1;
+            return -1;
         long size = file.length();
         String name = file.getName();
         int auth_res = stub.authenticateProgram(name, size);
         if (auth_res < 0)
-        return -1;
+            return -1;
         return 0;
     }
     
@@ -195,7 +192,6 @@ public class IoTDevice {
         int status = stub.authenticateUser(userId, pwd);
         cli.print(String.format("<- %d", status));
         if (status < 0) {
-            cli.printErr("Error authenticating user!");
             if (status == -1)
                 return performUserAuth();
         }
@@ -229,6 +225,7 @@ public class IoTDevice {
      *      -2 if socket error;
      */
     private static int performProgramAuth() {
+        // TODO: get executing .jar file
         cli.print(String.format("-> /authProg [%s, %d]", PROGRAM_NAME, PROGRAM_SIZE));
         int status = stub.authenticateProgram(PROGRAM_NAME, PROGRAM_SIZE);
         cli.print(String.format("<- %d", status));
@@ -245,9 +242,11 @@ public class IoTDevice {
      */
     public static void close() {
         if (stub != null)
-        stub.close();
+            stub.close();
         if (cli != null)
-        cli.close();
+            cli.close();
+        if (handler != null)
+            handler.close();
         System.exit(0);
     }
 }
