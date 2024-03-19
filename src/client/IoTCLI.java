@@ -12,7 +12,10 @@ public class IoTCLI {
                                         "\tET <float>" + LINE +
                                         "\tEI <image-path>" + LINE +
                                         "\tRT <domain>" + LINE +
-                                        "\tRI <user>:<device>";
+                                        "\tRI <user>:<device>" + LINE +
+                                        "\tQUIT";
+    private static final String ERROR_TEMP = "[Error]";
+    private static final String ERROR_MISSING_ARGS = "";
 
 
     // Singleton
@@ -53,6 +56,10 @@ public class IoTCLI {
 
     public void printErr(String errmsg) {
         System.out.println("Error: " + errmsg);
+    }
+
+    public void printLog(String logmsg) {
+        System.out.println("Log: " + logmsg);
     }
 
     /**
