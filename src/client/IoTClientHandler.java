@@ -4,6 +4,10 @@ import java.nio.charset.StandardCharsets;
 
 import utils.IoTPersistance;
 
+/**
+ * Interacts with user and deals with
+ * input invoke.
+ */
 public class IoTClientHandler {
 
     // Singleton
@@ -79,6 +83,10 @@ public class IoTClientHandler {
         }
     }
 
+    /**
+     * Creates a new domain
+     * @param args
+     */
     private void createCommand(String[] args) {
         if (args.length == 1) {
             cli.printErr("missing <domain name>\n");
@@ -100,6 +108,10 @@ public class IoTClientHandler {
         }
     }
 
+    /**
+     * Adds an user to a domain
+     * @param args
+     */
     private void addCommand(String[] args) {
         if (args.length == 1) {
             cli.printErr("missing <user> and <domain name>\n");
@@ -127,6 +139,10 @@ public class IoTClientHandler {
         }
     }
 
+    /**
+     * Registers the current device in a domain
+     * @param args
+     */
     private void rdCommand(String[] args) {
         if (args.length == 1) {
             cli.printErr("missing <domain name>\n");
@@ -147,6 +163,10 @@ public class IoTClientHandler {
         }
     }
 
+    /**
+     * Sends a temperature reading to the server
+     * @param args
+     */
     private void etCommand(String[] args) {
         if (args.length == 1) {
             cli.printErr("missing <temperature> (in float)\n");
@@ -157,8 +177,14 @@ public class IoTClientHandler {
             cli.printErr("too many arguments\n");
             return;
         }
-
-        float temp = Float.parseFloat(args[1]);
+        
+        float temp = 0;
+        try {
+            temp = Float.parseFloat(args[1].replace(",", "."));
+        } catch (NumberFormatException e) {
+            cli.printErr("Wrong number format!");
+            return;
+        }
         cli.print(String.format("-> /temperature %s", temp));
         int status = stub.sendTemp(temp);
         cli.print(String.format("<- %d", status));
@@ -168,6 +194,10 @@ public class IoTClientHandler {
 
     }
 
+    /**
+     * Sends an image to the server
+     * @param args
+     */
     private void eiCommand(String[] args) {
         if (args.length == 1) {
             cli.printErr("missing <file.jpg>\n");
@@ -194,6 +224,10 @@ public class IoTClientHandler {
         }
     }
 
+    /**
+     * Receive temperature readings from devices in the domain
+     * @param args
+     */
     private void rtCommand(String[] args) {
         if (args.length == 1) {
             cli.printErr("missing <domain name>\n");
@@ -216,6 +250,10 @@ public class IoTClientHandler {
         cli.print(String.format("<- %s", dataStr));
     }
 
+    /**
+     * Receive image from a device of a user
+     * @param args
+     */
     private void riCommand(String[] args) {
         if (args.length == 1) {
             cli.printErr("missing <user id> and <device id>\n");
