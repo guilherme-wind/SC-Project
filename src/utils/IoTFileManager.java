@@ -18,8 +18,10 @@ import src.server.model.Domain;
 import src.server.model.User;
 
 /**
- * Simplify the process to register and load data from
- * persistent storage.
+ * Simplify the process of register and load data from
+ * persistent storage, allows writing objects dirctly
+ * to files or parse to string represetation before 
+ * writing to files.
  */
 public class IoTFileManager {
 
