@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import src.server.model.Device;
 import src.server.model.Domain;
@@ -51,21 +50,6 @@ public class IoTServerDatabase {
         IoTFileManager.loadUsersFromText(USER_TXT_DB, this.users);
         IoTFileManager.loadDomainsFromText(DOMAINS_TXT_DB, this.domains);
         IoTFileManager.loadDevicesFromText(DEVICES_TXT_DB, this.devices);
-
-        /*
-            Optional<Object> domainsObj = IoTFileManager.readObjectFromFile(DOMAINS_TXT_DB);
-            if (domainsObj.isPresent())
-                this.domains = (Map<String, Domain>) domainsObj.get();
-
-            Optional<Object> usersObj = IoTFileManager.readObjectFromFile(USER_TXT_DB);
-            if (usersObj.isPresent())
-                this.users = (Map<String, User>) usersObj.get();
-
-            Optional<Object> devicesObj = IoTFileManager.readObjectFromFile(DEVICES_TXT_DB);
-            if (devicesObj.isPresent())
-                this.devices = (Map<String, Device>) devicesObj.get();
-         */
-
     }
     
     public static IoTServerDatabase getInstance() {
