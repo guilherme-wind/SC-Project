@@ -202,5 +202,14 @@ public class IoTServerDatabase {
 
         IoTFileManager.writeObjsToText(DOMAINS_TXT_DB, objs);
     }
+
+    public void onDeviceUpdate() {
+        List<IoTIParsable> objs = this.devices.values()
+            .stream()
+            .map(device -> (IoTIParsable) device)
+            .collect(Collectors.toList());
+        
+        IoTFileManager.writeObjsToText(DEVICES_TXT_DB, objs);
+    }
     
 }

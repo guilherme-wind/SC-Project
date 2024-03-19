@@ -98,6 +98,7 @@ public class IoTServerRequestHandler {
             session.setAuthState(IoTAuth.USER_DEVICE);
             session.setDevice(device);
             response.setOpCode(IoTOpcodes.OK_DEVID);
+            dbContext.onDeviceUpdate();
         } 
         else {
             Device device = dbContext.getDevice(iotDeviceId);
