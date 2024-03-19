@@ -42,6 +42,10 @@ public class IoTServerRequestHandler {
         }
     }
 
+    /**
+     * Associates each request opcode with it's 
+     * corresponding handler function.
+     */
     private void initializeFunctions() {
         functions.put(IoTOpcodes.VALIDATE_USER, this::handleValidateUser);
         functions.put(IoTOpcodes.VALIDATE_DEVICE, this::handleValidateDevice);
@@ -56,6 +60,20 @@ public class IoTServerRequestHandler {
         functions.put(IoTOpcodes.GET_USER_IMAGE, this::handleReceiveImage);
     }
 
+    /**
+     * Validates users, finds in database user record
+     * and compares with the given credencials, or
+     * creates a new user record if the user doesn't 
+     * exist in the database.
+     * @param message
+     *      Request message.
+     * @param session
+     *      Connection session.
+     * @param dbContext
+     *      Server database.
+     * @return
+     *      Server response.
+     */
     private IoTMessageType handleValidateUser(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
         String userName = message.getUserId();
         String password = message.getUserPwd();
@@ -94,6 +112,7 @@ public class IoTServerRequestHandler {
 
         if (!dbContext.containsDevice(iotDeviceId)) { // new device!
             Device device = new Device(user, devId);
+            device.setActive();
             dbContext.addDevice(device);
             session.setAuthState(IoTAuth.USER_DEVICE);
             session.setDevice(device);
