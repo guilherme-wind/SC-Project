@@ -21,7 +21,7 @@ public class Device implements IoTIParsable {
     private final File imgLogFile;
 
     public Device(User owner, int devId) {
-        this.isActive = true;
+        this.isActive = false;
         this.owner = owner;
         this.devId = devId;
         this.name = String.format("%s:%s", owner.getName(), devId);
