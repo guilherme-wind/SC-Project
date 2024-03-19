@@ -18,6 +18,10 @@ public class Session {
         this.authState = IoTAuth.NONE;
     }
 
+    /**
+     * Defines the device used in the session
+     * @param device
+     */
     public void setDevice(Device device) {
         this.device = device;
     }
@@ -26,6 +30,10 @@ public class Session {
         return this.device;
     }
 
+    /**
+     * Defines the user in the session
+     * @param user
+     */
     public void setUser(User user) {
         this.user = user;
     }
@@ -42,6 +50,10 @@ public class Session {
         this.authState = state;
     }
 
+    /**
+     * Terminates a session and puts 
+     * device active state to off.
+     */
     public void close() {
         if (this.device != null) {
             this.device.turnOff();
