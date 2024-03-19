@@ -277,9 +277,13 @@ public class IoTFileManager {
     }
 
     /**
-     * Writes an object in binary to a file.
+     * Writes an object in binary to a file, will create one 
+     * in case the file doesn't exist, will overwrite the
+     * content if the file with the same name already exists.
      * @param filePath
+     *      Path to the file.
      * @param object
+     *      Object to be written.
      * @return
      *      0 if wrote successfully;
      *      -1 if failed to write to file;
