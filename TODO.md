@@ -101,4 +101,6 @@ RT (<dm>: str):
 ### Codigos por corrigir
 - `IoTServerRequestHandler.handleReceiveImage()`
 - `Device.writeImage()` e `Device.writeTemperature()`, ...
+- `IoTServerDataBase.canUserReceiveDataFromDevice()` deve permitir o utilizador receber imagem sem ter o seu
+  dispositivo num dominio
 - Separar responsabilidades de Database e Persistance
