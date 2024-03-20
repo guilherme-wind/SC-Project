@@ -38,7 +38,7 @@ Caso alguem queira tomar a posse do desenvolvimento de tarefas, simplesmente esc
 | enviar valor | SEND_TEMP | temp | OK_ACCEPTED |
 | enviar imagem | SEND_IMAGE | img | OK_ACCEPTED |
 | receber temperatura | GET_TEMP | domain_name | NOK_NO_PERMISSIONS, NOK_NO_DOMAIN, OK_ACCEPTED |
-| receber imagem | GET_DEVICE_IMAGE | userid, devid | NOK_NO_PERMISSIONS, NOK_NO_USER, OK_ACCEPTED |
+| receber imagem | GET_DEVICE_IMAGE | userid, devid | NOK_NO_PERMISSIONS, NOK_NO_USER, NOK_NO_DATE, OK_ACCEPTED |
 ### Utilizacao dos Modelos (Server side)
 let executor := User(user, pass) # user of the current session
 let device := Device(name, executorName) # device of the current session
