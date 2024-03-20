@@ -28,11 +28,11 @@ public class IoTServerDatabase {
     private Map<String, Device> devices;
     
     // TODO: put all files into a folder
-    private static final Path ROOT = Paths.get(".", "server_files");
+    private static final Path ROOT = Paths.get(".", "server_files", "metadata");
     
-    private static final String USER_TXT_DB = "users.txt";
-    private static final String DOMAINS_TXT_DB = "domains.txt";
-    private static final String DEVICES_TXT_DB = "devices.txt";
+    private static final String USER_TXT_DB = Paths.get(ROOT.toString(), "users.txt").toString();
+    private static final String DOMAINS_TXT_DB = Paths.get(ROOT.toString(), "domains.txt").toString();
+    private static final String DEVICES_TXT_DB = Paths.get(ROOT.toString(), "devices.txt").toString();
     
     
     private IoTServerDatabase() {
