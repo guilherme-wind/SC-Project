@@ -158,8 +158,23 @@ public class IoTClientHandler {
         cli.print(String.format("-> /register device %s", device));
         int status = stub.registerDevice(device);
         cli.print(String.format("<- %d", status));
-        if (status < 0) {
-            cli.printErr("Failed to register device!");
+        switch (status) {
+            case 1:
+                cli.print("This device is already registered in the domain.");
+            case 0:
+                cli.print("Device registered successfully!");
+                break;
+            case -1:
+                cli.printErr("Domain doesn't exist!");
+                break;
+            case -2:
+                cli.printErr("No permissions to register devices in this domain!");
+                break;
+            case -3:
+                cli.printErr("Network error!");
+        
+            default:
+                break;
         }
     }
 
@@ -188,8 +203,16 @@ public class IoTClientHandler {
         cli.print(String.format("-> /temperature %s", temp));
         int status = stub.sendTemp(temp);
         cli.print(String.format("<- %d", status));
-        if (status < 0) {
-            cli.printErr("Failed to send the temperature!");
+        switch (status) {
+            case 0:
+                cli.print("Sent the temperature measurement successfully!");
+                break;
+            case -1:
+                cli.printErr("Network error!");
+                break;
+        
+            default:
+                break;
         }
 
     }
@@ -209,18 +232,22 @@ public class IoTClientHandler {
             return;
         }
 
-        String filename = args[1];
-        byte[] img = IoTPersistance.read(filename);
-        if (img == null) {
-            cli.printErr("Error: File not found.");
-            return;
-        }
-
-        cli.print(String.format("-> /image %s", filename));
-        int status = stub.sendImage(img);
+        cli.print(String.format("-> /image %s", args[1]));
+        int status = stub.sendImage(args[1]);
         cli.print(String.format("<- %d", status));
-        if (status < 0) {
-            cli.printErr("Failed to send the image!");
+        switch (status) {
+            case 0:
+                cli.print("Sent the image successfully!");
+                break;
+            case -1:
+                cli.printErr("Failed to open the image!");
+                break;
+            case -2:
+                cli.printErr("Network error!");
+                break;
+        
+            default:
+                break;
         }
     }
 
@@ -241,13 +268,25 @@ public class IoTClientHandler {
 
         String targetDomainName = args[1];
         cli.print(String.format("-> /retrieveTemp %s", targetDomainName));
-        byte[] data = stub.getTemperaturesInDomain(targetDomainName);
-        if (data == null) {
-            cli.printErr("Failed to receive the latest remperature measurements!");
-            return;
+        int status = stub.getTemperaturesInDomain(targetDomainName);
+        cli.print(String.format("<- %d", status));
+        switch (status) {
+            case 0:
+                cli.print("Received the latest temperature measurements successfully!");
+                break;
+            case -1:
+                cli.printErr("No permissions!");
+                break;
+            case -2:
+                cli.printErr("The domain doesn't exist!");
+                break;
+            case -3:
+                cli.printErr("Network error!");
+                break;
+        
+            default:
+                break;
         }
-        String dataStr = new String(data, StandardCharsets.UTF_8);
-        cli.print(String.format("<- %s", dataStr));
     }
 
     /**
@@ -260,25 +299,45 @@ public class IoTClientHandler {
             return;
         }
 
-        if (args.length == 2) {
-            cli.printErr("missing arguments, we're expecting 2 arguments: <user id> and <device id>\n");
-            return;
-        }
-
-        if (args.length > 3) {
+        if (args.length > 2) {
             cli.printErr("too many arguments\n");
             return;
         }
 
-        String userId = args[1];
-        int devId = Integer.parseInt(args[2]);
-        String user = userId + ":" + args[2];
-        cli.print(String.format("-> /receive image %s", user));
-        byte[] status = stub.getUserImage(userId, devId);
-        if (status == null) {
-            cli.printErr("Failed to receive the image!");
+        String[] tokens = args[1].split(":", 2);
+        if (tokens.length < 2) {
+            cli.printErr("missing arguments, we're expecting 2 arguments: <user id> and <device id>\n");
+            return;
         }
-        cli.print(String.format("<- %s", status.toString()));
+
+        String userId = tokens[0];
+        int devId = Integer.parseInt(tokens[1]);
+        String user = userId + ":" + tokens[1];
+        cli.print(String.format("-> /receive image %s", user));
+        int status = stub.getUserImage(userId, devId);
+        cli.print(String.format("<- %d", status));
+        switch (status) {
+            case 1:
+                cli.printErr("The device hasn't uploaded any image yet!");
+                break;
+            case 0:
+                cli.print("Received the image successfully!");
+                break;
+            case -1:
+                cli.printErr("No permissions!");
+                break;
+            case -2:
+                cli.printErr("The user doesn't exist!");
+                break;
+            case -3:
+                cli.printErr("The device doesn't exist!");
+                break;
+            case -4:
+                cli.printErr("Network error!");
+        
+            default:
+                break;
+        }
     }
 
     /**
