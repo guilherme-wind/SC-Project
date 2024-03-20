@@ -97,3 +97,8 @@ RT (<dm>: str):
     (Domain) domain = domains.get(dm)
     if !domain.ownedBy(executor):
         return NOPERM
+
+### Codigos por corrigir
+- `IoTServerRequestHandler.handleReceiveImage()`
+- `Device.writeImage()` e `Device.writeTemperature()`, ...
+- Separar responsabilidades de Database e Persistance
