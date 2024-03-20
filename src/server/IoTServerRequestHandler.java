@@ -9,6 +9,8 @@ import utils.IoTMessage;
 import utils.IoTMessageType;
 import utils.IoTOpcodes;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.EnumMap;
 
 public class IoTServerRequestHandler {
@@ -254,13 +256,21 @@ public class IoTServerRequestHandler {
             return response;
         }
 
+        // TODO: change implementation of readimage
         byte[] image = device.readImage();
         if (image == null || image.length <= 0) {
             response.setOpCode(IoTOpcodes.NOK_NO_DATA);
             return response;
         }
+        // TODO: change this scuffed code
+        String fileextention = String.format("%s_dev_%s_img.jpeg", device.getOwner().getName(), device.getDevId());
+        String filepath = Paths.get(".", "server_files", "user_files", fileextention).toString();
+        String filename = Paths.get(filepath).getFileName().toString();
+        long filesize = new File(filepath).length();
 
-        response.setData(image);
+        response.setImageName(filename);
+        response.setImageSize(filesize);
+        response.setImage(image);
 
         response.setOpCode(IoTOpcodes.OK_ACCEPTED);
 
