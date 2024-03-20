@@ -210,6 +210,13 @@ public class IoTFileManager {
         // Always tries to delete the file
         file.delete();
         
+        // Tries to create all directories to the file
+        File parent = file.getParentFile();
+        if (parent != null) {
+            if (!parent.exists() && !parent.mkdirs())
+                return -1;
+        }
+
         // Creates new file
         try {
             if (!file.createNewFile()) {
