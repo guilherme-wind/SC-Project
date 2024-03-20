@@ -1,12 +1,16 @@
 package client;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.file.Paths;
+import java.util.Arrays;
 
 import utils.IoTMessage;
 import utils.IoTMessageType;
 import utils.IoTOpcodes;
+import utils.IoTPersistance;
 import utils.IoTStream;
 
 public class IoTClientStub {
@@ -304,16 +308,26 @@ public class IoTClientStub {
 
     /**
      * Sends image to the server.
-     * @param image
-     *      Image byte array.
-     * @return
-     *      0 if sent successfully;
-     *      -1 if socket error occured;
+     * @param filename
+     *      Image file name.
+     * @return <ul>
+     *      <li> 0 if sent successfully;
+     *      <li> -1 if error occured while reading the file;
+     *      <li> -2 if socket error occured;
      */
-    protected int sendImage(byte[] image) {
+    protected int sendImage(String filepath) {
+        System.out.println("Received filepath: " + filepath);
+        byte[] img = IoTPersistance.read(filepath);
+        if (img == null)
+            return -1;
+        String filename = Paths.get(filepath).getFileName().toString();
+        long filesize = new File(filepath).length();
+
         IoTMessageType request = new IoTMessage();
         request.setOpCode(IoTOpcodes.SEND_IMAGE);
-        request.setImage(image);
+        request.setImageName(filename);
+        request.setImageSize(filesize);
+        request.setImage(img);
 
         if (!iotStream.write(request))
             return -1;
@@ -333,32 +347,42 @@ public class IoTClientStub {
      * the current domain.
      * @param domainName
      *      Domain name from where temperatures are retrieved.
-     * @return
-     *      Float array representing temperature readings.
-     *      Null if one of the following errors occured:
-     *          - No access permission;
-     *          - Domain doesn't exist;
-     *          - Socket error;
+     * @return <ul>
+     *      <li> 0 if received values successfully;
+     *      <li> -1 if the current user doesn't have permissions;
+     *      <li> -2 if the domain doesn't exist;
+     *      <li> -3 if socket or response semantic error occured;
      */
-    protected byte[] getTemperaturesInDomain(String domainName) {
+    protected int getTemperaturesInDomain(String domainName) {
         IoTMessageType request = new IoTMessage();
         request.setOpCode(IoTOpcodes.GET_TEMP);
         request.setDomainName(domainName);
 
         if (!iotStream.write(request))
-            return null;
+            return -3;
 
         IoTMessageType response = (IoTMessageType) iotStream.read();
         if (response == null)
-            return null;
+            return -3;
 
         IoTOpcodes respcode = response.getOpcode();
-        byte[] data = response.getData();
-
-        if (respcode.equals(IoTOpcodes.OK_ACCEPTED) && data != null)
-            return data;
-
-        return null;
+        
+        switch (respcode) {
+            case NOK_NO_PERMISSIONS:
+            return -1;
+            
+            case NOK_NO_DOMAIN:
+            return -2;
+            
+            case OK_ACCEPTED:
+            break;
+            
+            default:
+            return -3;
+        }
+        
+        float[] data = response.getTemps();
+        return 0;
     }
 
     /**
@@ -367,35 +391,69 @@ public class IoTClientStub {
      *      User id.
      * @param devId
      *      Device id.
-     * @return
-     *      Image byte array if retrieved successfully;
-     *      Null if one of the following errors occured:
-     *          - No access permission;
-     *          - User doesn't exist;
-     *          - Device doesn't exist;
-     *          - Socket error;
+     * @return <ul>
+     *      <li> 1 if the device hasn't uploaded any image yet;
+     *      <li> 0 if image received successfully;
+     *      <li> -1 if the current user doesn't have permissions;
+     *      <li> -2 if the user doesn't exist;
+     *      <li> -3 if the device doesn't exist;
+     *      <li> -4 if socket or response semantic error occured;
      */
-    protected byte[] getUserImage(String userId, int devId) {
+    protected int getUserImage(String userId, int devId) {
         IoTMessageType request = new IoTMessage();
         request.setOpCode(IoTOpcodes.GET_USER_IMAGE);
         request.setUserId(userId);
         request.setDevId(devId);
 
         if (!iotStream.write(request))
-            return null;
+            return -4;
 
         IoTMessageType response = (IoTMessageType) iotStream.read();
         if (response == null)
-            return null;
+            return -4;
 
         IoTOpcodes respcode = response.getOpcode();
-        byte[] image = response.getData();
-        if (respcode.equals(IoTOpcodes.OK_ACCEPTED) &&
-            image != null)
-            return image;
-        return null;
+        switch (respcode) {
+            case NOK_NO_PERMISSIONS:
+            return -1;
+            
+            case NOK_NO_USER:
+            return -2;
+            
+            case NOK_NO_DEVICE:
+            return -3;
+
+            case NOK_NO_DATA:
+            return 1;
+            
+            case OK_ACCEPTED:
+            break;
+            
+            default:
+            return -4;
+        }
+        
+        long imagesize = response.getImageSize();
+        if (imagesize <= 0)
+            return -4;
+        byte[] imagedata = response.getData();
+        if (imagedata == null)
+            return -4;
+        String imagename = response.getImageName();
+        if (imagename == null)
+            return -4;
+
+        // Choose the smallest value to truncate the byte array
+        byte[] image = Arrays.copyOf(imagedata, Math.min(Math.toIntExact(imagesize), imagedata.length));
+
+        IoTPersistance.write(image, new File(imagename), false);
+
+        return 0;
     }
 
+    /**
+     * Closes 
+     */
     protected void close() {
         iotStream.close();
     }
