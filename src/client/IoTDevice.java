@@ -94,7 +94,7 @@ public class IoTDevice {
         // Pattern to recognize IPv4
         String PATTERN = "^((0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)\\.){3}(0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)$";
         if (!socket[0].matches(PATTERN))
-        return -2;
+            return -2;
         // In case the port is provided
         if (socket.length == 2) {
             try {
