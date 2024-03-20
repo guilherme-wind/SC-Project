@@ -61,11 +61,11 @@ public class IoTClientStub {
      *      User name.
      * @param password
      *      User password.
-     * @return
-     *      1 if new user is created successfully;
-     *      0 if existing user authenticated successfully;
-     *      -1 if password provided is wrong;
-     *      -2 if socket error occured;
+     * @return <ul>
+     *      <li> 1 if new user is created successfully;
+     *      <li> 0 if existing user authenticated successfully;
+     *      <li> -1 if password provided is wrong;
+     *      <li> -2 if socket error occured;
      */
     protected int authenticateUser(String user, String password) {
         IoTMessageType request = new IoTMessage();
@@ -95,10 +95,10 @@ public class IoTClientStub {
      * Authenticates device with the server.
      * @param devId
      *      Device id.
-     * @return
-     *      0 if authenticated successfully;
-     *      -1 if authentication failed;
-     *      -2 if socket error occured;
+     * @return <ul>
+     *      <li> 0 if authenticated successfully;
+     *      <li> -1 if authentication failed;
+     *      <li> -2 if socket error occured;
      */
     protected int authenticateDevice(int devId) {
         IoTMessageType request = new IoTMessage();
@@ -127,10 +127,10 @@ public class IoTClientStub {
      *      Name of current executing program.
      * @param size
      *      Size of current executing program.
-     * @return
-     *      0 if authenticated successfully;
-     *      -1 if authentication failed;
-     *      -2 if socket error occured;
+     * @return <ul>
+     *      <li> 0 if authenticated successfully;
+     *      <li> -1 if authentication failed;
+     *      <li> -2 if socket error occured;
      */
     protected int authenticateProgram(String programName, long size) {
         IoTMessageType request = new IoTMessage();
@@ -178,10 +178,10 @@ public class IoTClientStub {
      * Creates a domain with the given name.
      * @param domainName
      *      Name of the domain to be created.
-     * @return
-     *      0 if created successfully;
-     *      -1 if domain with the same name already exists;
-     *      -2 if socket error occured;
+     * @return <ul>
+     *      <li> 0 if created successfully;
+     *      <li> -1 if domain with the same name already exists;
+     *      <li> -2 if socket error occured;
      */
     protected int createDomain(String domainName) {
         IoTMessageType request = new IoTMessage();
@@ -211,12 +211,12 @@ public class IoTClientStub {
      * @param domainName
      *      Domain name.
      * @return
-     *      1 if the user is already in the domain;
-     *      0 if added successfully;
-     *      -1 if the user doesn't exist;
-     *      -2 if the domain doesn't exist;
-     *      -3 if the current user isn't the owner of the domain(no permissions);
-     *      -4 if socket error occured;
+     *      <li> 1 if the user is already in the domain;
+     *      <li> 0 if added successfully;
+     *      <li> -1 if the user doesn't exist;
+     *      <li> -2 if the domain doesn't exist;
+     *      <li> -3 if the current user isn't the owner of the domain(no permissions);
+     *      <li> -4 if socket error occured;
      */
     protected int addUserDomain(String userName, String domainName) {
         IoTMessageType request = new IoTMessage();
@@ -249,12 +249,12 @@ public class IoTClientStub {
      * Registers the current device to the given domain.
      * @param domainName
      *      Domain name.
-     * @return
-     *      1 if the device is already registered in the domain;
-     *      0 if registered successfully;
-     *      -1 if the domain doesn't exist;
-     *      -2 if the current user doesn't have permissions;
-     *      -3 if socket error occured;
+     * @return <ul>
+     *      <li> 1 if the device is already registered in the domain;
+     *      <li> 0 if registered successfully;
+     *      <li> -1 if the domain doesn't exist;
+     *      <li> -2 if the current user doesn't have permissions;
+     *      <li> -3 if socket error occured;
      */
     protected int registerDevice(String domainName) {
         IoTMessageType request = new IoTMessage();
@@ -284,9 +284,9 @@ public class IoTClientStub {
      * Sends temperature value to the server.
      * @param temperature
      *      Temperature value.
-     * @return
-     *      0 if sent successfully;
-     *      -1 if socket error occured;
+     * @return <ul>
+     *      <li> 0 if sent successfully;
+     *      <li> -1 if socket error occured;
      */
     protected int sendTemp(float temperature) {
         IoTMessageType request = new IoTMessage();
@@ -436,7 +436,7 @@ public class IoTClientStub {
         long imagesize = response.getImageSize();
         if (imagesize <= 0)
             return -4;
-        byte[] imagedata = response.getData();
+        byte[] imagedata = response.getImage();
         if (imagedata == null)
             return -4;
         String imagename = response.getImageName();
