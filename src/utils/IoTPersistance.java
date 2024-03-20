@@ -27,7 +27,7 @@ public class IoTPersistance {
     public static synchronized byte[] read(File file) {
         try (InputStream inputStream = new FileInputStream(file);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[(int) file.length()];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 byteArrayOutputStream.write(buffer, 0, bytesRead);
@@ -42,7 +42,7 @@ public class IoTPersistance {
     public static synchronized byte[] read(String filename) {
         try (InputStream inputStream = new FileInputStream(filename);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[(int) new File(filename).length()];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 byteArrayOutputStream.write(buffer, 0, bytesRead);
