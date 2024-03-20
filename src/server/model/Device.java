@@ -2,6 +2,8 @@ package server.model;
 
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import utils.IoTIParsable;
 import utils.IoTPersistance;
@@ -9,6 +11,8 @@ import utils.IoTPersistance;
 
 
 public class Device implements IoTIParsable {
+
+    private static final Path ROOT = Paths.get(".", "server_files", "user_files");
 
     // String template for parsing
     private final String DEVICE_TEMP = "%s|%s";
@@ -25,8 +29,10 @@ public class Device implements IoTIParsable {
         this.owner = owner;
         this.devId = devId;
         this.name = String.format("%s:%s", owner.getName(), devId);
-        this.tempLogFile = new File(String.format("%s_dev_%s_temp_log.txt", owner.getName(), devId));
-        this.imgLogFile = new File(String.format("%s_dev_%s_img.jpeg", owner.getName(), devId));
+        String tempLogFileName = String.format("%s_dev_%s_temp_log.txt", owner.getName(), devId);
+        this.tempLogFile = Paths.get(ROOT.toString(), tempLogFileName).toFile();
+        String imgLogFileName = String.format("%s_dev_%s_img.jpeg", owner.getName(), devId);
+        this.imgLogFile = Paths.get(ROOT.toString(), imgLogFileName).toFile();
     }
 
     public void setActive() {
