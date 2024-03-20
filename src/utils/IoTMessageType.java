@@ -69,7 +69,25 @@ public interface IoTMessageType {
 
     public long getImageSize();
 
+    /**
+     * Set general data.
+     * Should use {@link IoTMessageType#getImage()} 
+     * to set the content of image!
+     * @deprecated
+     *      Avoid use this method! Use {@link IoTMessageType#setImage()}
+     *      instead!
+     * @return
+     */
     public void setData(byte[] data);
 
+    /**
+     * Get general data.
+     * Should use {@link IoTMessageType#getImage()} 
+     * to get the content of image!
+     * @deprecated
+     *      Avoid use this method! Use {@link IoTMessageType#getImage()}
+     *      instead!
+     * @return
+     */
     public byte[] getData();
 }
