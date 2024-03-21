@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.List;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
@@ -25,6 +26,7 @@ import server.model.User;
  */
 public class IoTFileManager {
 
+    // Singleton
     private static IoTFileManager instance = null;
 
     private IoTFileManager() {
@@ -56,6 +58,13 @@ public class IoTFileManager {
             return false;
         return true;
     }
+
+
+
+
+    // ==========================================================
+    //                  CLASS ESPECIFIC LOADERS
+    // ==========================================================
 
     /**
      * Reads content from plain text file and loads users.
@@ -184,6 +193,12 @@ public class IoTFileManager {
         return 0;
     }
 
+
+
+    // ==========================================================
+    //                  CLASS ESPECIFIC WRITERS
+    // ==========================================================
+
     /**
      * Writes map content to plain text file, in case file doesn't exist,
      * will create one.
@@ -280,13 +295,45 @@ public class IoTFileManager {
         return 0;
     }
 
-    public int readImage(String filePath) {
-        // TODO
-        return 0;
+
+
+    // ==========================================================
+    //                  GENERAL PURPOSE READERS
+    // ==========================================================
+
+    /**
+     * Reads a file into a byte array.
+     * @param filePath
+     * @return
+     *      Byte array containing the content of the
+     *      file or nothing if one of the following 
+     *      errors happend:
+     *      <ul>
+     *          <li> File doesn't exist;
+     *          <li> File is a directory;
+     *          <li> No permissions to read and write;
+     *          <li> Exception while trying to read;
+     */
+    public Optional<byte[]> readFileAsBytes(String filePath) {
+        if (filePath == null)
+            return Optional.empty();
+        
+        if (!IoTFileManager.isFileAvailable(filePath))
+            return Optional.empty();
+        
+        File file = new File(filePath);
+        byte[] bytes;
+        
+        try {
+            bytes = Files.readAllBytes(file.toPath());
+        } catch (IOException e) {
+            return Optional.empty();
+        }
+        return Optional.of(bytes);
     }
 
     /**
-     * Writes an object in binary to a file, will create one 
+     * Writes a Java object in binary to a file, will create one 
      * in case the file doesn't exist, will overwrite the
      * content if the file with the same name already exists.
      * @param filePath
@@ -311,7 +358,7 @@ public class IoTFileManager {
     }
 
     /**
-     * Reads an object in binary from a file.
+     * Reads a Java object in binary from a file.
      * @param filePath
      *      Path to the file.
      * @return
