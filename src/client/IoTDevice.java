@@ -40,13 +40,13 @@ public class IoTDevice {
             
             // Initialize class fields using command line arguments
             if (initialize(args) < 0) {
-                cli.printErr("Error initializing device!");
+                cli.printErr("Failed initializing device!");
                 close();
             }
             
             // perform user auth
             if (performUserAuth() < 0) {
-                cli.printErr("Error authenticating user!");
+                cli.printErr("Failed authenticating user!");
                 close();
             }
             
