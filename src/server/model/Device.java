@@ -60,18 +60,36 @@ public class Device implements IoTIParsable {
         return this.name;
     }
 
+    /**
+     * @deprecated
+     * @param temperature
+     * @return
+     */
     public Boolean writeTemperature(String temperature) {
         return IoTPersistance.write(temperature, this.tempLogFile, false);
     }
 
+    /**
+     * @deprecated
+     * @param image
+     * @return
+     */
     public Boolean writeImage(byte[] image) {
         return IoTPersistance.write(image, this.imgLogFile, false);
     }
 
+    /**
+     * @deprecated
+     * @return
+     */
     public byte[] readTemperature() {
         return IoTPersistance.read(this.tempLogFile);
     }
 
+    /**
+     * @deprecated
+     * @return
+     */
     public byte[] readImage() {
         return IoTPersistance.read(this.imgLogFile);
     }
