@@ -5,13 +5,10 @@ import server.model.Domain;
 import server.model.Session;
 import server.model.User;
 import utils.IoTAuth;
-import utils.IoTFileManager;
 import utils.IoTMessage;
 import utils.IoTMessageType;
 import utils.IoTOpcodes;
 
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Optional;
@@ -219,7 +216,7 @@ public class IoTServerRequestHandler {
         Device device = session.getDevice();
 
         IoTMessageType response = new IoTMessage();
-        IoTFileManager.writeDeviceFile(device, device.getTempFileName(), temperature.getBytes());
+        device.writeTemperature(temperature);
         response.setOpCode(IoTOpcodes.OK_ACCEPTED);
 
         return response;
@@ -235,8 +232,7 @@ public class IoTServerRequestHandler {
 
         // Choose the smallest size to create a new image
         byte[] imagebytes = Arrays.copyOf(image, Math.min(Math.toIntExact(imgsize), image.length));
-        device.setImgFileName(imgname);
-        IoTFileManager.writeDeviceFile(device, imgname, imagebytes);
+        device.writeImage(imgname, imagebytes);
 
         IoTMessageType response = new IoTMessage();
         response.setOpCode(IoTOpcodes.OK_ACCEPTED);
@@ -259,8 +255,6 @@ public class IoTServerRequestHandler {
             response.setOpCode(IoTOpcodes.NOK_NO_PERMISSIONS);
             return response;
         }
-
-        domain.extractTemperatures();
 
         response.setTemps(domain.extractTemperatures());
 
@@ -285,13 +279,11 @@ public class IoTServerRequestHandler {
             return response;
         }
 
-        Optional<byte[]> image = IoTFileManager.readDeviceImg(device);
-        // byte[] image = device.readImage();
+        Optional<byte[]> image = device.readImage();
         if (!image.isPresent()) {
             response.setOpCode(IoTOpcodes.NOK_NO_DATA);
             return response;
         }
-        // TODO: change this scuffed code
         long filesize = image.get().length;
 
         response.setImageName(device.getImgFileName().get());
