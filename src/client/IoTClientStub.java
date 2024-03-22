@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Map;
 
 import utils.IoTMessage;
 import utils.IoTMessageType;
@@ -154,6 +155,16 @@ public class IoTClientStub {
         return -2;
     }
 
+    /**
+     * Tells the server that the client is closing to free
+     * all resources allocated to the session.
+     * @return <ul>
+     *      <li> 0 if the server acknowlegdes and allows the
+     *           termination correctly;
+     *      <li> -1 if the server acknowlegdes the termination
+     *           of the client but doesn't allow;
+     *      <li> -2 if socket or response semantic error occured;
+     */
     protected int terminateProgram() {
         IoTMessageType request = new IoTMessage();
         request.setOpCode(IoTOpcodes.EXIT);
@@ -313,7 +324,7 @@ public class IoTClientStub {
      * @return <ul>
      *      <li> 0 if sent successfully;
      *      <li> -1 if error occured while reading the file;
-     *      <li> -2 if socket error occured;
+     *      <li> -2 if socket or response semantic error occured;
      */
     protected int sendImage(String filepath) {
         System.out.println("Received filepath: " + filepath);
@@ -330,16 +341,16 @@ public class IoTClientStub {
         request.setImage(img);
 
         if (!iotStream.write(request))
-            return -1;
+            return -2;
 
         IoTMessageType response = (IoTMessageType) iotStream.read();
         if (response == null)
-            return -1;
+            return -2;
 
         IoTOpcodes respcode = response.getOpcode();
         if (respcode.equals(IoTOpcodes.OK_ACCEPTED))
             return 0;
-        return -1;
+        return -2;
     }
 
     /**
@@ -380,8 +391,13 @@ public class IoTClientStub {
             default:
             return -3;
         }
+
+        Map<String,Float> temps = response.getTemps();
+        if (temps == null)
+            return -3;
+
+        // TODO: write map
         
-        float[] data = response.getTemps();
         return 0;
     }
 
@@ -452,9 +468,12 @@ public class IoTClientStub {
     }
 
     /**
-     * Closes 
+     * Tells the server to terminate and 
+     * closes the connection.
      */
-    protected void close() {
+    protected int close() {
+        int status = terminateProgram();
         iotStream.close();
+        return status;
     }
 }
