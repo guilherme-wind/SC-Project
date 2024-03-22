@@ -5,13 +5,16 @@ import server.model.Domain;
 import server.model.Session;
 import server.model.User;
 import utils.IoTAuth;
+import utils.IoTFileManager;
 import utils.IoTMessage;
 import utils.IoTMessageType;
 import utils.IoTOpcodes;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.Optional;
 
 public class IoTServerRequestHandler {
     private static IoTServerRequestHandler instance;
@@ -81,6 +84,14 @@ public class IoTServerRequestHandler {
         String password = message.getUserPwd();
 
         IoTMessageType response = new IoTMessage();
+
+        // If the user has already authenticated
+        if (!session.getAuthState().equals(IoTAuth.NONE) &&
+            session.getUser() != null) {
+            response.setOpCode(IoTOpcodes.OK_USER);
+            return response;
+        }
+
         if (dbContext.containsUser(userName)) { // user exists
             User user = dbContext.getUser(userName);
             if (password.equals(user.getPassword())) {
@@ -92,8 +103,7 @@ public class IoTServerRequestHandler {
                 response.setOpCode(IoTOpcodes.WRONG_PWD);
             }
                 
-        }
-        else { // new user
+        } else { // new user
             User user = new User(userName, password);
             dbContext.addUser(user);
             session.setAuthState(IoTAuth.USER);
@@ -112,6 +122,20 @@ public class IoTServerRequestHandler {
 
         IoTMessageType response = new IoTMessage();
 
+        // If the user hasn't finished the previous authentication
+        if (session.getAuthState().equals(IoTAuth.NONE)) {
+            response.setOpCode(IoTOpcodes.NOK_NO_PERMISSIONS);
+            return response;
+        }
+
+        // If the user already finished the device authentication,
+        // i.e., higher than NONE but different to USER means
+        // the device auth is already done.
+        if (!session.getAuthState().equals(IoTAuth.USER)) {
+            response.setOpCode(IoTOpcodes.OK_DEVID);
+            return response;
+        }
+
         if (!dbContext.containsDevice(iotDeviceId)) { // new device!
             Device device = new Device(user, devId);
             device.setActive();
@@ -120,8 +144,7 @@ public class IoTServerRequestHandler {
             session.setDevice(device);
             response.setOpCode(IoTOpcodes.OK_DEVID);
             dbContext.onDeviceUpdate();
-        } 
-        else {
+        } else {
             Device device = dbContext.getDevice(iotDeviceId);
             if (!device.isActive()) {
                 device.setActive();
@@ -152,7 +175,7 @@ public class IoTServerRequestHandler {
         IoTMessageType response = new IoTMessage();
 
         if (dbContext.containsDomain(domainName)) {
-            response.setOpCode(IoTOpcodes.NOK);
+            response.setOpCode(IoTOpcodes.NOK_ALREADY_EXISTS);
             return response;
         }
 
@@ -196,21 +219,27 @@ public class IoTServerRequestHandler {
         Device device = session.getDevice();
 
         IoTMessageType response = new IoTMessage();
-        response.setOpCode(
-            device.writeTemperature(temperature) ? IoTOpcodes.OK_ACCEPTED : IoTOpcodes.NOK
-        );
+        IoTFileManager.writeDeviceFile(device, device.getTempFileName(), temperature.getBytes());
+        response.setOpCode(IoTOpcodes.OK_ACCEPTED);
 
         return response;
     }
 
     private IoTMessageType handleSendImage(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
-        byte[] image = message.getImage();
         Device device = session.getDevice();
+        
+        byte[] image = message.getImage();
+        long imgsize = message.getImageSize();
+        String imgname = message.getImageName();
+        // TODO: verify argument validity
+
+        // Choose the smallest size to create a new image
+        byte[] imagebytes = Arrays.copyOf(image, Math.min(Math.toIntExact(imgsize), image.length));
+        device.setImgFileName(imgname);
+        IoTFileManager.writeDeviceFile(device, imgname, imagebytes);
 
         IoTMessageType response = new IoTMessage();
-        response.setOpCode(
-            device.writeImage(image) ? IoTOpcodes.OK_ACCEPTED : IoTOpcodes.NOK
-        );
+        response.setOpCode(IoTOpcodes.OK_ACCEPTED);
 
         return response;
     }
@@ -231,9 +260,9 @@ public class IoTServerRequestHandler {
             return response;
         }
 
-        response.setData(
-            domain.extractTemperatures()
-        );
+        domain.extractTemperatures();
+
+        response.setTemps(domain.extractTemperatures());
 
         response.setOpCode(IoTOpcodes.OK_ACCEPTED);
 
@@ -256,21 +285,18 @@ public class IoTServerRequestHandler {
             return response;
         }
 
-        // TODO: change implementation of readimage
-        byte[] image = device.readImage();
-        if (image == null || image.length <= 0) {
+        Optional<byte[]> image = IoTFileManager.readDeviceImg(device);
+        // byte[] image = device.readImage();
+        if (!image.isPresent()) {
             response.setOpCode(IoTOpcodes.NOK_NO_DATA);
             return response;
         }
         // TODO: change this scuffed code
-        String fileextention = String.format("%s_dev_%s_img.jpeg", device.getOwner().getName(), device.getDevId());
-        String filepath = Paths.get(".", "server_files", "user_files", fileextention).toString();
-        String filename = Paths.get(filepath).getFileName().toString();
-        long filesize = new File(filepath).length();
+        long filesize = image.get().length;
 
-        response.setImageName(filename);
+        response.setImageName(device.getImgFileName().get());
         response.setImageSize(filesize);
-        response.setImage(image);
+        response.setImage(image.get());
 
         response.setOpCode(IoTOpcodes.OK_ACCEPTED);
 
