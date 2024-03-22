@@ -4,6 +4,7 @@ package server.model;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import utils.IoTIParsable;
 import utils.IoTPersistance;
@@ -21,6 +22,9 @@ public class Device implements IoTIParsable {
     private final User owner;
     private final int devId;
     private final String name;
+    private String imgFileName = null;
+    private String tempFileName;
+
     private final File tempLogFile;
     private final File imgLogFile;
 
@@ -29,6 +33,9 @@ public class Device implements IoTIParsable {
         this.owner = owner;
         this.devId = devId;
         this.name = String.format("%s:%s", owner.getName(), devId);
+        this.tempFileName = String.format("%s_dev_%s_temp_log.txt", owner.getName(), devId);
+
+        // TODO: @deprecated
         String tempLogFileName = String.format("%s_dev_%s_temp_log.txt", owner.getName(), devId);
         this.tempLogFile = Paths.get(ROOT.toString(), tempLogFileName).toFile();
         String imgLogFileName = String.format("%s_dev_%s_img.jpeg", owner.getName(), devId);
@@ -58,6 +65,20 @@ public class Device implements IoTIParsable {
 
     public String getName() {
         return this.name;
+    }
+
+    public String getTempFileName() {
+        return this.tempFileName;
+    }
+
+    public Optional<String> getImgFileName() {
+        if (this.imgFileName == null)
+            return Optional.empty();
+        return Optional.of(this.imgFileName);
+    }
+
+    public void setImgFileName(String filename) {
+        this.imgFileName = filename;
     }
 
     /**
