@@ -82,7 +82,7 @@ public class IoTFileManager {
 
 
     // ==========================================================
-    //                  CLASS ESPECIFIC WRITERS
+    //                  DEVICE WRITER/READER
     // ==========================================================
     /**
      * Writes a file related to a device to a , if a file with 
@@ -174,6 +174,9 @@ public class IoTFileManager {
         
         return Optional.of(temp);
     }
+
+
+
 
     // ==========================================================
     //                  CLASS ESPECIFIC LOADERS
@@ -297,6 +300,11 @@ public class IoTFileManager {
             return -1;
         }
         
+        return 0;
+    }
+
+    public static int loadProgramInfoFromText() {
+        // TODO
         return 0;
     }
 
