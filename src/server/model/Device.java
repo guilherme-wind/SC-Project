@@ -1,19 +1,13 @@
 package server.model;
 
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 
+import utils.IoTFileManager;
 import utils.IoTIParsable;
-import utils.IoTPersistance;
 
 
 
 public class Device implements IoTIParsable {
-
-    private static final Path ROOT = Paths.get(".", "server_files", "user_files");
 
     // String template for parsing
     private final String DEVICE_TEMP = "%s|%s";
@@ -25,9 +19,6 @@ public class Device implements IoTIParsable {
     private String imgFileName = null;
     private String tempFileName;
 
-    private final File tempLogFile;
-    private final File imgLogFile;
-
     public Device(User owner, int devId) {
         this.isActive = false;
         this.owner = owner;
@@ -35,11 +26,6 @@ public class Device implements IoTIParsable {
         this.name = String.format("%s:%s", owner.getName(), devId);
         this.tempFileName = String.format("%s_dev_%s_temp_log.txt", owner.getName(), devId);
 
-        // TODO: @deprecated
-        String tempLogFileName = String.format("%s_dev_%s_temp_log.txt", owner.getName(), devId);
-        this.tempLogFile = Paths.get(ROOT.toString(), tempLogFileName).toFile();
-        String imgLogFileName = String.format("%s_dev_%s_img.jpeg", owner.getName(), devId);
-        this.imgLogFile = Paths.get(ROOT.toString(), imgLogFileName).toFile();
     }
 
     public void setActive() {
@@ -82,37 +68,56 @@ public class Device implements IoTIParsable {
     }
 
     /**
-     * @deprecated
+     * Registers the temperature.
      * @param temperature
+     *      Temperature reading.
      * @return
+     *      True if registered successfully, false
+     *      otherwise.
      */
     public Boolean writeTemperature(String temperature) {
-        return IoTPersistance.write(temperature, this.tempLogFile, false);
+        return IoTFileManager.writeDeviceFile(this, this.tempFileName, temperature.getBytes()) == 0 ? true : false;
     }
 
     /**
-     * @deprecated
+     * Replacement of the original <code>writeImage(byte[] image)</code>
+     * function.
+     * Writes the image file to device's directory.
+     * @param imagename
+     *      Name of the image, not the path.
      * @param image
+     *      Bytes of the image.
      * @return
+     *      True if wrote successfully, false otherwise.
      */
-    public Boolean writeImage(byte[] image) {
-        return IoTPersistance.write(image, this.imgLogFile, false);
+    public Boolean writeImage(String imagename, byte[] image) {
+        if (imagename == null || image == null)
+            return false;
+        setImgFileName(imagename);
+        return IoTFileManager.writeDeviceFile(this, imagename, image) == 0 ? true : false;
     }
 
     /**
-     * @deprecated
+     * Get the latest temperature reading reported
+     * by the device.
      * @return
+     *      Temperature reading or nothing if the device
+     *      hasn't sent any readings yet or an error while
+     *      trying to get the reading.
      */
-    public byte[] readTemperature() {
-        return IoTPersistance.read(this.tempLogFile);
+    public Optional<Float> readTemperature() {
+        return IoTFileManager.readDeviceTemp(this);
     }
 
     /**
-     * @deprecated
+     * Get the lastest image sent to the device.
      * @return
+     *      Bytes of the image or nothing if the device
+     *      hasn't uploaded any image yet or an error
+     *      occured while trying to read the image.
      */
-    public byte[] readImage() {
-        return IoTPersistance.read(this.imgLogFile);
+    public Optional<byte[]> readImage() {
+        return IoTFileManager.readDeviceImg(this);
     }
 
     @Override
