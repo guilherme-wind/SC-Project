@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.Map;
+
 public interface IoTMessageType {
     
     /**
@@ -53,9 +55,9 @@ public interface IoTMessageType {
 
     public float getTemp();
 
-    public void setTemps(float[] temps);
+    public void setTemps(Map<String,Float> temps);
 
-    public float[] getTemps();
+    public Map<String,Float> getTemps();
 
     public void setImageName(String name);
 

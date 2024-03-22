@@ -1,6 +1,7 @@
 package utils;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * Class that defines the type of message exchanged between server and client
@@ -23,7 +24,7 @@ public class IoTMessage implements IoTMessageType, Serializable {
 
     private float temp;
 
-    private float[] temps;
+    private Map<String,Float> temps;
 
     private String img_name;
 
@@ -119,12 +120,12 @@ public class IoTMessage implements IoTMessageType, Serializable {
     }
 
     @Override
-    public void setTemps(float[] temps) {
+    public void setTemps(Map<String,Float> temps) {
         this.temps = temps;
     }
 
     @Override
-    public float[] getTemps() {
+    public Map<String,Float> getTemps() {
         return this.temps;
     }
 
