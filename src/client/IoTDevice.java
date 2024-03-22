@@ -1,7 +1,6 @@
 package client;
 
 import java.io.*;
-import java.util.NoSuchElementException;
 
 
 public class IoTDevice {
@@ -27,44 +26,40 @@ public class IoTDevice {
     //NAO TIREM A MAIN DAQUI, FIQUEI 5min A PROCURA DELA
     public static void main(String[] args) throws IOException {
 
+
         // Initialize cli
         cli = IoTCLI.getInstance();
         
-        try{
-            // Command line argument validation
-            if (verifyCmdArgs(args) < 0) {
-                cli.printErr("Wrong input arguments!");
-                cli.print(USAGE);
-                close();
-            }
-            
-            // Initialize class fields using command line arguments
-            if (initialize(args) < 0) {
-                cli.printErr("Failed initializing device!");
-                close();
-            }
-            
-            // perform user auth
-            if (performUserAuth() < 0) {
-                cli.printErr("Failed authenticating user!");
-                close();
-            }
-            
-            // perform device auth
-            if (performDeviceAuth(false) < 0)
-                close();
-            
-            
-            // perform program auth
-            if (performProgramAuth() < 0)
-                close();
-            
-            handler.userInvoke();
-        } catch (NoSuchElementException e) {
-            // Ctrl C handle
-            System.out.println("Exit");
+        // Command line argument validation
+        if (verifyCmdArgs(args) < 0) {
+            cli.printErr("Wrong input arguments!");
+            cli.print(USAGE);
             close();
         }
+        
+        // Initialize class fields using command line arguments
+        if (initialize(args) < 0) {
+            cli.printErr("Failed initializing device!");
+            close();
+        }
+        
+        // perform user auth
+        if (performUserAuth() < 0) {
+            cli.printErr("Failed authenticating user!");
+            close();
+        }
+        
+        // perform device auth
+        if (performDeviceAuth(true) < 0) {
+            cli.printErr("Failed authenticating device!");
+            close();
+        }
+        
+        // perform program auth
+        if (performProgramAuth() < 0)
+            close();
+        
+        handler.userInvoke();
         
         System.out.println("Finished!");
         close();
@@ -112,9 +107,6 @@ public class IoTDevice {
         } catch (NumberFormatException e) {
             return -4;
         }
-        
-        // Verify <user-id>
-        // TODO not used for now
         return 0;
     }
     
@@ -183,37 +175,81 @@ public class IoTDevice {
     }
     
     private static int performUserAuth() {
-        // retrieve pass
-        cli.print("Please introduce password: ");
-        String pwd = cli.getUserInput();
-        // TODO sanitize user input
-    
-        cli.print(String.format("-> /authUser %s : %s", userId, pwd));
-        int status = stub.authenticateUser(userId, pwd);
-        cli.print(String.format("<- %d", status));
-        if (status < 0) {
-            if (status == -1)
-                return performUserAuth();
+        boolean authenticated = false;
+        while (!authenticated) {
+            // retrieve pass
+            cli.print("Please introduce password: ");
+            String pwd = cli.getUserInput();
+            if (pwd == null)
+                return -1;
+        
+            cli.print(String.format("-> /authUser %s : %s", userId, pwd));
+            int status = stub.authenticateUser(userId, pwd);
+            cli.print(String.format("<- %d", status));
+            switch (status) {
+                case 1:
+                    authenticated = true;
+                    cli.print("New user created.");
+                    continue;
+
+                case 0:
+                    authenticated = true;
+                    cli.print("User authentication successful.");
+                    continue;
+
+                case -1:
+                    cli.printErr("User authentication failed!");
+                    break;
+                
+                case -2:
+                    cli.printErr("Network error!");
+                    return -1;
+            
+                default:
+                    break;
+            }
+            
         }
-        return status;
+        return 0;
     }
     
     private static int performDeviceAuth(boolean askNewDevId) {
-        if (askNewDevId) {
-            cli.print("Please introduce a different devId: ");
-            String devIdStr = cli.getUserInput();
-            devId = Integer.parseInt(devIdStr);
+        boolean authenticated = false;
+        while (!authenticated) {
+            cli.print(String.format("-> /authDev %s : %s", userId, devId));
+            int status = stub.authenticateDevice(devId);
+            cli.print(String.format("<- %d", status));
+            if (status == 0) {
+                authenticated = true;
+                break;
+            }
+            switch (status) {
+                case -1:
+                    cli.printErr("Failed to valide device id!");
+                    break;
+                case -2:
+                    cli.printErr("Network error!");
+                    break;
+                default:
+                    break;
+            }
+            if (askNewDevId && status == -1) {
+                cli.print("Please introduce a different devId: ");
+                String devIdStr = cli.getUserInput();
+                if (devIdStr == null) {
+                    return -1;
+                }
+                try {
+                    devId = Integer.parseInt(devIdStr);
+                } catch (NumberFormatException e) {
+                    cli.printErr("DevId should only contain digits!");
+                }
+            } else {
+                return -1;
+            }
         }
-    
-        cli.print(String.format("-> /authDev %s : %s", userId, devId));
-        int status = stub.authenticateDevice(devId);
-        cli.print(String.format("<- %d", status));
-        if (status < 0) {
-            cli.printErr("Error authenticating device!");
-            if (status == -1)
-                return performDeviceAuth(true);
-        }
-        return status;
+
+        return 0;
     }
     
     /**
@@ -241,12 +277,14 @@ public class IoTDevice {
      * terminates program.
      */
     public static void close() {
-        if (stub != null)
-            stub.close();
-        if (cli != null)
-            cli.close();
         if (handler != null)
             handler.close();
+        else {
+            if (stub != null)
+                stub.close();
+            if (cli != null)
+                cli.close();
+        }
         System.exit(0);
     }
 }
