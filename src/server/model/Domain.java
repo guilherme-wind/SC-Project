@@ -1,13 +1,17 @@
 package server.model;
 
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
 
+import utils.IoTFileManager;
 import utils.IoTIParsable;
 
 public class Domain implements IoTIParsable {
@@ -53,17 +57,15 @@ public class Domain implements IoTIParsable {
         return this.devices.add(device);
     }
 
-    public byte[] extractTemperatures() {
-        ByteArrayOutputStream data = new ByteArrayOutputStream();
+    public Map<String,Float> extractTemperatures() {
+        Map<String,Float> map = new HashMap<String,Float>();
         for (Device device : this.devices) {
-            byte[] lastTemperature = device.readTemperature();                 
-            if (lastTemperature != null) {
-                data.write(lastTemperature, 0, lastTemperature.length);
-                data.write('\n');
+            Optional<Float> lastTemperature = IoTFileManager.readDeviceTemp(device);                 
+            if (lastTemperature.isPresent()) {
+                map.put(device.getName(), lastTemperature.get());
             }
         }
-        // return null if the data stream is empty
-        return data.size() != 0 ? data.toByteArray() : null;
+        return map;
     }
 
     @Override
