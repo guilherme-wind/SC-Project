@@ -41,9 +41,17 @@ public class IoTCLI {
     /**
      * Returns the user input from command line
      * @return
+     *      User input string or null if interruption
+     *      was caught.
      */
     public String getUserInput() {
-        return sc.nextLine();
+        String input;
+        try {
+            input = sc.nextLine();
+        } catch (Exception e) {
+            return null;
+        }
+        return input;
     }
 
     public void printMenu() {
