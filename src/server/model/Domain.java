@@ -1,6 +1,5 @@
 package server.model;
 
-import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -11,7 +10,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
 
-import utils.IoTFileManager;
 import utils.IoTIParsable;
 
 public class Domain implements IoTIParsable {
@@ -60,7 +58,7 @@ public class Domain implements IoTIParsable {
     public Map<String,Float> extractTemperatures() {
         Map<String,Float> map = new HashMap<String,Float>();
         for (Device device : this.devices) {
-            Optional<Float> lastTemperature = IoTFileManager.readDeviceTemp(device);                 
+            Optional<Float> lastTemperature = device.readTemperature();                 
             if (lastTemperature.isPresent()) {
                 map.put(device.getName(), lastTemperature.get());
             }
