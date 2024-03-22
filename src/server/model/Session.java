@@ -55,7 +55,9 @@ public class Session {
      * device active state to off.
      */
     public void close() {
-        if (this.device != null) {
+        // Set the device active state to off only if it has been turned on
+        if ((this.authState == IoTAuth.COMPLETE || this.authState == IoTAuth.USER_DEVICE) 
+            && this.device != null) {
             this.device.turnOff();
         }
     }
