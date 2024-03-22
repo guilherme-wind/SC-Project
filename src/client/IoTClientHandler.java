@@ -1,9 +1,5 @@
 package client;
 
-import java.nio.charset.StandardCharsets;
-
-import utils.IoTPersistance;
-
 /**
  * Interacts with user and deals with
  * input invoke.
@@ -51,7 +47,11 @@ public class IoTClientHandler {
         while (true) {
             cli.printMenu();
 
-            String[] tokens = cli.getUserInput().split(" ");
+            String input = cli.getUserInput();
+            if (input == null)
+                return 0;
+
+            String[] tokens = input.split(" ");
             switch (tokens[0]) {
                 case "CREATE":
                     createCommand(tokens);
@@ -103,8 +103,18 @@ public class IoTClientHandler {
         cli.print(String.format("-> /create %s", domainName));
         int status = stub.createDomain(domainName);
         cli.print(String.format("<- %d", status));
-        if (status < 0) {
-            cli.printErr("Failed to create domain!");
+        switch (status) {
+            case 0:
+                cli.print("Domain created successfully!");
+                break;
+            case -1:
+                cli.printErr("Domain already exists!");
+                break;
+            case -2:
+                cli.printErr("Network error!");
+        
+            default:
+                break;
         }
     }
 
@@ -134,8 +144,26 @@ public class IoTClientHandler {
         cli.print(String.format("-> /add [%s, %s]", userName, domainName));
         int status = stub.addUserDomain(userName, domainName);
         cli.print(String.format("<- %d", status));
-        if (status < 0) {
-            cli.printErr("Failed to add user to domain!");
+        switch (status) {
+            case 1:
+                cli.print("This user is already in the domain.");
+            case 0:
+                cli.print("User added successfully!");
+                break;
+            case -1:
+                cli.printErr("User doesn't exist!");
+                break;
+            case -2:
+                cli.printErr("Domain doesn't exist!");
+                break;
+            case -3:
+                cli.printErr("No permissions to register devices in this domain!");
+                break;
+            case -4:
+                cli.printErr("Network error!");
+        
+            default:
+                break;
         }
     }
 
@@ -240,7 +268,7 @@ public class IoTClientHandler {
                 cli.print("Sent the image successfully!");
                 break;
             case -1:
-                cli.printErr("Failed to open the image!");
+                cli.printErr("Failed to send the image!");
                 break;
             case -2:
                 cli.printErr("Network error!");
