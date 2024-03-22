@@ -27,15 +27,15 @@ public class IoTServerDatabase {
     private Map<String, User> users;
     private Map<String, Device> devices;
 
-    private String client_program_name;
-    private long client_program_size;
+    // TODO
+    // private String client_program_name;
+    // private long client_program_size;
     
     private static final Path ROOT = Paths.get(".", "server_files", "metadata");
     
     private static final String USER_TXT_DB = Paths.get(ROOT.toString(), "users.txt").toString();
     private static final String DOMAINS_TXT_DB = Paths.get(ROOT.toString(), "domains.txt").toString();
     private static final String DEVICES_TXT_DB = Paths.get(ROOT.toString(), "devices.txt").toString();
-    // private static final String PROGRAM_TXT_DB = Paths.get(ROOT.toString(), "program.txt").toString();
     
     private IoTServerDatabase() {
         this.domains = new HashMap<>();
@@ -52,6 +52,7 @@ public class IoTServerDatabase {
         IoTFileManager.loadUsersFromText(this.users);
         IoTFileManager.loadDomainsFromText(this.domains);
         IoTFileManager.loadDevicesFromText(this.devices);
+        IoTFileManager.loadProgramInfoFromText();
     }
     
     public static IoTServerDatabase getInstance() {
@@ -132,7 +133,7 @@ public class IoTServerDatabase {
 
     /**
      * @deprecated
-     *      Use {@link IoTFileManager#writeDeviceFile(Device, String, byte[])} instead
+     *      Use {@link Device#writeTemperature(String)} instead
      * @param device
      * @param temperature
      * @return
@@ -145,7 +146,7 @@ public class IoTServerDatabase {
 
     /**
      * @deprecated
-     *      Use {@link IoTFileManager#writeDeviceFile(Device, String, byte[])} instead
+     *      Use {@link Device#writeImage(String, byte[])} instead
      * @param device
      * @param imagename
      * @param image
