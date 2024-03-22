@@ -26,14 +26,16 @@ public class IoTServerDatabase {
     private Map<String, Domain> domains;
     private Map<String, User> users;
     private Map<String, Device> devices;
+
+    private String client_program_name;
+    private long client_program_size;
     
-    // TODO: put all files into a folder
     private static final Path ROOT = Paths.get(".", "server_files", "metadata");
     
     private static final String USER_TXT_DB = Paths.get(ROOT.toString(), "users.txt").toString();
     private static final String DOMAINS_TXT_DB = Paths.get(ROOT.toString(), "domains.txt").toString();
     private static final String DEVICES_TXT_DB = Paths.get(ROOT.toString(), "devices.txt").toString();
-    
+    // private static final String PROGRAM_TXT_DB = Paths.get(ROOT.toString(), "program.txt").toString();
     
     private IoTServerDatabase() {
         this.domains = new HashMap<>();
@@ -47,9 +49,9 @@ public class IoTServerDatabase {
     * Load persisted database files, if any
     */
     private void load() {
-        IoTFileManager.loadUsersFromText(USER_TXT_DB, this.users);
-        IoTFileManager.loadDomainsFromText(DOMAINS_TXT_DB, this.domains);
-        IoTFileManager.loadDevicesFromText(DEVICES_TXT_DB, this.devices);
+        IoTFileManager.loadUsersFromText(this.users);
+        IoTFileManager.loadDomainsFromText(this.domains);
+        IoTFileManager.loadDevicesFromText(this.devices);
     }
     
     public static IoTServerDatabase getInstance() {
@@ -128,10 +130,32 @@ public class IoTServerDatabase {
         return IoTOpcodes.OK_ACCEPTED;
     }
 
+    /**
+     * @deprecated
+     *      Use {@link IoTFileManager#writeDeviceFile(Device, String, byte[])} instead
+     * @param device
+     * @param temperature
+     * @return
+     */
     public IoTOpcodes updateTemperature(Device device, String temperature) {
-        device.writeTemperature(temperature);
+        // device.writeTemperature(temperature);
+        IoTFileManager.writeDeviceFile(device, device.getTempFileName(), temperature.getBytes());
         return IoTOpcodes.OK_ACCEPTED;
     }
+
+    /**
+     * @deprecated
+     *      Use {@link IoTFileManager#writeDeviceFile(Device, String, byte[])} instead
+     * @param device
+     * @param imagename
+     * @param image
+     * @return
+     */
+    public IoTOpcodes updateImage(Device device, String imagename, byte[] image) {
+        IoTFileManager.writeDeviceFile(device, imagename, image);
+        return IoTOpcodes.OK_ACCEPTED;
+    }
+
 
     public IoTOpcodes addUserToDomain(User as, String userName, String domainName) {
         if (!this.domains.containsKey(domainName))
