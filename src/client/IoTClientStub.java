@@ -7,6 +7,7 @@ import java.net.UnknownHostException;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.StringJoiner;
 
 import utils.IoTMessage;
 import utils.IoTMessageType;
@@ -395,9 +396,15 @@ public class IoTClientStub {
         Map<String,Float> temps = response.getTemps();
         if (temps == null)
             return -3;
-
-        // TODO: write map
         
+        StringJoiner sj = new StringJoiner(",");
+        for (Map.Entry<String, Float> entry : temps.entrySet()) {
+            String devtemp = String.format("Device %s - Temp %f", entry.getKey(), entry.getValue());
+            sj.add(devtemp);
+        }
+        File file = new File("domain_" + domainName + "_temps.txt");
+        IoTPersistance.write(sj.toString(), file, false);
+                
         return 0;
     }
 
