@@ -18,9 +18,6 @@ public class IoTCLI {
                                         "\tRI <user>:<device>" + LINE +
                                         "\tEXIT";
     private static final String LOG_TEMP = "[%s] %s";
-    private static final String ERROR_TEMP = "[Error]";
-    private static final String ERROR_MISSING_ARGS = "";
-
 
     // Singleton
     private static IoTCLI instance = null;
