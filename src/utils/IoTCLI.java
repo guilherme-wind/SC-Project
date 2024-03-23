@@ -1,5 +1,7 @@
 package utils;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class IoTCLI {
@@ -14,6 +16,7 @@ public class IoTCLI {
                                         "\tRT <domain>" + LINE +
                                         "\tRI <user>:<device>" + LINE +
                                         "\tEXIT";
+    private static final String LOG_TEMP = "%s %s";
     private static final String ERROR_TEMP = "[Error]";
     private static final String ERROR_MISSING_ARGS = "";
 
@@ -54,30 +57,59 @@ public class IoTCLI {
         return input;
     }
 
+    /**
+     * Prints the options menu.
+     */
     public void printMenu() {
         System.out.println(MENU);
     }
 
+    /**
+     * Prints the given message to the console.
+     * @param msg
+     */
     public void print(String msg) {
         System.out.println(msg);
     }
 
+    /**
+     * Prints the success message to the console.
+     * @param sucmsg
+     */
     public void printSuc(String sucmsg) {
         
     }
 
+    /**
+     * Prints the error message to the console.
+     * @param errmsg
+     */
     public void printErr(String errmsg) {
         System.out.println(ConsoleColors.RED_BOLD + "Error: " + ConsoleColors.RESET + errmsg);
     }
 
+    /**
+     * Prints the log message to the console.
+     * @param logmsg
+     */
     public void printLog(String logmsg) {
-        System.out.println("Log: " + logmsg);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println(String.format(LOG_TEMP, dtf.format(now), logmsg));
     }
 
+    /**
+     * Prints the web output message.
+     * @param msg
+     */
     public void printWebOutput(String msg) {
         System.out.println("->" + msg);
     }
 
+    /**
+     * Prints the web input message.
+     * @param msg
+     */
     public void printWebInput(String msg) {
         System.out.println("<-" + msg);
     }
