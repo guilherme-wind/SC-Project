@@ -37,9 +37,11 @@ A execução do programa requer a JVM e pode ser realizada com ficheiros `.jar` 
         ```
         java -jar IoTServer.jar 
         ```
+
         ```
         java -jar IoTServer.jar <Porto servidor>
         ```
+        
         Em geral, é sugerido executar o servidor sem indicar o porto, porém em casos necessários, pode fornecer o porto.
 
 ### Limitações da implementação
