@@ -29,17 +29,6 @@ public class IoTDevice {
 
         // Initialize cli
         cli = IoTCLI.getInstance();
-
-
-        URL res = IoTDevice.class.getProtectionDomain().getCodeSource().getLocation();
-        File file = null;
-        try {
-            file = new File(res.toURI());
-        } catch (URISyntaxException e) {
-            close();
-        }
-        String fileName = file.getPath();
-        cli.print(fileName);
         
         // Command line argument validation
         if (verifyCmdArgs(args) < 0) {
@@ -193,6 +182,14 @@ public class IoTDevice {
         return status;
     }
     
+    /**
+     * Authenticates user with ther server.
+     * If the password is incorrect will continue to 
+     * prompt until the authentication finishes.
+     * @return <ul>
+     *      <li> 0 if authenticated successfully;
+     *      <li> -1 if authentication failed;
+     */
     private static int performUserAuth() {
         boolean authenticated = false;
         while (!authenticated) {
