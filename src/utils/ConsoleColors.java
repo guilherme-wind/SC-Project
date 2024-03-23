@@ -15,6 +15,11 @@ public class ConsoleColors {
     // Reset
     public static final String RESET = "\033[0m";  // Text Reset
 
+    // Cursor formats
+    public static final String SLOW_BLINK = "\033[5m";   // SLOW BLINK
+    public static final String FAST_BLINK = "\033[6m";   // FAST BLINK
+    public static final String NO_BLINK = "\033[25m";   // NO BLINK
+
     // Regular Colors
     public static final String BLACK = "\033[0;30m";   // BLACK
     public static final String RED = "\033[0;31m";     // RED

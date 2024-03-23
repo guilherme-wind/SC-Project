@@ -49,6 +49,7 @@ public class IoTClientHandler {
         while (true) {
             cli.printMenu();
 
+            cli.printShell();
             String input = cli.getUserInput();
             if (input == null)
                 return 0;
@@ -107,7 +108,7 @@ public class IoTClientHandler {
         cli.print(String.format("<- %d", status));
         switch (status) {
             case 0:
-                cli.print("Domain created successfully!");
+                cli.printSuc("Domain created successfully!");
                 break;
             case -1:
                 cli.printErr("Domain already exists!");
@@ -148,9 +149,9 @@ public class IoTClientHandler {
         cli.print(String.format("<- %d", status));
         switch (status) {
             case 1:
-                cli.print("This user is already in the domain.");
+                cli.printInfo("This user is already in the domain.");
             case 0:
-                cli.print("User added successfully!");
+                cli.printSuc("User added successfully!");
                 break;
             case -1:
                 cli.printErr("User doesn't exist!");
@@ -190,9 +191,9 @@ public class IoTClientHandler {
         cli.print(String.format("<- %d", status));
         switch (status) {
             case 1:
-                cli.print("This device is already registered in the domain.");
+                cli.printInfo("This device is already registered in the domain.");
             case 0:
-                cli.print("Device registered successfully!");
+                cli.printSuc("Device registered successfully!");
                 break;
             case -1:
                 cli.printErr("Domain doesn't exist!");
@@ -235,7 +236,7 @@ public class IoTClientHandler {
         cli.print(String.format("<- %d", status));
         switch (status) {
             case 0:
-                cli.print("Sent the temperature measurement successfully!");
+                cli.printSuc("Sent the temperature measurement successfully!");
                 break;
             case -1:
                 cli.printErr("Network error!");
@@ -267,7 +268,7 @@ public class IoTClientHandler {
         cli.print(String.format("<- %d", status));
         switch (status) {
             case 0:
-                cli.print("Sent the image successfully!");
+                cli.printSuc("Sent the image successfully!");
                 break;
             case -1:
                 cli.printErr("Failed to send the image!");
@@ -302,7 +303,7 @@ public class IoTClientHandler {
         cli.print(String.format("<- %d", status));
         switch (status) {
             case 0:
-                cli.print("Received the latest temperature measurements successfully!");
+                cli.printSuc("Received the latest temperature measurements successfully!");
                 break;
             case -1:
                 cli.printErr("No permissions!");
@@ -351,7 +352,7 @@ public class IoTClientHandler {
                 cli.printErr("The device hasn't uploaded any image yet!");
                 break;
             case 0:
-                cli.print("Received the image successfully!");
+                cli.printSuc("Received the image successfully!");
                 break;
             case -1:
                 cli.printErr("No permissions!");
