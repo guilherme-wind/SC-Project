@@ -159,8 +159,22 @@ public class IoTServerRequestHandler {
     }
 
     private IoTMessageType handleValidateProgram(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
-        // TODO understand which sort of validation we should perform here
+        String programname = message.getProgramName();
+        long programsize = message.getProgramSize();
+        
+
         IoTMessageType response = new IoTMessage();
+        if (programname == null || programsize <= 0) {
+            response.setOpCode(IoTOpcodes.NOK_TESTED); 
+            return response;
+        }
+
+        if (!programname.equals(dbContext.getClientProgramName()) ||
+            programsize != dbContext.getClientProgramSize()) {
+            response.setOpCode(IoTOpcodes.NOK_TESTED); 
+            return response;
+        }
+
         response.setOpCode(IoTOpcodes.OK_TESTED);
         session.setAuthState(IoTAuth.COMPLETE);
         return response;
