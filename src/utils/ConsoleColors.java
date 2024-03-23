@@ -95,7 +95,7 @@ public class ConsoleColors {
             initializeAvailableColors();
         }
     
-        public static Service getInstance() {
+        public static synchronized Service getInstance() {
             if (instance == null) {
                 instance = new Service();
             }

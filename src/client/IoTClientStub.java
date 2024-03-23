@@ -41,7 +41,7 @@ public class IoTClientStub {
      *          Instance of client stub or null if error occured during 
      *          intialization.
      */
-    protected static IoTClientStub getInstance(String serverIp, int serverPort) {
+    protected static synchronized IoTClientStub getInstance(String serverIp, int serverPort) {
         if (instance != null)
             return instance;
         try {

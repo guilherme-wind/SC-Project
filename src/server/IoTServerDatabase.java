@@ -62,7 +62,7 @@ public class IoTServerDatabase {
         client_program_size = progsize.isPresent() ? progsize.get() : -1;
     }
     
-    public static IoTServerDatabase getInstance() {
+    public static synchronized IoTServerDatabase getInstance() {
         if (instance == null) {
             instance = new IoTServerDatabase();
         }

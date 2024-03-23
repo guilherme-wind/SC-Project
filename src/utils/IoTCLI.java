@@ -32,7 +32,7 @@ public class IoTCLI {
      * Get an instance of the CLI
      * @return
      */
-    public static IoTCLI getInstance() {
+    public static synchronized IoTCLI getInstance() {
         if (instance == null) {
             instance = new IoTCLI();
         }
