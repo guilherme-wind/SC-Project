@@ -174,17 +174,17 @@ public class Device implements IoTIParsable {
                 continue;
             
 
-            if (string.compareToIgnoreCase("OWNER") == 0) {
+            if (params[0].compareToIgnoreCase("OWNER") == 0) {
                 user = User.parseFromSerial(params[1]);
                 if (user == null)
                     return null;
-            } else if (string.compareToIgnoreCase("DEVID") == 0) {
+            } else if (params[0].compareToIgnoreCase("DEVID") == 0) {
                 try {
                     devid = Integer.parseInt(params[1]);
                 } catch (NumberFormatException e) {
                     return null;
                 }
-            } else if (string.compareToIgnoreCase("IMAGENAME") == 0) {
+            } else if (params[0].compareToIgnoreCase("IMAGENAME") == 0) {
                 if (!params[1].equalsIgnoreCase("NULL"))
                     imagename = params[1];
             }
