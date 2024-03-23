@@ -34,7 +34,6 @@ public class IoTPersistance {
             }
             return byteArrayOutputStream.toByteArray();
         } catch (IOException e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -49,7 +48,6 @@ public class IoTPersistance {
             }
             return byteArrayOutputStream.toByteArray();
         } catch (IOException e) {
-            e.printStackTrace();
             return null;
         }
     }
