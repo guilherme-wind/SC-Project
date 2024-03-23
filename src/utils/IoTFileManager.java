@@ -244,8 +244,8 @@ public class IoTFileManager {
      *      <li> -2 if no permissions to access file;
      *      <li> -3 if arguments are invalid;
      */
-    public static synchronized int loadDomainsFromText(Map<String, Domain> domains) {
-        if (domains == null)
+    public static synchronized int loadDomainsFromText(Map<String, User> users, Map<String, Device> devices, Map<String, Domain> domains) {
+        if (users == null || devices == null || domains == null)
             return -3;
         
         File file = new File(DOMAINS_TXT_DB);
@@ -258,7 +258,7 @@ public class IoTFileManager {
             Scanner fileScanner = new Scanner(file);
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
-                Domain user = Domain.parseFromSerial(line);
+                Domain user = Domain.parseFromSerial(users, devices, line);
                 if (user == null)
                     continue;
                 domains.put(user.getName(), user);
@@ -276,6 +276,8 @@ public class IoTFileManager {
      * Reads content from plain text file and loads devices and it's associated
      * data.
      * Will ignore lines that failed to load.
+     * @param users
+     *      Map containing users.
      * @param devices
      *      Map to where the data will be loaded.
      * @return
@@ -284,8 +286,8 @@ public class IoTFileManager {
      *      -2 if no permissions to access file;
      *      -3 if arguments are invalid;
      */
-    public static synchronized int loadDevicesFromText(Map<String, Device> devices) {
-        if (devices == null)
+    public static synchronized int loadDevicesFromText(Map<String, User> users, Map<String, Device> devices) {
+        if (users == null || devices == null)
             return -3;
         
         File file = new File(DEVICES_TXT_DB);
@@ -298,10 +300,10 @@ public class IoTFileManager {
             Scanner fileScanner = new Scanner(file);
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
-                Device user = Device.parseFromSerial(line);
-                if (user == null)
+                Device device = Device.parseFromSerial(users, line);
+                if (device == null)
                     continue;
-                devices.put(user.getName(), user);
+                devices.put(device.getName(), device);
             }
 
             fileScanner.close();
@@ -346,7 +348,6 @@ public class IoTFileManager {
         } catch (Exception e) {
             return Optional.empty();
         }
-        // TODO
         return Optional.empty();
     }
 
