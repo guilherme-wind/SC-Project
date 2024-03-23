@@ -30,7 +30,7 @@ public class IoTClientHandler {
      *      An instance of the handler or null if the 
      *      arguments are invalid.
      */
-    protected static IoTClientHandler getInstance(IoTCLI cli, IoTClientStub stub) {
+    protected static synchronized IoTClientHandler getInstance(IoTCLI cli, IoTClientStub stub) {
         if (cli == null || stub == null)
             return null;
 

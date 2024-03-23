@@ -34,7 +34,7 @@ public class IoTCLI {
      * Get an instance of the CLI
      * @return
      */
-    public static IoTCLI getInstance() {
+    public static synchronized IoTCLI getInstance() {
         if (instance == null) {
             instance = new IoTCLI();
         }
@@ -51,12 +51,17 @@ public class IoTCLI {
         System.out.print(ConsoleColors.SLOW_BLINK);
         String input;
         try {
-            input = sc.nextLine();
+            if (sc.hasNextLine()) {
+                input = sc.nextLine();
+            } else {
+                return null;
+            }
         } catch (Exception e) {
             return null;
         }
         return input;
     }
+    
 
     /**
      * Prints the options menu.
@@ -144,7 +149,6 @@ public class IoTCLI {
      * Closes the CLI
      */
     public void close() {
-        sc.close();
     }
 
 }

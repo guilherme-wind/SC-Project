@@ -16,7 +16,6 @@ public class IoTDevice {
     private static IoTCLI cli;
 
     private static IoTClientStub stub;
-
     private static IoTClientHandler handler;
 
     private static int devId;
@@ -34,37 +33,36 @@ public class IoTDevice {
         if (verifyCmdArgs(args) < 0) {
             cli.printErr("Wrong input arguments!");
             cli.print(USAGE);
-            close();
+            return;
         }
         
         // Initialize class fields using command line arguments
         if (initialize(args) < 0) {
             cli.printErr("Failed initializing device!");
-            close();
+            return;
         }
         
         // perform user auth
         if (performUserAuth() < 0) {
             cli.printErr("Failed authenticating user!");
-            close();
+            return;
         }
         
         // perform device auth
         if (performDeviceAuth(true) < 0) {
             cli.printErr("Failed authenticating device!");
-            close();
+            return;
         }
         
         // perform program auth
         if (performProgramAuth() < 0) {
             cli.printErr("Failed authenticating program!");
-            close();
+            return;
         }
         
         handler.userInvoke();
         
         System.out.println("Finished!");
-        close();
     }
     
     
@@ -150,6 +148,10 @@ public class IoTDevice {
         if (handler == null) {
             return -1;
         }
+
+        // prepare shutdown
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> { shutdown(); }));
+
         return 0;
     }
     
@@ -274,7 +276,7 @@ public class IoTDevice {
      * Releases resources, closes connection and 
      * terminates program.
      */
-    public static void close() {
+    public static void shutdown() {
         if (handler != null)
             handler.close();
         else {
@@ -283,6 +285,5 @@ public class IoTDevice {
             if (cli != null)
                 cli.close();
         }
-        System.exit(0);
     }
 }

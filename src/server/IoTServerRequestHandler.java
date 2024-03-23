@@ -22,7 +22,7 @@ public class IoTServerRequestHandler {
         initializeFunctions();
     }
 
-    public static IoTServerRequestHandler getInstance() {
+    public static synchronized IoTServerRequestHandler getInstance() {
         if (instance == null) {
             instance = new IoTServerRequestHandler();
         }

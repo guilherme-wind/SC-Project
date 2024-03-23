@@ -54,7 +54,7 @@ public class IoTFileManager {
      * @return
      *      An instance of IoTFileManager.
      */
-    public static IoTFileManager getInstance() {
+    public static synchronized IoTFileManager getInstance() {
         if (instance == null)
             instance = new IoTFileManager();
         return instance;
