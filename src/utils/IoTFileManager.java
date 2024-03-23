@@ -38,7 +38,7 @@ public class IoTFileManager {
     private static final String USER_TXT_DB = Paths.get(SERV_METADATA.toString(), "users.txt").toString();
     private static final String DOMAINS_TXT_DB = Paths.get(SERV_METADATA.toString(), "domains.txt").toString();
     private static final String DEVICES_TXT_DB = Paths.get(SERV_METADATA.toString(), "devices.txt").toString();
-    private static final String PROGRAM_TXT_DB = Paths.get(SERV_METADATA.toString(), "program.txt").toString();
+    private static final String PROGRAM_TXT_DB = Paths.get(SERV_METADATA.toString(), "program-info.program").toString();
 
     private static final String SERV_USERDATA = Paths.get(SERVER_ROOT.toString(), "user_files").toString();
 
