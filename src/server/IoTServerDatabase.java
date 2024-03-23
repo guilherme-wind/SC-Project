@@ -185,6 +185,9 @@ public class IoTServerDatabase {
             return IoTOpcodes.NOK_NO_PERMISSIONS;
         
         User user = this.users.get(userName);
+        if (domain.contains(user))
+            return IoTOpcodes.NOK_ALREADY_EXISTS;
+
         domain.addUser(user);
         return IoTOpcodes.OK_ACCEPTED;
     }
@@ -204,6 +207,9 @@ public class IoTServerDatabase {
         Domain domain = this.domains.get(domainName);
         if (!domain.contains(as))
             return IoTOpcodes.NOK_NO_PERMISSIONS;
+        
+        if (domain.contains(device))
+            return IoTOpcodes.NOK_ALREADY_EXISTS;
 
         domain.registerDevice(device);
         return IoTOpcodes.OK_ACCEPTED;
