@@ -43,6 +43,8 @@ public class IoTFileManager {
     private static final String SERV_USERDATA = Paths.get(SERVER_ROOT.toString(), "user_files").toString();
 
 
+    private static final Object lock = new Object();
+
     private IoTFileManager() {
     }
 
@@ -99,7 +101,7 @@ public class IoTFileManager {
      *      <li> -1 if error occured while writing;
      *      <li> -2 if the arguments are invalid;
      */
-    public static synchronized int writeDeviceFile(Device device, String filename, byte[] filebytes) {
+    public static int writeDeviceFile(Device device, String filename, byte[] filebytes) {
         if (device == null || filename == null || filebytes == null)
             return -2;
         
@@ -111,8 +113,9 @@ public class IoTFileManager {
                                     device.getOwner().getName(), 
                                     Integer.toString(device.getDevId()),
                                     filename).toString();
-        
-        return IoTFileManager.writeFileAsBytes(path, filebytes) < 0 ? -1 : 0;
+        synchronized (lock) {
+            return IoTFileManager.writeFileAsBytes(path, filebytes) < 0 ? -1 : 0;
+        }
     }
 
     /**
@@ -123,7 +126,7 @@ public class IoTFileManager {
      *      an exception occured during reading or the
      *      argument is invalid.
      */
-    public static synchronized Optional<byte[]> readDeviceImg(Device device) {
+    public static Optional<byte[]> readDeviceImg(Device device) {
         if (device == null)
             return Optional.empty();
 
@@ -135,7 +138,10 @@ public class IoTFileManager {
                                 Integer.toString(device.getDevId()),
                                 device.getImgFileName().get()).toString();
         
-        Optional<byte[]> image = IoTFileManager.readFileAsBytes(path);
+        Optional<byte[]> image;
+        synchronized(lock) {
+            image = IoTFileManager.readFileAsBytes(path);
+        }
         if (!image.isPresent())
             return Optional.empty();
         
@@ -151,7 +157,7 @@ public class IoTFileManager {
      *      argument is invalid or the reading isn't
      *      a number.
      */
-    public static synchronized Optional<Float> readDeviceTemp(Device device) {
+    public static Optional<Float> readDeviceTemp(Device device) {
         if (device == null)
             return Optional.empty();
         
@@ -160,7 +166,10 @@ public class IoTFileManager {
                                 Integer.toString(device.getDevId()),
                                 device.getTempFileName()).toString();
         
-        Optional<byte[]> tempBytes = IoTFileManager.readFileAsBytes(path);
+        Optional<byte[]> tempBytes;
+        synchronized(lock) {
+            tempBytes = IoTFileManager.readFileAsBytes(path);
+        }
         if (!tempBytes.isPresent())
             return Optional.empty();
         
@@ -307,7 +316,7 @@ public class IoTFileManager {
      * Loads client program name from text file.
      * @return
      */
-    public static Optional<String> loadProgramNameFromText() {
+    public static synchronized Optional<String> loadProgramNameFromText() {
         File file = new File(PROGRAM_TXT_DB);
 
         if (!file.exists() || file.isDirectory())
@@ -411,50 +420,52 @@ public class IoTFileManager {
      *      -2 if no permissions to write in the path;
      *      -3 if arguments are invalid;
      */
-    public static synchronized int writeObjsToText(String filePath, List<IoTIParsable> objs) {
+    public static int writeObjsToText(String filePath, List<IoTIParsable> objs) {
         if (filePath == null || objs == null)
             return -3;
 
         File file = new File(filePath);
         if (file.isDirectory())
             return -1;
-        
-        // Always tries to delete the file
-        file.delete();
-        
-        // Tries to create all directories to the file
-        File parent = file.getParentFile();
-        if (parent != null) {
-            if (!parent.exists() && !parent.mkdirs())
-                return -1;
-        }
 
-        // Creates new file
-        try {
-            if (!file.createNewFile()) {
+        synchronized (lock) {
+            // Always tries to delete the file
+            file.delete();
+            
+            // Tries to create all directories to the file
+            File parent = file.getParentFile();
+            if (parent != null) {
+                if (!parent.exists() && !parent.mkdirs())
+                    return -1;
+            }
+    
+            // Creates new file
+            try {
+                if (!file.createNewFile()) {
+                    return -1;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
                 return -1;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return -1;
-        }
-
-        // Writes to file
-        try {
-            FileWriter fw = new FileWriter(file);
-            BufferedWriter bw = new BufferedWriter(fw);
-            for (IoTIParsable entry : objs) {
-                bw.write(entry.parseToSerial());
-                bw.newLine();
+    
+            // Writes to file
+            try {
+                FileWriter fw = new FileWriter(file);
+                BufferedWriter bw = new BufferedWriter(fw);
+                for (IoTIParsable entry : objs) {
+                    bw.write(entry.parseToSerial());
+                    bw.newLine();
+                }
+                bw.flush();
+                bw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return -1;
             }
-            bw.flush();
-            bw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return -1;
         }
-
         return 0;
+        
     }
 
     /**
@@ -478,16 +489,18 @@ public class IoTFileManager {
         if (file.isDirectory())
             return -1;
 
-        try {
-            FileWriter fw = new FileWriter(file);
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(obj.parseToSerial());
-            bw.newLine();
-            bw.flush();
-            bw.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -2;
+        synchronized (lock) {
+            try {
+                FileWriter fw = new FileWriter(file);
+                BufferedWriter bw = new BufferedWriter(fw);
+                bw.write(obj.parseToSerial());
+                bw.newLine();
+                bw.flush();
+                bw.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return -2;
+            }
         }
         return 0;
     }
@@ -512,7 +525,7 @@ public class IoTFileManager {
      *      <li> -2 if failed to create necessary folders to the file;
      *      <li> -3 if exception occured while writing;
      */
-    public static synchronized int writeFileAsBytes(String filePath, byte[] filebytes) {
+    public static int writeFileAsBytes(String filePath, byte[] filebytes) {
         if (filePath == null || filebytes == null)
             return -1;
         
@@ -524,13 +537,16 @@ public class IoTFileManager {
                 return -2;
         }
         
-        try {
-            FileOutputStream writer = new FileOutputStream(filePath);
-            writer.write(filebytes);
-            writer.close();
-        } catch (Exception e) {
-            return -3;
+        synchronized(lock) {
+            try {
+                FileOutputStream writer = new FileOutputStream(filePath);
+                writer.write(filebytes);
+                writer.close();
+            } catch (Exception e) {
+                return -3;
+            }
         }
+
         
         return 0;
     }
@@ -548,7 +564,7 @@ public class IoTFileManager {
      *          <li> No permissions to read and write;
      *          <li> Exception while trying to read;
      */
-    public static synchronized Optional<byte[]> readFileAsBytes(String filePath) {
+    public static Optional<byte[]> readFileAsBytes(String filePath) {
         if (filePath == null)
             return Optional.empty();
         
@@ -557,12 +573,14 @@ public class IoTFileManager {
         
         File file = new File(filePath);
         byte[] bytes;
-        
-        try {
-            bytes = Files.readAllBytes(file.toPath());
-        } catch (IOException e) {
-            return Optional.empty();
+        synchronized(lock) {
+            try {
+                bytes = Files.readAllBytes(file.toPath());
+            } catch (IOException e) {
+                return Optional.empty();
+            }
         }
+        
         return Optional.of(bytes);
     }
 
@@ -578,15 +596,17 @@ public class IoTFileManager {
      *      0 if wrote successfully;
      *      -1 if failed to write to file;
      */
-    public static synchronized int writeObjectToFile(String filePath, Object object) {
-        try {
-            FileOutputStream file = new FileOutputStream(filePath);
-            ObjectOutputStream writer = new ObjectOutputStream(file);
-            writer.writeObject(object);
-            writer.close();
-            file.close();
-        } catch (Exception e) {
-            return -1;
+    public static int writeObjectToFile(String filePath, Object object) {
+        synchronized(lock) {
+            try {
+                FileOutputStream file = new FileOutputStream(filePath);
+                ObjectOutputStream writer = new ObjectOutputStream(file);
+                writer.writeObject(object);
+                writer.close();
+                file.close();
+            } catch (Exception e) {
+                return -1;
+            }
         }
         return 0;
     }
@@ -600,14 +620,16 @@ public class IoTFileManager {
      */
     public static synchronized Optional<Object> readObjectFromFile(String filePath) {
         Object obj;
-        try {
-            FileInputStream file = new FileInputStream(filePath);
-            ObjectInputStream reader = new ObjectInputStream(file);
-            obj = reader.readObject();
-            reader.close();
-            file.close();
-        } catch (Exception e) {
-            return Optional.empty();
+        synchronized(lock) {
+            try {
+                FileInputStream file = new FileInputStream(filePath);
+                ObjectInputStream reader = new ObjectInputStream(file);
+                obj = reader.readObject();
+                reader.close();
+                file.close();
+            } catch (Exception e) {
+                return Optional.empty();
+            }
         }
         return Optional.of(obj);
     }
