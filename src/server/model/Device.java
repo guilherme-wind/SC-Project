@@ -1,5 +1,6 @@
 package server.model;
 
+import java.util.List;
 import java.util.Optional;
 
 import utils.IoTFileManager;
@@ -10,7 +11,7 @@ import utils.IoTIParsable;
 public class Device implements IoTIParsable {
 
     // String template for parsing
-    private final String DEVICE_TEMP = "%s|%s";
+    private final String DEVICE_TEMP = "{Owner=%s,DevID=%s,ImageName=%s}";
 
     private Boolean isActive;
     private final User owner;
@@ -146,29 +147,63 @@ public class Device implements IoTIParsable {
     public static Device parseFromSerial(String serial) {
         if (serial == null)
             return null;
+        
+        int start_brace_index = serial.indexOf("{");
+        if (start_brace_index < 0)
+            return null;
 
-        String[] tokens = serial.split("\\|", 2);
-        if (tokens.length < 2)
+        int end_brace_index = serial.lastIndexOf("}");
+        if (end_brace_index == -1)
             return null;
         
-        User user = User.parseFromSerial(tokens[0]);
-        if (user == null)
-            return null;
+        // Extract content between curly brackets {}
+        String content = serial.substring(start_brace_index+1, end_brace_index);
 
-        int devid;
-        try {
-            devid = Integer.parseInt(tokens[1]);
-        } catch (NumberFormatException e) {
+        List<String> tokens = IoTIParsable.separateStrByChar(',', content);
+        if (tokens.size() < 3)
             return null;
+        
+
+        User user = null;
+        int devid = -1;
+        String imagename = null;
+
+        for (String string : tokens) {
+            String[] params = string.split("=", 2);
+            if (params.length != 2)
+                continue;
+            
+
+            if (string.compareToIgnoreCase("OWNER") == 0) {
+                user = User.parseFromSerial(params[1]);
+                if (user == null)
+                    return null;
+            } else if (string.compareToIgnoreCase("DEVID") == 0) {
+                try {
+                    devid = Integer.parseInt(params[1]);
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+            } else if (string.compareToIgnoreCase("IMAGENAME") == 0) {
+                if (!params[1].equalsIgnoreCase("NULL"))
+                    imagename = params[1];
+            }
         }
+        if (user == null || devid < 0)
+            return null;
 
         Device device = new Device(user, devid);
+    
+        if (imagename != null)
+            device.setImgFileName(imagename);
 
         return device;
     }
 
     @Override
     public String parseToSerial() {
-        return String.format(DEVICE_TEMP, owner.parseToSerial(), Integer.toString(devId));
+        return String.format(DEVICE_TEMP, owner.parseToSerial(), 
+                             Integer.toString(devId),
+                             this.imgFileName == null ? "null" : this.imgFileName);
     }
 }
