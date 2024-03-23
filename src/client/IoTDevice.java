@@ -33,31 +33,31 @@ public class IoTDevice {
         if (verifyCmdArgs(args) < 0) {
             cli.printErr("Wrong input arguments!");
             cli.print(USAGE);
-            shutdown();
+            return;
         }
         
         // Initialize class fields using command line arguments
         if (initialize(args) < 0) {
             cli.printErr("Failed initializing device!");
-            shutdown();
+            return;
         }
         
         // perform user auth
         if (performUserAuth() < 0) {
             cli.printErr("Failed authenticating user!");
-            shutdown();
+            return;
         }
         
         // perform device auth
         if (performDeviceAuth(true) < 0) {
             cli.printErr("Failed authenticating device!");
-            shutdown();
+            return;
         }
         
         // perform program auth
         if (performProgramAuth() < 0) {
             cli.printErr("Failed authenticating program!");
-            shutdown();
+            return;
         }
         
         handler.userInvoke();
