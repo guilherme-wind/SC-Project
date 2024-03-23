@@ -27,7 +27,6 @@ public class IoTServer{
                 thread.start();
             }
         } catch (Exception e) {
-            System.out.println("Fui interrumpido!!!");
             try {
                 socket.close();
             } catch (Exception e1){
