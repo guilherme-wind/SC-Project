@@ -61,6 +61,16 @@ public class Session {
             this.device.turnOff();
         }
     }
+
+    @Override
+    public String toString() {
+        if (device != null)
+            return device.getName();
+
+        if (user != null)
+            return user.getName();
+        return "unauthenticated";
+    }
     
 }
 
