@@ -1,7 +1,6 @@
 package server;
 
 import java.net.Socket;
-import java.util.UUID;
 
 import server.model.Session;
 import utils.ConsoleColors;
@@ -13,7 +12,6 @@ public class IoTServerThread extends Thread {
     private Boolean running = false;
     private IoTStream ioTStream;
     private IoTCLI cli;
-    private final String uuid = UUID.randomUUID().toString();
     private String color;
 
     public IoTServerThread(Socket socket) {
@@ -37,19 +35,19 @@ public class IoTServerThread extends Thread {
             if (receivedMessage == null)
                 return;
             cli.print(
-                String.format("Received message %s!", receivedMessage), uuid, color
+                String.format("Received message %s!", receivedMessage), session.toString(), color
             );
             
             // response
             IoTMessageType responseMessage = handler.process(receivedMessage, session, dbContext);
             cli.print(
-                String.format("Processed message and response will be %s", responseMessage), uuid, color
+                String.format("Processed message and response will be %s", responseMessage), session.toString(), color
             );
 
             if (responseMessage != null) {
-                cli.print("Sending!", uuid, color);
+                cli.print("Sending!", session.toString(), color);
                 if (this.ioTStream.write(responseMessage))
-                    cli.print("Sent!", uuid, color);
+                    cli.print("Sent!", session.toString(), color);
             }
         }
     }    
