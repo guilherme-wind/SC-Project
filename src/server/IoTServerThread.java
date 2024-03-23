@@ -1,18 +1,26 @@
 package server;
 
 import java.net.Socket;
+import java.util.UUID;
 
 import server.model.Session;
+import utils.ConsoleColors;
+import utils.IoTCLI;
 import utils.IoTMessageType;
 import utils.IoTStream;
 
 public class IoTServerThread extends Thread {
     private Boolean running = false;
     private IoTStream ioTStream;
+    private IoTCLI cli;
+    private final String uuid = UUID.randomUUID().toString();
+    private String color;
 
     public IoTServerThread(Socket socket) {
         this.ioTStream = new IoTStream(socket);
         this.running = true;
+        this.cli = IoTCLI.getInstance();
+        this.color = ConsoleColors.Service.getInstance().getRandomUnusedColor("Regular");
     }
 
     /**
@@ -28,15 +36,20 @@ public class IoTServerThread extends Thread {
             IoTMessageType receivedMessage = (IoTMessageType) this.ioTStream.read();
             if (receivedMessage == null)
                 return;
-            System.out.println(String.format("Received message %s!", receivedMessage));
+            cli.print(
+                String.format("Received message %s!", receivedMessage), uuid, color
+            );
             
             // response
             IoTMessageType responseMessage = handler.process(receivedMessage, session, dbContext);
-            System.out.println("Processed message and response will be " + responseMessage);
+            cli.print(
+                String.format("Processed message and response will be %s", responseMessage), uuid, color
+            );
+
             if (responseMessage != null) {
-                System.out.println("Sending!");
+                cli.print("Sending!", uuid, color);
                 if (this.ioTStream.write(responseMessage))
-                    System.out.println("Sent!");
+                    cli.print("Sent!", uuid, color);
             }
         }
     }    
