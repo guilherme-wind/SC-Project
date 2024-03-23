@@ -82,7 +82,7 @@ public class IoTClientHandler {
                 case "EXIT":
                     return 0;
                 default:
-                    cli.printErr("Unable to parse given command.");
+                    cli.printErr("Command not recognized!");
                     break;
             }
         }
@@ -94,12 +94,12 @@ public class IoTClientHandler {
      */
     private void createCommand(String[] args) {
         if (args.length == 1) {
-            cli.printErr("missing <domain name>\n");
+            cli.printErr("Missing <domain name>");
             return;
         }
 
         if (args.length > 2) {
-            cli.printErr("too many arguments\n");
+            cli.printErr("Too many arguments");
             return;
         }
 
@@ -107,7 +107,7 @@ public class IoTClientHandler {
         
         for (String illegal_chaString : ILLEGAL_CHARS) {
             if (domainName.contains(illegal_chaString)) {
-                cli.printErr(String.format("domain name can't contain %s\n", illegal_chaString));
+                cli.printErr(String.format("Domain name can't contain \"%s\"", illegal_chaString));
                 return;
             }
         }
@@ -136,17 +136,17 @@ public class IoTClientHandler {
      */
     private void addCommand(String[] args) {
         if (args.length == 1) {
-            cli.printErr("missing <user> and <domain name>\n");
+            cli.printErr("Missing <user> and <domain name>");
             return;
         }
 
         if (args.length == 2) {
-            cli.printErr("missing arguments, we are expecting 2 arguments: <user> and <domain name>\n");
+            cli.printErr("Missing arguments, we are expecting 2 arguments: <user> and <domain name>");
             return;
         }
 
         if (args.length > 3) {
-            cli.printErr("too many arguments\n");
+            cli.printErr("Too many arguments");
             return;
         }
 
@@ -185,12 +185,12 @@ public class IoTClientHandler {
      */
     private void rdCommand(String[] args) {
         if (args.length == 1) {
-            cli.printErr("missing <domain name>\n");
+            cli.printErr("Missing <domain name>");
             return;
         }
 
         if (args.length > 2) {
-            cli.printErr("too many arguments\n");
+            cli.printErr("Too many arguments");
             return;
         }
 
@@ -224,12 +224,12 @@ public class IoTClientHandler {
      */
     private void etCommand(String[] args) {
         if (args.length == 1) {
-            cli.printErr("missing <temperature> (in float)\n");
+            cli.printErr("Missing <temperature> (in float)\n");
             return;
         }
 
         if (args.length > 2) {
-            cli.printErr("too many arguments\n");
+            cli.printErr("Too many arguments\n");
             return;
         }
         
@@ -263,12 +263,12 @@ public class IoTClientHandler {
      */
     private void eiCommand(String[] args) {
         if (args.length == 1) {
-            cli.printErr("missing <file.jpg>\n");
+            cli.printErr("Missing <file.jpg>\n");
             return;
         }
 
         if (args.length > 2) {
-            cli.printErr("too many arguments\n");
+            cli.printErr("Too many arguments\n");
             return;
         }
 
@@ -297,12 +297,12 @@ public class IoTClientHandler {
      */
     private void rtCommand(String[] args) {
         if (args.length == 1) {
-            cli.printErr("missing <domain name>\n");
+            cli.printErr("Missing <domain name>\n");
             return;
         }
 
         if (args.length > 2) {
-            cli.printErr("too many arguments\n");
+            cli.printErr("Too many arguments\n");
             return;
         }
 
@@ -321,6 +321,9 @@ public class IoTClientHandler {
                 cli.printErr("The domain doesn't exist!");
                 break;
             case -3:
+                cli.printErr("No temperature records!");
+                break;
+            case -4:
                 cli.printErr("Network error!");
                 break;
         
@@ -335,18 +338,18 @@ public class IoTClientHandler {
      */
     private void riCommand(String[] args) {
         if (args.length == 1) {
-            cli.printErr("missing <user id> and <device id>\n");
+            cli.printErr("Missing <user id> and <device id>");
             return;
         }
 
         if (args.length > 2) {
-            cli.printErr("too many arguments\n");
+            cli.printErr("Too many arguments");
             return;
         }
 
         String[] tokens = args[1].split(":", 2);
         if (tokens.length < 2) {
-            cli.printErr("missing arguments, we're expecting: <user id>:<device id>\n");
+            cli.printErr("Missing arguments, we're expecting: <user id>:<device id>");
             return;
         }
 

@@ -11,6 +11,7 @@ import utils.IoTOpcodes;
 
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class IoTServerRequestHandler {
@@ -272,7 +273,13 @@ public class IoTServerRequestHandler {
             return response;
         }
 
-        response.setTemps(domain.extractTemperatures());
+        Map<String,Float> temps = domain.extractTemperatures();
+        if (temps.size() == 0) {
+            response.setOpCode(IoTOpcodes.NOK_NO_DATA);
+            return response;
+        }
+
+        response.setTemps(temps);
 
         response.setOpCode(IoTOpcodes.OK_ACCEPTED);
 

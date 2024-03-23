@@ -363,7 +363,8 @@ public class IoTClientStub {
      *      <li> 0 if received values successfully;
      *      <li> -1 if the current user doesn't have permissions;
      *      <li> -2 if the domain doesn't exist;
-     *      <li> -3 if socket or response semantic error occured;
+     *      <li> -3 if the domain hasn't no temperature data;
+     *      <li> -4 if socket or response semantic error occured;
      */
     protected int getTemperaturesInDomain(String domainName) {
         IoTMessageType request = new IoTMessage();
