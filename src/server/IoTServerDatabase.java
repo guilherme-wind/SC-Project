@@ -52,8 +52,8 @@ public class IoTServerDatabase {
     */
     private void load() {
         IoTFileManager.loadUsersFromText(this.users);
-        IoTFileManager.loadDomainsFromText(this.domains);
-        IoTFileManager.loadDevicesFromText(this.devices);
+        IoTFileManager.loadDevicesFromText(this.users, this.devices);
+        IoTFileManager.loadDomainsFromText(this.users, this.devices, this.domains);
 
         Optional<String> progname = IoTFileManager.loadProgramNameFromText();
         client_program_name = progname.isPresent() ? progname.get() : null;
