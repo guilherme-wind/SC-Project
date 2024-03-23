@@ -2,9 +2,10 @@ package client;
 
 import java.io.*;
 
+import utils.IoTCLI;
+
 
 public class IoTDevice {
-    // This bozo is going to CLI
     private static final String USAGE = "USAGE: IoTDevice <serverAddress> <dev-id> <user-id>";
     private static final int DEFAULT_SERVERPORT = 12345;
 
