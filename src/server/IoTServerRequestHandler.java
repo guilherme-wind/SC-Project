@@ -250,6 +250,8 @@ public class IoTServerRequestHandler {
 
         IoTMessageType response = new IoTMessage();
         response.setOpCode(IoTOpcodes.OK_ACCEPTED);
+        dbContext.onDeviceUpdate();
+        dbContext.onDomainUpdate();
 
         return response;
     }
