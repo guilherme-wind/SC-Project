@@ -104,41 +104,41 @@ public class ConsoleColors {
         }
     
         private void initializeAvailableColors() {
-            availableColors.put("Regular", new ArrayList<>(Arrays.asList(
+            availableColors.put("Regular", Arrays.asList(
                     ConsoleColors.BLACK, ConsoleColors.RED, ConsoleColors.GREEN,
                     ConsoleColors.YELLOW, ConsoleColors.BLUE, ConsoleColors.PURPLE,
                     ConsoleColors.CYAN, ConsoleColors.WHITE
-            )));
-            availableColors.put("Bold", new ArrayList<>(Arrays.asList(
+            ));
+            availableColors.put("Bold", Arrays.asList(
                     ConsoleColors.BLACK_BOLD, ConsoleColors.RED_BOLD, ConsoleColors.GREEN_BOLD,
                     ConsoleColors.YELLOW_BOLD, ConsoleColors.BLUE_BOLD, ConsoleColors.PURPLE_BOLD,
                     ConsoleColors.CYAN_BOLD, ConsoleColors.WHITE_BOLD
-            )));
-            availableColors.put("Underline", new ArrayList<>(Arrays.asList(
+            ));
+            availableColors.put("Underline", Arrays.asList(
                     ConsoleColors.BLACK_UNDERLINED, ConsoleColors.RED_UNDERLINED, ConsoleColors.GREEN_UNDERLINED,
                     ConsoleColors.YELLOW_UNDERLINED, ConsoleColors.BLUE_UNDERLINED, ConsoleColors.PURPLE_UNDERLINED,
                     ConsoleColors.CYAN_UNDERLINED, ConsoleColors.WHITE_UNDERLINED
-            )));
-            availableColors.put("Background", new ArrayList<>(Arrays.asList(
+            ));
+            availableColors.put("Background", Arrays.asList(
                     ConsoleColors.BLACK_BACKGROUND, ConsoleColors.RED_BACKGROUND, ConsoleColors.GREEN_BACKGROUND,
                     ConsoleColors.YELLOW_BACKGROUND, ConsoleColors.BLUE_BACKGROUND, ConsoleColors.PURPLE_BACKGROUND,
                     ConsoleColors.CYAN_BACKGROUND, ConsoleColors.WHITE_BACKGROUND
-            )));
-            availableColors.put("High Intensity", new ArrayList<>(Arrays.asList(
+            ));
+            availableColors.put("High Intensity", Arrays.asList(
                     ConsoleColors.BLACK_BRIGHT, ConsoleColors.RED_BRIGHT, ConsoleColors.GREEN_BRIGHT,
                     ConsoleColors.YELLOW_BRIGHT, ConsoleColors.BLUE_BRIGHT, ConsoleColors.PURPLE_BRIGHT,
                     ConsoleColors.CYAN_BRIGHT, ConsoleColors.WHITE_BRIGHT
-            )));
-            availableColors.put("Bold High Intensity", new ArrayList<>(Arrays.asList(
+            ));
+            availableColors.put("Bold High Intensity", Arrays.asList(
                     ConsoleColors.BLACK_BOLD_BRIGHT, ConsoleColors.RED_BOLD_BRIGHT, ConsoleColors.GREEN_BOLD_BRIGHT,
                     ConsoleColors.YELLOW_BOLD_BRIGHT, ConsoleColors.BLUE_BOLD_BRIGHT, ConsoleColors.PURPLE_BOLD_BRIGHT,
                     ConsoleColors.CYAN_BOLD_BRIGHT, ConsoleColors.WHITE_BOLD_BRIGHT
-            )));
-            availableColors.put("High Intensity Background", new ArrayList<>(Arrays.asList(
+            ));
+            availableColors.put("High Intensity Background", Arrays.asList(
                     ConsoleColors.BLACK_BACKGROUND_BRIGHT, ConsoleColors.RED_BACKGROUND_BRIGHT, ConsoleColors.GREEN_BACKGROUND_BRIGHT,
                     ConsoleColors.YELLOW_BACKGROUND_BRIGHT, ConsoleColors.BLUE_BACKGROUND_BRIGHT, ConsoleColors.PURPLE_BACKGROUND_BRIGHT,
                     ConsoleColors.CYAN_BACKGROUND_BRIGHT, ConsoleColors.WHITE_BACKGROUND_BRIGHT
-            )));
+            ));
         }
 
         public String getRandomUnusedColor(String category) {
@@ -146,7 +146,7 @@ public class ConsoleColors {
             if (colors != null && !colors.isEmpty()) {
                 Random random = new Random();
                 int index = random.nextInt(colors.size());
-                return colors.remove(index);
+                return colors.get(index);
             }
             return ConsoleColors.RESET; // No available colors in the given category
         }
