@@ -1,5 +1,7 @@
 package client;
 
+import utils.IoTCLI;
+
 /**
  * Interacts with user and deals with
  * input invoke.
