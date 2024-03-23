@@ -1,6 +1,8 @@
 package client;
 
 import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import utils.IoTCLI;
 
@@ -8,9 +10,6 @@ import utils.IoTCLI;
 public class IoTDevice {
     private static final String USAGE = "USAGE: IoTDevice <serverAddress> <dev-id> <user-id>";
     private static final int DEFAULT_SERVERPORT = 12345;
-
-    private static final String PROGRAM_NAME = IoTDevice.class.getSimpleName();
-    private static final int PROGRAM_SIZE = (int) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
 
 
     // Simple UI
@@ -30,6 +29,17 @@ public class IoTDevice {
 
         // Initialize cli
         cli = IoTCLI.getInstance();
+
+
+        URL res = IoTDevice.class.getProtectionDomain().getCodeSource().getLocation();
+        File file = null;
+        try {
+            file = new File(res.toURI());
+        } catch (URISyntaxException e) {
+            close();
+        }
+        String fileName = file.getPath();
+        cli.print(fileName);
         
         // Command line argument validation
         if (verifyCmdArgs(args) < 0) {
@@ -57,8 +67,10 @@ public class IoTDevice {
         }
         
         // perform program auth
-        if (performProgramAuth() < 0)
+        if (performProgramAuth() < 0) {
+            cli.printErr("Failed authenticating program!");
             close();
+        }
         
         handler.userInvoke();
         
@@ -153,26 +165,32 @@ public class IoTDevice {
     }
     
     /**
-     * Gets the name of the class file and it's size
+     * Gets the name of the jar file and it's size
      * and authenticates with the server.
-     * NOT WORKING YET!
      * @see
      *      Untested!
      * @return
      *      0 if authenticated successfully;
      *      -1 if authentication failed;
      */
-    private static int authenticateProgram() {
-        String path = IoTDevice.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        File file = new File(path);
-        if (!file.exists())
+    private static int performProgramAuth() {
+        URL res = IoTDevice.class.getProtectionDomain().getCodeSource().getLocation();
+        File file = null;
+        try {
+            file = new File(res.toURI());
+        } catch (URISyntaxException e) {
             return -1;
+        }
         long size = file.length();
         String name = file.getName();
-        int auth_res = stub.authenticateProgram(name, size);
-        if (auth_res < 0)
-            return -1;
-        return 0;
+
+        cli.print(String.format("-> /authProg [%s, %d]", name, size));
+        int status = stub.authenticateProgram(name, size);
+        cli.print(String.format("<- %d", status));
+        if (status < 0) {
+            cli.printErr("Error authenticating program!");
+        }
+        return status;
     }
     
     private static int performUserAuth() {
@@ -253,24 +271,6 @@ public class IoTDevice {
         return 0;
     }
     
-    /**
-     * Authenticates executing program
-     * with the server.
-     * @return
-     *      0 if authenticated successfully;
-     *      -1 if failed;
-     *      -2 if socket error;
-     */
-    private static int performProgramAuth() {
-        // TODO: get executing .jar file
-        cli.print(String.format("-> /authProg [%s, %d]", PROGRAM_NAME, PROGRAM_SIZE));
-        int status = stub.authenticateProgram(PROGRAM_NAME, PROGRAM_SIZE);
-        cli.print(String.format("<- %d", status));
-        if (status < 0) {
-            cli.printErr("Error authenticating program!");
-        }
-        return status;
-    }
 
 
     /**
