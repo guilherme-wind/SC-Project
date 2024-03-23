@@ -33,7 +33,7 @@ public interface IoTIParsable {
      * @return
      *      List of strings separated by commas.
      */
-    public static List<String> separateStrByComma(String input) {
+    public static List<String> separateStrByChar(char delimiter, String input) {
         List<String> result = new ArrayList<>();
         int i = 0;
         StringBuilder token = new StringBuilder();
