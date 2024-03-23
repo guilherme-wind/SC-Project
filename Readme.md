@@ -38,6 +38,7 @@ A execução do programa requer a JVM e pode ser realizada com ficheiros `.jar` 
         ```
         java -jar IoTServer.jar 
         ```
+        ou
 
         ```
         java -jar IoTServer.jar <Porto servidor>
