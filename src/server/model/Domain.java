@@ -109,13 +109,13 @@ public class Domain implements IoTIParsable {
         String content = serial.substring(start_brace_index+1, end_brace_index);
 
         // Split by commas, ignoring strings between {} and []
-        String[] tokens = content.split(",(?=[^(\\}|\\])]*(?:(\\{|\\[)|$))");
+        List<String> tokens = IoTIParsable.separateStrByChar(',', content);
 
         String name = null, ownerStr = null, namespaceStr = null, devicesStr = null;
 
-        for (int i = 0; i < tokens.length; i++) {
+        for (int i = 0; i < tokens.size(); i++) {
             // Split each token into 2
-            String[] args = tokens[i].split("=",2);
+            String[] args = tokens.get(i).split("=",2);
             if (args.length < 2)
                 continue;
             
@@ -186,6 +186,7 @@ public class Domain implements IoTIParsable {
      */
     private String parseSetToSerial(Set<?> set) {
         StringJoiner sj = new StringJoiner(",", "[", "]");
+        @SuppressWarnings("unchecked")
         Iterator<IoTIParsable> it = (Iterator<IoTIParsable>) set.iterator();
         while (it.hasNext()) {
             sj.add(it.next().parseToSerial());
