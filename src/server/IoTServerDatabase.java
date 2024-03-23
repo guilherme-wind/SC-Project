@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import server.model.Device;
 import server.model.Domain;
@@ -28,9 +29,10 @@ public class IoTServerDatabase {
     private Map<String, Device> devices;
 
     // TODO
-    // private String client_program_name;
-    // private long client_program_size;
+    private String client_program_name;
+    private long client_program_size;
     
+    // TODO
     private static final Path ROOT = Paths.get(".", "server_files", "metadata");
     
     private static final String USER_TXT_DB = Paths.get(ROOT.toString(), "users.txt").toString();
@@ -52,7 +54,12 @@ public class IoTServerDatabase {
         IoTFileManager.loadUsersFromText(this.users);
         IoTFileManager.loadDomainsFromText(this.domains);
         IoTFileManager.loadDevicesFromText(this.devices);
-        IoTFileManager.loadProgramInfoFromText();
+
+        Optional<String> progname = IoTFileManager.loadProgramNameFromText();
+        client_program_name = progname.isPresent() ? progname.get() : null;
+
+        Optional<Long> progsize = IoTFileManager.loadProgramSizeFromText();
+        client_program_size = progsize.isPresent() ? progsize.get() : -1;
     }
     
     public static IoTServerDatabase getInstance() {
@@ -108,6 +115,14 @@ public class IoTServerDatabase {
 
     public Device getDevice(String deviceName) {
         return this.devices.get(deviceName);
+    }
+
+    public String getClientProgramName() {
+        return this.client_program_name;
+    }
+
+    public long getClientProgramSize() {
+        return this.client_program_size;
     }
 
     public Boolean containsDomain(String domainName) {
