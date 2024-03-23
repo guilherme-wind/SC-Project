@@ -1,6 +1,7 @@
 package server.model;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import utils.IoTFileManager;
@@ -138,13 +139,15 @@ public class Device implements IoTIParsable {
      * Creates a Device object from the given string,
      * which must has the following format:
      * <user-parsed-descr>|<dev-id>
+     * @param users
+     *      Map containing users.
      * @param serial
      *      Device string representation.
      * @return
      *      A new Device object or null if the string doesn't
      *      matches the correct format.
      */
-    public static Device parseFromSerial(String serial) {
+    public static Device parseFromSerial(Map<String, User> users, String serial) {
         if (serial == null)
             return null;
         
@@ -175,7 +178,8 @@ public class Device implements IoTIParsable {
             
 
             if (params[0].compareToIgnoreCase("OWNER") == 0) {
-                user = User.parseFromSerial(params[1]);
+                User tempUser = User.parseFromSerial(params[1]);
+                user = users.get(tempUser.getName());
                 if (user == null)
                     return null;
             } else if (params[0].compareToIgnoreCase("DEVID") == 0) {

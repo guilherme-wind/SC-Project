@@ -88,7 +88,7 @@ public class Domain implements IoTIParsable {
      *      An new Domain object or null if the 
      *      string doesn't meet the correct format.
      */
-    public static Domain parseFromSerial(String serial) {
+    public static Domain parseFromSerial(Map<String, User> users, Map<String, Device> devices,String serial) {
         if (serial == null)
             return null;
         
@@ -134,7 +134,10 @@ public class Domain implements IoTIParsable {
         }
 
         // Create owner user
-        User owner = User.parseFromSerial(ownerStr);
+        User tempOwner = User.parseFromSerial(ownerStr);
+        if (tempOwner == null)
+            return null;
+        User owner = users.get(tempOwner.getName());
         if (owner == null)
             return null;
         
@@ -145,7 +148,11 @@ public class Domain implements IoTIParsable {
         if (namespaceList == null)
             return null;
         for (String userStr : namespaceList) {
-            User user = User.parseFromSerial(userStr);
+            // Temporary object, used to extract the name
+            User tempUser = User.parseFromSerial(userStr);
+            if (tempUser == null)
+                return null;
+            User user = users.get(tempUser.getName());
             if (user == null)
                 return null;
             domain.addUser(user);
@@ -156,7 +163,10 @@ public class Domain implements IoTIParsable {
         if (devicesList == null)
             return null;
         for (String deviceStr : devicesList) {
-            Device device = Device.parseFromSerial(deviceStr);
+            Device tempDevice = Device.parseFromSerial(users, deviceStr);
+            if (tempDevice == null)
+                return null;
+            Device device = devices.get(tempDevice.getName());
             if (device == null)
                 return null;
             domain.registerDevice(device);
