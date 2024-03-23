@@ -48,12 +48,17 @@ public class IoTCLI {
     public String getUserInput() {
         String input;
         try {
-            input = sc.nextLine();
+            if (sc.hasNextLine()) {
+                input = sc.nextLine();
+            } else {
+                return null;
+            }
         } catch (Exception e) {
             return null;
         }
         return input;
     }
+    
 
     /**
      * Prints the options menu.
@@ -127,7 +132,6 @@ public class IoTCLI {
      * Closes the CLI
      */
     public void close() {
-        sc.close();
     }
 
 }
