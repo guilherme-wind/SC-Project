@@ -8,6 +8,8 @@ import utils.IoTCLI;
  */
 public class IoTClientHandler {
 
+    private static String[] ILLEGAL_CHARS = new String[]{"*","<",">",":","/","\\","|","?"};
+
     // Singleton
     private static IoTClientHandler instance;
 
@@ -102,6 +104,13 @@ public class IoTClientHandler {
         }
 
         String domainName = args[1];
+        
+        for (String illegal_chaString : ILLEGAL_CHARS) {
+            if (domainName.contains(illegal_chaString)) {
+                cli.printErr(String.format("domain name can't contain %s\n", illegal_chaString));
+                return;
+            }
+        }
 
         cli.print(String.format("-> /create %s", domainName));
         int status = stub.createDomain(domainName);
