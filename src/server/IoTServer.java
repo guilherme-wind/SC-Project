@@ -8,6 +8,7 @@ import utils.IoTCLI;
 
 public class IoTServer{
     private static final String USAGE = "USAGE: IoTServer <port> (optional)";
+    private static final int DEFAULT_SERVER_SOCKET = 12345;
 
     private static IoTCLI cli;
 
@@ -82,17 +83,20 @@ public class IoTServer{
         try {
             // Initialize cli
             cli = IoTCLI.getInstance();
-            cli.print("Starting server...");
+            cli.printLog("Starting server...");
 
             // Associates shutdown signal with it's handler
             main = Thread.currentThread();
             Runtime.getRuntime().addShutdownHook(new Thread(() -> { shutdown(); }));
             threads = new LinkedList<IoTServerThread>();
 
-            // Creates server socket
-            socket = new ServerSocket(
-                Integer.parseInt(args[0])
-            );
+            if (args.length <= 0)
+                socket = new ServerSocket(DEFAULT_SERVER_SOCKET);
+            else 
+                // Creates server socket
+                socket = new ServerSocket(
+                    Integer.parseInt(args[0])
+                );
         } catch (Exception e) {
             e.printStackTrace();
             return -1;
