@@ -618,7 +618,7 @@ public class IoTFileManager {
      * @return
      *      Read object or nothing if error occured.
      */
-    public static synchronized Optional<Object> readObjectFromFile(String filePath) {
+    public static Optional<Object> readObjectFromFile(String filePath) {
         Object obj;
         synchronized(lock) {
             try {
