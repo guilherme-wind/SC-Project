@@ -33,9 +33,13 @@ A execução do programa requer a JVM e pode ser realizada com ficheiros `.jar` 
         Se o porto do servidor não for fornecida, o programa usará o porto de omissão, 12345, para estabelecer ligação ao servidor.
 
   - Servidor - `IoTServer.jar`
-        Para executar o servidor, abra um terminal no diretório onde se encontra o ficheiro `IoTDevice.jar` e execute um dos seguintes comandos 
-        ```java -jar IoTServer.jar ```
-        ```java -jar IoTServer.jar <Porto servidor>```
+        Para executar o servidor, abra um terminal no diretório onde se encontra o ficheiro `IoTDevice.jar` e execute um dos seguintes comandos:
+        ```
+        java -jar IoTServer.jar 
+        ```
+        ```
+        java -jar IoTServer.jar <Porto servidor>
+        ```
         Em geral, é sugerido executar o servidor sem indicar o porto, porém em casos necessários, pode fornecer o porto.
 
 ### Limitações da implementação
