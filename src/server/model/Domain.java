@@ -3,7 +3,6 @@ package server.model;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -212,12 +211,7 @@ public class Domain implements IoTIParsable {
         
         String content = serial.substring(start_brace_index+1, end_brace_index);
 
-        String[] tokens = content.split(",");
-
-        List<String> strings = new LinkedList<String>();
-        for (String string : tokens) {
-            strings.add(string);
-        }
+        List<String> strings = IoTIParsable.separateStrByChar(',', content);
         
         return strings;
     }
