@@ -303,10 +303,92 @@ public class IoTFileManager {
         return 0;
     }
 
-    public static int loadProgramInfoFromText() {
+    /**
+     * Loads client program name from text file.
+     * @return
+     */
+    public static Optional<String> loadProgramNameFromText() {
+        File file = new File(PROGRAM_TXT_DB);
+
+        if (!file.exists() || file.isDirectory())
+            return Optional.empty();
+        if (!file.canRead())
+            return Optional.empty();
+
+        try {
+            Scanner fileScanner = new Scanner(file);
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                String[] params = line.split(",");
+                for (String string : params) {
+                    String[] tokens = string.split("=");
+                    if (tokens.length != 2)
+                        continue;
+                    
+                    if (tokens[0].equalsIgnoreCase("program-name")) {
+                        fileScanner.close();
+                        return Optional.of(tokens[1]);
+                    }
+                }
+
+            }
+
+            fileScanner.close();
+        } catch (Exception e) {
+            return Optional.empty();
+        }
         // TODO
-        return 0;
+        return Optional.empty();
     }
+
+
+
+    /**
+     * Loads client program size from text file.
+     * @return
+     */
+    public static Optional<Long> loadProgramSizeFromText() {
+        File file = new File(PROGRAM_TXT_DB);
+
+        if (!file.exists() || file.isDirectory())
+            return Optional.empty();
+        if (!file.canRead())
+            return Optional.empty();
+
+        try {
+            Scanner fileScanner = new Scanner(file);
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                String[] params = line.split(",");
+                for (String string : params) {
+                    String[] tokens = string.split("=");
+                    if (tokens.length != 2)
+                        continue;
+                    
+                    if (tokens[0].equalsIgnoreCase("program-size")) {
+                        long size;
+                        try {
+                            size = Long.parseLong(tokens[1]);
+                        } catch (Exception e) {
+                            fileScanner.close();
+                            return Optional.empty();
+                        }
+
+                        fileScanner.close();
+                        return Optional.of(size);
+                    }
+                }
+
+            }
+
+            fileScanner.close();
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+        // TODO
+        return Optional.empty();
+    }
+
 
 
 
