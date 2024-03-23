@@ -336,7 +336,7 @@ public class IoTClientHandler {
 
         String[] tokens = args[1].split(":", 2);
         if (tokens.length < 2) {
-            cli.printErr("missing arguments, we're expecting 2 arguments: <user id> and <device id>\n");
+            cli.printErr("missing arguments, we're expecting: <user id>:<device id>\n");
             return;
         }
 
