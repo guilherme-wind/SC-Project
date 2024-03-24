@@ -18,7 +18,6 @@ A primeira fase do projeto 1 tem como o objetivo a implementação do programa d
     TODO
 
 ### Execução
-A execução do programa requer a JVM e pode ser realizada com ficheiros `.jar` e com `.class`.
 
 - #### Executar `.jar`
 
