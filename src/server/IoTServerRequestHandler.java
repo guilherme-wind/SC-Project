@@ -61,6 +61,7 @@ public class IoTServerRequestHandler {
         functions.put(IoTOpcodes.SEND_IMAGE, this::handleSendImage);
         functions.put(IoTOpcodes.GET_TEMP, this::handleReceiveTemperature);
         functions.put(IoTOpcodes.GET_USER_IMAGE, this::handleReceiveImage);
+        functions.put(IoTOpcodes.EOS, this::handleServerEOS);
     }
 
     /**
@@ -325,7 +326,12 @@ public class IoTServerRequestHandler {
         return response;
     }
 
-    // TODO add more handlers
+    private IoTMessageType handleServerEOS(IoTMessageType message, Session session, IoTServerDatabase dbContext) {
+        session.close();
+        IoTMessageType response = new IoTMessage();
+        response.setOpCode(IoTOpcodes.EOS);
+        return response;
+    }
 
     @FunctionalInterface
     interface IoTMessageHandlerFunction {

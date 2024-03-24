@@ -31,6 +31,9 @@ public enum IoTOpcodes {
     GET_TEMP("GET_TEMP"),
     GET_USER_IMAGE("GET_USER_IMAGE"),
 
+    // Server request operations
+    EOS("END_OF_STREAM"),
+
     // Server responses
     OK_ACCEPTED("OK_ACCEPTED"),
     NOK("NOK"),

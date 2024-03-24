@@ -76,7 +76,7 @@ public class IoTStream {
      * @return
      *      Object or Null if exception occured.
      */
-    public Object read() {
+    public synchronized Object read() {
         Object object = null;
         try {
             object = this.inputStream.readObject();

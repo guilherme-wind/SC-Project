@@ -8,6 +8,9 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.StringJoiner;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import utils.IoTMessage;
 import utils.IoTMessageType;
@@ -24,12 +27,60 @@ public class IoTClientStub {
     private static String hostname;
     private IoTStream iotStream;
 
+    // Thread to read notifications
+    private Thread notificationThread;
+
+    // lock for sync
+    private final Lock lock = new ReentrantLock();
+    private volatile boolean interrupted = false;
+
+    public class IoTNotificationThread extends Thread {
+        @Override
+        public void interrupt() {
+            System.out.println("Called terminated!!!");
+            super.interrupt();
+        }
+
+        @Override
+        public void run() {
+            while (!Thread.currentThread().isInterrupted()) {
+                System.out.println("Locking!!!");
+                lock.lock();
+                try {
+                    if (Thread.currentThread().isInterrupted()) {
+                        System.out.println("Interrupted while waiting for lock. Exiting.");
+                        return;
+                    }
+                    System.out.println("Reading message <--> notification thread....");
+                    IoTMessageType notification = (IoTMessageType) iotStream.read();
+                    if (notification == null)
+                        continue;
+
+                    System.out.println(notification);
+
+                    if (IoTOpcodes.EOS.equals(notification.getOpcode())) {
+                        System.out.println("Received an EOS!!!!!!");
+                        break; // Exit the loop if EOS is received
+                    }
+                } catch (Exception e) {
+                    System.out.println("Thread interrupted. Exiting.");
+                    return;
+                } finally {
+                    System.out.println("Unlocking!!");
+                    lock.unlock();
+                }
+            }
+            System.out.println("Thread exiting.");
+        }
+    }
+
     /**
      * Private constructor, use static method getInstance() instead.
      * @param socket
      */
     private IoTClientStub(Socket socket) {
         iotStream = new IoTStream(socket);
+        launchNotificationThread();
     }
 
     /**
@@ -60,6 +111,28 @@ public class IoTClientStub {
         return instance;
     }
 
+    private void launchNotificationThread() {
+        System.out.println("Launching notification thread....");
+        notificationThread = new IoTNotificationThread();
+        notificationThread.start();
+    }
+
+    private void stopNotificationThread() {
+        System.out.println("Interrupting notification thread...!");
+        if (notificationThread != null && notificationThread.isAlive())
+            notificationThread.interrupt();
+    }
+
+    private void prepareRead() {
+        stopNotificationThread();
+        lock.lock();
+    }
+
+    private void postRead() {
+        lock.unlock();
+        launchNotificationThread();
+    }
+
     protected String getHostname() {
         return hostname;
     }
@@ -82,10 +155,12 @@ public class IoTClientStub {
         request.setUserId(user);
         request.setUserPwd(password);
 
+        prepareRead();
         if (!iotStream.write(request))
             return -2;
 
         IoTMessageType response = (IoTMessageType) iotStream.read();
+        postRead();
         if (response == null)
             return -2;
         
@@ -114,10 +189,12 @@ public class IoTClientStub {
         request.setOpCode(IoTOpcodes.VALIDATE_DEVICE);
         request.setDevId(devId);
 
+        prepareRead();
         if (!iotStream.write(request))
             return -2;
 
         IoTMessageType response = (IoTMessageType) iotStream.read();
+        postRead();
         if (response == null)
             return -2;
 
@@ -147,10 +224,12 @@ public class IoTClientStub {
         request.setProgramName(programName);
         request.setProgramSize(size);
 
+        prepareRead();
         if (!iotStream.write(request))
             return -2;
 
         IoTMessageType response = (IoTMessageType) iotStream.read();
+        postRead();
         if (response == null)
             return -2;
 
@@ -177,10 +256,12 @@ public class IoTClientStub {
         IoTMessageType request = new IoTMessage();
         request.setOpCode(IoTOpcodes.EXIT);
 
+        prepareRead();
         if (!iotStream.write(request))
             return -2;
 
         IoTMessageType response = (IoTMessageType) iotStream.read();
+        postRead();
         if (response == null)
             return -2;
         
@@ -207,10 +288,12 @@ public class IoTClientStub {
         request.setOpCode(IoTOpcodes.CREATE_DOMAIN);
         request.setDomainName(domainName);
 
+        prepareRead();
         if (!iotStream.write(request))
             return -2;
 
         IoTMessageType response = (IoTMessageType) iotStream.read();
+        postRead();
         if (response == null)
             return -2;
 
@@ -242,11 +325,13 @@ public class IoTClientStub {
         request.setOpCode(IoTOpcodes.ADD_USER_DOMAIN);
         request.setUserId(userName);
         request.setDomainName(domainName);
-
+        
+        prepareRead();
         if (!iotStream.write(request))
             return -4;
         
         IoTMessageType response = (IoTMessageType) iotStream.read();
+        postRead();
         if (response == null)
             return -4;
 
@@ -280,10 +365,12 @@ public class IoTClientStub {
         request.setOpCode(IoTOpcodes.REGISTER_DEVICE_DOMAIN);
         request.setDomainName(domainName);
 
+        prepareRead();
         if (!iotStream.write(request))
             return -4;
 
         IoTMessageType response = (IoTMessageType) iotStream.read();
+        postRead();
         if (response == null)
             return -4;
 
@@ -312,10 +399,12 @@ public class IoTClientStub {
         request.setOpCode(IoTOpcodes.SEND_TEMP);
         request.setTemp(temperature);
 
+        prepareRead();
         if (!iotStream.write(request))
             return -1;
 
         IoTMessageType response = (IoTMessageType) iotStream.read();
+        postRead();
         if (response == null)
             return -1;
 
@@ -348,10 +437,12 @@ public class IoTClientStub {
         request.setImageSize(filesize);
         request.setImage(img);
 
+        prepareRead();
         if (!iotStream.write(request))
             return -2;
 
         IoTMessageType response = (IoTMessageType) iotStream.read();
+        postRead();
         if (response == null)
             return -2;
 
@@ -378,10 +469,12 @@ public class IoTClientStub {
         request.setOpCode(IoTOpcodes.GET_TEMP);
         request.setDomainName(domainName);
 
+        prepareRead();
         if (!iotStream.write(request))
             return -3;
 
         IoTMessageType response = (IoTMessageType) iotStream.read();
+        postRead();
         if (response == null)
             return -3;
 
@@ -436,10 +529,12 @@ public class IoTClientStub {
         request.setUserId(userId);
         request.setDevId(devId);
 
+        prepareRead();
         if (!iotStream.write(request))
             return -4;
 
         IoTMessageType response = (IoTMessageType) iotStream.read();
+        postRead();
         if (response == null)
             return -4;
 
@@ -489,6 +584,7 @@ public class IoTClientStub {
     protected int close() {
         int status = terminateProgram();
         iotStream.close();
+
         return status;
     }
 }
