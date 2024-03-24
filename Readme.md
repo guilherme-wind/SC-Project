@@ -18,10 +18,12 @@ A primeira fase do projeto 1 tem como o objetivo a implementação do programa d
     TODO
 
 ### Execução
+É obrigatório ter o ficheiro `program-info.program` no diretório `server_files/metadata/` com o nome do ficheiro `.jar` e o seu tamanho, caso contrário o cliente não conseguirá autenticar o seu programa.
 
 - #### Executar `.jar`
 
-  - Cliente - `IoTDevice.jar`
+  - ##### Cliente - `IoTDevice.jar`
+
     Para executar o programa cliente, abra um terminal no diretório onde se encontra o ficheiro `IoTDevice.jar` e execute um dos seguintes comandos:
     ```bash
     java -jar IoTDevice.jar <IP servidor>:<Porto servidor> <ID dispositivo> <Nome utilizador>
@@ -31,7 +33,7 @@ A primeira fase do projeto 1 tem como o objetivo a implementação do programa d
     ```
     Se o porto do servidor não for fornecida, o programa usará o porto de omissão, 12345, para estabelecer ligação ao servidor.
 
-  - Servidor - `IoTServer.jar`
+  - ##### Servidor - `IoTServer.jar`
     Para executar o servidor, abra um terminal no diretório onde se encontra o ficheiro `IoTDevice.jar` e execute um dos seguintes comandos:
     ```bash
     java -jar IoTServer.jar 
