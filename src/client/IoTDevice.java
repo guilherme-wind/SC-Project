@@ -6,7 +6,6 @@ import java.net.URL;
 
 import utils.IoTCLI;
 
-
 public class IoTDevice {
     private static final String USAGE = "USAGE: IoTDevice <serverAddress> <dev-id> <user-id>";
     private static final int DEFAULT_SERVERPORT = 12345;
@@ -60,7 +59,7 @@ public class IoTDevice {
             return;
         }
         
-        handler.userInvoke();
+        handler.userInvoke(userId, devId, stub.getHostname());
         
         System.out.println("Finished!");
     }

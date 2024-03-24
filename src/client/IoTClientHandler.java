@@ -47,11 +47,11 @@ public class IoTClientHandler {
      * @return
      *      0 if user requested to exit;
      */
-    protected int userInvoke() {
+    protected int userInvoke(String userId, int devId, String hostname) {
         while (true) {
             cli.printMenu();
 
-            cli.printShell();
+            cli.printShell(userId, hostname, String.format("~/devices/%d", devId));
             String input = cli.getUserInput();
             if (input == null)
                 return 0;

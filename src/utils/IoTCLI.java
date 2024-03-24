@@ -18,8 +18,9 @@ public class IoTCLI {
                                         "\tRI <user>:<device>" + LINE +
                                         "\tEXIT";
     private static final String LOG_TEMP = "[%s] %s";
-    private static final String SHELL = ConsoleColors.GREEN_BOLD + "IoTDevice" + ConsoleColors.BLUE_BOLD +
-                                        "@SC2324" + ConsoleColors.RESET + ": ~$ ";
+    private static final String SHELL = ConsoleColors.GREEN_BOLD + "%s" + ConsoleColors.BLUE_BOLD +
+    "@%s" + ConsoleColors.RESET + ":" + ConsoleColors.PURPLE + "%s" + ConsoleColors.RESET + " $ ";
+
 
     // Singleton
     private static IoTCLI instance = null;
@@ -70,8 +71,10 @@ public class IoTCLI {
         System.out.println(MENU);
     }
 
-    public void printShell() {
-        System.out.print(SHELL);
+    public void printShell(String user, String computerName, String workingDir) {
+        System.out.print(String.format(
+            SHELL, user, computerName, workingDir)
+        );
     }
 
     /**
