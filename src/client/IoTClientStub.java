@@ -21,6 +21,7 @@ public class IoTClientStub {
     private static IoTClientStub instance = null;
 
     // Client network connection
+    private static String hostname;
     private IoTStream iotStream;
 
     /**
@@ -54,7 +55,13 @@ public class IoTClientStub {
         } catch (IllegalArgumentException e) {
             return null;
         }
+
+        hostname = String.format("%s:%d", serverIp, serverPort);
         return instance;
+    }
+
+    protected String getHostname() {
+        return hostname;
     }
 
     /**
