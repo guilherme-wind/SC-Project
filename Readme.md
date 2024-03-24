@@ -23,26 +23,25 @@ A execução do programa requer a JVM e pode ser realizada com ficheiros `.jar` 
 - #### Executar `.jar`
 
   - Cliente - `IoTDevice.jar`
-        Para executar o programa cliente, abra um terminal no diretório onde se encontra o ficheiro `IoTDevice.jar` e execute um dos seguintes comandos:
-        ```bash
-        java -jar IoTDevice.jar <IP servidor>:<Porto servidor> <ID dispositivo> <Nome utilizador>
-        ```
-        ```bash
-        java -jar IoTDevice.jar <IP servidor> <ID dispositivo> <Nome utilizador>
-        ```
-        Se o porto do servidor não for fornecida, o programa usará o porto de omissão, 12345, para estabelecer ligação ao servidor.
+    Para executar o programa cliente, abra um terminal no diretório onde se encontra o ficheiro `IoTDevice.jar` e execute um dos seguintes comandos:
+    ```bash
+    java -jar IoTDevice.jar <IP servidor>:<Porto servidor> <ID dispositivo> <Nome utilizador>
+    ```
+    ```bash
+    java -jar IoTDevice.jar <IP servidor> <ID dispositivo> <Nome utilizador>
+    ```
+    Se o porto do servidor não for fornecida, o programa usará o porto de omissão, 12345, para estabelecer ligação ao servidor.
 
   - Servidor - `IoTServer.jar`
-        Para executar o servidor, abra um terminal no diretório onde se encontra o ficheiro `IoTDevice.jar` e execute um dos seguintes comandos:
-        ```
-        java -jar IoTServer.jar 
-        ```
+    Para executar o servidor, abra um terminal no diretório onde se encontra o ficheiro `IoTDevice.jar` e execute um dos seguintes comandos:
+    ```bash
+    java -jar IoTServer.jar 
+    ```
+    ```bash
+    java -jar IoTServer.jar <Porto servidor>
+    ```
 
-        ```
-        java -jar IoTServer.jar <Porto servidor>
-        ```
-        
-        Em geral, é sugerido executar o servidor sem indicar o porto, porém em casos necessários, pode fornecer o porto.
+    Em geral, é sugerido executar o servidor sem indicar o porto, porém em casos necessários, pode fornecer o porto.
 
 ### Limitações da implementação
 A implementação do projeto cumpre os requisitos do [enunciado](https://moodle.ciencias.ulisboa.pt/mod/resource/view.php?id=223109).
