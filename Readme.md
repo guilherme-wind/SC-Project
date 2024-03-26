@@ -12,12 +12,12 @@ A primeira fase do projeto 1 tem como o objetivo a implementação do programa d
 
 ### Compilação
 - ##### Cliente - `IoTDevice`
-    Para compilar o código fonte do cliente, abra um terminal no diretório raíz do projeto, i.e., no diretório anterior de `bin` e de `src`, e execute o seguinte comando `java -sourcepath ./src/ -d ./bin/ ./src/client/IoTDevice.java`. Os ficheiros `.class` gerados ficarão no diretório `bin`.
+    Para compilar o código fonte do cliente, abra um terminal no diretório raíz do projeto, i.e., no diretório anterior de `bin` e de `src`, e execute o seguinte comando `javac -sourcepath ./src/ -d ./bin/ ./src/client/IoTDevice.java`. Os ficheiros `.class` gerados ficarão no diretório `bin`.
 
     Depois de compilar para `.class`, para criar o ficheiro `IoTDevice.jar`, mantenha o terminal no diretório raíz do projeto e execute `jar -cfe IoTDevice.jar bin.client.IoTDevice bin/*`, o `.jar` criado ficará no mesmo diretório do terminal.
 
 - ##### Servidor - `IoTServer`
-    Para compilar o código fonte do servidor, abra um terminal no diretório raíz do projeto, i.e., no diretório anterior de `bin` e de `src`, e execute o seguinte comando `java -sourcepath ./src/ -d ./bin/ ./src/server/IoTServer.java`. Os ficheiros `.class` gerados ficarão no diretório `bin`.
+    Para compilar o código fonte do servidor, abra um terminal no diretório raíz do projeto, i.e., no diretório anterior de `bin` e de `src`, e execute o seguinte comando `javac -sourcepath ./src/ -d ./bin/ ./src/server/IoTServer.java`. Os ficheiros `.class` gerados ficarão no diretório `bin`.
 
     Depois de compilar para `.class`, para criar o ficheiro `IoTServer.jar`, mantenha o terminal no diretório raíz do projeto e execute `jar -cfe IoTServer.jar bin.server.IoTServer bin/*`, o `.jar` criado ficará no mesmo diretório do terminal.
 
