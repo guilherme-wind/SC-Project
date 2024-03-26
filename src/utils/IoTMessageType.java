@@ -80,6 +80,7 @@ public interface IoTMessageType {
      *      instead!
      * @return
      */
+    @Deprecated
     public void setData(byte[] data);
 
     /**
@@ -91,5 +92,6 @@ public interface IoTMessageType {
      *      instead!
      * @return
      */
+    @Deprecated
     public byte[] getData();
 }

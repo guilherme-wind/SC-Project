@@ -155,11 +155,13 @@ public class IoTMessage implements IoTMessageType, Serializable {
     }
 
     @Override
+    @Deprecated
     public void setData(byte[] data) {
         this.data = data;
     }
 
     @Override
+    @Deprecated
     public byte[] getData() {
         return this.data;
     }
