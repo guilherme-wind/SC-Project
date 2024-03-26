@@ -56,7 +56,10 @@ A implementação do projeto cumpre os requisitos do [enunciado](https://moodle.
 Na pasta de entrega, deve conter um diretório `src` com os ficheiros de código fonte; um diretório `bin` vazio para guardar os ficheiros `.class` gerados na compilação e uma pasta `server_files` que contém uma pasta `metadata` que tem um ficheiro de texto `program-info.program`, este tem a informação, nome e o tamanho, do `IoTDevice.jar` entregue, se for gerado um novo programa do cliente, o conteúdo deste ficheiro também é necessário ser atualizado.
 
 ### Informação extra
-Para verificar a integridade dos ficheiros, estão em baixo os checksum dos programas executáveis:
+Para verificar a integridade dos ficheiros, estão em baixo os checksum dos programas executáveis e do ficheiro:
+- `program-info.program`
+  - MD5 ```1f129047d09ad333917604152c674eb5```
+  - SHA 256 ```22baf30a23203b48c343a569dbe5061557dea035f76fc002f1bbd00f6fe69706```
 
 - `IoTDevice.jar`
   - MD5 ```df057f85d516f646a03c9e6530a0cae2```
