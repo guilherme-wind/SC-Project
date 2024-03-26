@@ -1,7 +1,5 @@
 ## Projeto 1 fase 1 Segurança e Confiabilidade 2023-24
 
----
-
 ### Grupo 24
 
 ### Visão geral
